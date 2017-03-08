@@ -71,23 +71,26 @@
 
         <div class="col-md-offset-3 col-md-6">
             <div class="bs-component">
-                <ul class="nav nav-pills">
+                <ul id="select-team" class="nav nav-pills">
                     <li class="active">
-                        <a href="#">All <span class="badge">{{ data.teams.all }}</span></a>
+                        <a id="select-team-all" href="javascript:void(0)" onclick="filter('')">All <span class="badge">{{ data.teams.all }}</span></a>
                     </li>
-                    <li><a href="#">Core <span class="badge">{{ data.teams.core }}</span></a></li>
-                    <li><a href="#">Apps <span class="badge">{{ data.teams.apps }}</span></a/li>
-                    <li><a href="#">Infra / dist<span class="badge">{{ data.teams.infra }}</span></a></li>
-                    <li><a href="#">Doc / i18n<span class="badge">{{ data.teams.doc }}</span></a></li>
+                    <li><a id="select-team-core" href="javascript:void(0)" onclick="filter('team-core')">Core <span class="badge">{{ data.teams.core }}</span></a></li>
+                    <li><a id="select-team-apps" href="javascript:void(0)" onclick="filter('team-apps')">Apps <span class="badge">{{ data.teams.apps }}</span></a/li>
+                    <li><a id="select-team-infra" href="javascript:void(0)" onclick="filter('team-infra')">Infra / dist<span class="badge">{{ data.teams.infra }}</span></a></li>
+                    <li><a id="select-team-doc" href="javascript:void(0)" onclick="filter('team-doc')">Doc / i18n<span class="badge">{{ data.teams.doc }}</span></a></li>
                 </ul>
             </div>
         </div>
+    </div>
+    
+    <div class="row">
 
         <div class="col-md-12">
             <div>
 
 
-                <table class="table table-striped table-responsive">
+                <table id="thePRlist" class="table table-striped table-responsive">
                     <thead>
                     <tr>
                         <th></th>
@@ -99,8 +102,9 @@
                     </thead>
                     <tbody>
                     {% for pr in data.prs %}
-                    <tr>
-                        <td><center><a class="btn
+                    <tr class="{% for team in pr.teams %}team-{{ team }}{% endfor %}">
+                        <td>
+                            <center><a class="btn
                         {% if pr.priority >= 100 %}btn-warning{% else %}
                         {% if pr.priority >= 50  %}btn-primary{% else %}
                         {% if pr.priority >= 0   %}btn-info{% else %}
@@ -159,6 +163,37 @@
 
 <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
+
+<script>
+function filter(team) {
+    // Declare variables
+    var input, filter, table, tr, td, i;
+    table = document.getElementById("thePRlist");
+    tr = table.getElementsByTagName("tr");
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) 
+    {
+        if (team == '')                          { tr[i].style.display = ""; }
+        else if (tr[i].classList == "")          { tr[i].style.display = ""; }
+        else if (tr[i].classList.contains(team)) { tr[i].style.display = ""; }
+        else                                     { tr[i].style.display = "none"; }
+    }
+
+    selector = document.getElementById("select-team");
+    li = selector.getElementsByTagName("li");
+
+    for (i = 0; i < li.length; i++) 
+    {
+        console.log(li[i].getAttribute("id"));
+        console.log("select-".concat(team));
+        if (li[i].getAttribute("id") == "select-".concat(team))
+        {
+            li[i].classList.add("active");
+        }
+    }
+
+}
+</script>
 
 </body>
 </html>
