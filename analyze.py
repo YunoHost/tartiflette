@@ -3,13 +3,23 @@
 import json
 import datetime
 
-repos = ["yunohost", "yunohost-admin", "SSOwat", "moulinette", "doc", "ynh-dev",
-        "apps", "CI_package_check", "example_ynh", "package_linter", "Simone",
-        "project-organization", "build.yunohost.org", "dynette", "YunoPorts",
-        "rebuildd", "cd_build", "install_script"]
-
-
 prs = {}
+
+def get_repos():
+
+    repos_by_name = {}
+
+    with open("repos.json", "r") as f:
+        repos_by_team = json.loads(f.read())
+
+    for team, team_repos in repos_by_team.items():
+        for repo in team_repos:
+            if repo not in repos_by_name.keys():
+                repos_by_name[repo] = [team]
+            else:
+                repos_by_name[repo].append(team)
+
+    return repos_by_name
 
 
 def githubDateToDaysAgo(date):
@@ -44,7 +54,7 @@ def priority(pr):
 
 def main():
 
-    for repo in repos:
+    for repo, teams in get_repos().items():
 
         print("Analyzing %s ..." % repo)
 
@@ -64,11 +74,9 @@ def main():
                "id":      "%s-%s" % (repo, issue["number"]),
                "createdDaysAgo": githubDateToDaysAgo(issue["created_at"]),
                "updatedDaysAgo": githubDateToDaysAgo(issue["updated_at"]),
-               "url":     issue["pull_request"]["html_url"]
+               "url":     issue["pull_request"]["html_url"],
+               "teams":   teams
             }
-
-            #if len(pr["title"]) > 53:
-            #    pr["title"] = pr["title"][0:50] + "..."
 
             if isPRDying(pr):
                 pr["labels"].append("dying")

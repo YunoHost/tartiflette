@@ -1,14 +1,25 @@
 #!/usr/bin/python3
 
 import requests
+import json
 
-repos = ["yunohost", "yunohost-admin", "SSOwat", "moulinette", "doc", "ynh-dev",
-        "apps", "CI_package_check", "example_ynh", "package_linter", "Simone",
-        "project-organization", "build.yunohost.org", "dynette", "YunoPorts",
-        "rebuildd", "cd_build", "install_script"]
+def get_repos():
 
+    repos_by_name = {}
 
-for repo in repos:
+    with open("repos.json", "r") as f:
+        repos_by_team = json.loads(f.read())
+
+    for team, team_repos in repos_by_team.items():
+        for repo in team_repos:
+            if repo not in repos_by_name.keys():
+                repos_by_name[repo] = [team]
+            else:
+                repos_by_name[repo].append(team)
+
+    return repos_by_name
+
+for repo in get_repos().keys():
 
     print("Fetching pull requests for %s" % repo)
 
