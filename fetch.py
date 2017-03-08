@@ -14,5 +14,5 @@ for repo in repos:
 
     issues = requests.get("https://api.github.com/repos/yunohost/%s/issues?per_page=100" % repo)
 
-    with open("./%s.json" % repo, "w") as f:
+    with open("data/%s.json" % repo, "w") as f:
         f.write(issues.text)

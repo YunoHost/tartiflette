@@ -48,7 +48,7 @@ def main():
 
         print("Analyzing %s ..." % repo)
 
-        with open("./%s.json" % repo, "r") as f:
+        with open("data/%s.json" % repo, "r") as f:
             j = json.loads(f.read())
 
         for issue in j:
