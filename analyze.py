@@ -5,6 +5,12 @@ import datetime
 
 prs = {}
 
+def get_teams():
+
+    with open("repos.json", "r") as f:
+        return json.loads(f.read()).keys()
+
+
 def get_repos():
 
     repos_by_name = {}
@@ -87,10 +93,17 @@ def main():
     prs_sorted = sorted(prs.keys(), key=lambda x: (prs[x]["priority"],
         prs[x]["createdDaysAgo"]), reverse=True )
 
-    summary = []
+    summary = {}
+    
+    summary["teams"] = {}
+    summary["teams"]["all"] = len([pr for pr in prs.values() if pr["priority"] >= -50])
+    for team in get_teams():
+        summary["teams"][team] = len([pr for pr in prs.values()
+                 if team in pr["teams"] and pr["priority"] >= -50])
 
+    summary["prs"] = []
     for name in prs_sorted:
-        summary.append(prs[name])
+        summary["prs"].append(prs[name])
 
     with open("summary.json", "w") as f:
         f.write(json.dumps(summary))

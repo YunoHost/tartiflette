@@ -72,11 +72,13 @@
         <div class="col-md-offset-3 col-md-6">
             <div class="bs-component">
                 <ul class="nav nav-pills">
-                    <li class="active"><a href="#">All <span class="badge">1664</span></a></li>
-                    <li><a href="#">Core <span class="badge">42</span></a></li>
-                    <li><a href="#">Apps <span class="badge">42</span></a/li>
-                    <li><a href="#">Infra / dist<span class="badge">42</span></a></li>
-                    <li><a href="#">Doc / i18n<span class="badge">42</span></a></li>
+                    <li class="active">
+                        <a href="#">All <span class="badge">{{ data.teams.all }}</span></a>
+                    </li>
+                    <li><a href="#">Core <span class="badge">{{ data.teams.core }}</span></a></li>
+                    <li><a href="#">Apps <span class="badge">{{ data.teams.apps }}</span></a/li>
+                    <li><a href="#">Infra / dist<span class="badge">{{ data.teams.infra }}</span></a></li>
+                    <li><a href="#">Doc / i18n<span class="badge">{{ data.teams.doc }}</span></a></li>
                 </ul>
             </div>
         </div>
@@ -96,7 +98,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for pr in data %}
+                    {% for pr in data.prs %}
                     <tr>
                         <td><center><a class="btn
                         {% if pr.priority >= 100 %}btn-warning{% else %}

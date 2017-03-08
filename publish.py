@@ -30,14 +30,14 @@ if __name__ == '__main__':
 
     # Fetch the list of all reports, sorted in reverse-chronological order
 
-    pr_list = json.load(open(summary_path))
+    summary = json.load(open(summary_path))
 
     # Generate the output using the template
 
     template = open(template_path, "r").read()
     t        = Template(template)
  
-    result = t.render(data=pr_list, convert=shell_to_html, shell_css=shell_css)
+    result = t.render(data=summary, convert=shell_to_html, shell_css=shell_css)
 
     open(output_path, "w").write(result)
 
