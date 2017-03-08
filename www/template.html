@@ -17,7 +17,13 @@
             background: #333333;
         }
         .container {
-            width:1500px;
+            width:1200px;
+        }
+        .pr-title {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 350px;
         }
     </style>
 
@@ -37,14 +43,16 @@
 
     <div class="row">
         <div class="col-md-12">
-            First with labels :
-            <p>"important" implies top-priority ------
-            "opinion-needed" implies medium priority ------
-            "work needed" implies low priority ------
-            "inactive" / "postponed" implies very low priority.</p>
-            Then with creation time :
+            <strong>With labels</strong>
+            <ul>
+                <li>"important" = top priority</li>
+                <li>"opinion-needed" = medium priority</li>
+                <li>"work needed" = low priority</li>
+                <li>"inactive/postponed" = very low priority</li>
+            </ul>
+            <strong>Then with creation time</strong>
             <p>older PRs have higher priority than newer PR</p>
-            'Dying' status
+            <strong>'Dying' status</strong>
             <p>A PR is considered "dying" if it has been created more than 60
             days ago and not updated since 30 days. This is meant to be an incentive to
             either revive it or flag it as inactive/postponed... 'Dying' PRs
@@ -100,7 +108,7 @@
                         {% endif %}
                         {% endif %}"
                             href="{{ pr.url }}">{{ pr.id }}</a></center></td>
-                        <td><strong>{{ pr.title }}</strong></td>
+                        <td class="pr-title"><strong>{{ pr.title }}</strong></td>
                         <td>{{ pr.createdDaysAgo }} days ago</td>
                         <td>
                             {% for label in pr.labels %}

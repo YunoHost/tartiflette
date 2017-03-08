@@ -67,8 +67,8 @@ def main():
                "url":     issue["pull_request"]["html_url"]
             }
 
-            if len(pr["title"]) > 53:
-                pr["title"] = pr["title"][0:50] + "..."
+            #if len(pr["title"]) > 53:
+            #    pr["title"] = pr["title"][0:50] + "..."
 
             if isPRDying(pr):
                 pr["labels"].append("dying")
