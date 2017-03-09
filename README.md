@@ -1,7 +1,7 @@
-Aiguillette
+Tartiflette
 ===========
 
-A quick and dirty PR dashboard using Eden UI
+A quick and dirty PR dashboard for yunohost's repos
 
 Install
 -------
