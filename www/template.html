@@ -38,33 +38,7 @@
             <h1>Yunohost Pull Requests Dashboard</h1>
         </div>
     </div>
-            
-    <h3>WTF is this shit? How is priority defined?</h3>
-
-    <div class="row">
-        <div class="col-md-12">
-            <strong>With labels</strong>
-            <ul>
-                <li>"important" = top priority</li>
-                <li>"opinion-needed" = medium priority</li>
-                <li>"work needed" = low priority</li>
-                <li>"inactive/postponed" = very low priority</li>
-            </ul>
-            <strong>Then with creation time</strong>
-            <p>older PRs have higher priority than newer PR</p>
-            <strong>'Dying' status</strong>
-            <p>A PR is considered "dying" if it has been created more than 60
-            days ago and not updated since 30 days. This is meant to be an incentive to
-            either revive it or flag it as inactive/postponed... 'Dying' PRs
-            have a small boost in priority to be listed first</a>
-           </br>
-           <p>Repos considered for now (completely arbitrary) : [yunohost, yunohost-admin, SSOwat, moulinette, doc, ynh-dev,
-        apps, CI_package_check, example_ynh, package_linter, Simone,
-        project-organization, build.yunohost.org, dynette, YunoPorts,
-        rebuildd, cd_build, install_script]</p>
-        </div>
-    </div>
-            
+           
     <h3>What should you review ?</h3>
 
     <div class="row">
@@ -72,13 +46,13 @@
         <div class="col-md-offset-3 col-md-6">
             <div class="bs-component">
                 <ul id="select-team" class="nav nav-pills">
-                    <li class="active">
-                        <a id="select-team-all" href="javascript:void(0)" onclick="filter('')">All <span class="badge">{{ data.teams.all }}</span></a>
+                    <li id="select-team-all" class="active">
+                        <a href="javascript:void(0)" onclick="filter('')">All <span class="badge">{{ data.teams.all }}</span></a>
                     </li>
-                    <li><a id="select-team-core" href="javascript:void(0)" onclick="filter('team-core')">Core <span class="badge">{{ data.teams.core }}</span></a></li>
-                    <li><a id="select-team-apps" href="javascript:void(0)" onclick="filter('team-apps')">Apps <span class="badge">{{ data.teams.apps }}</span></a/li>
-                    <li><a id="select-team-infra" href="javascript:void(0)" onclick="filter('team-infra')">Infra / dist<span class="badge">{{ data.teams.infra }}</span></a></li>
-                    <li><a id="select-team-doc" href="javascript:void(0)" onclick="filter('team-doc')">Doc / i18n<span class="badge">{{ data.teams.doc }}</span></a></li>
+                    <li id="select-team-core"><a href="javascript:void(0)" onclick="filter('team-core')">Core <span class="badge">{{ data.teams.core }}</span></a></li>
+                    <li id="select-team-apps"><a href="javascript:void(0)" onclick="filter('team-apps')">Apps <span class="badge">{{ data.teams.apps }}</span></a/li>
+                    <li id="select-team-infra"><a href="javascript:void(0)" onclick="filter('team-infra')">Infra / dist<span class="badge">{{ data.teams.infra }}</span></a></li>
+                    <li id="select-team-doc"  ><a href="javascript:void(0)" onclick="filter('team-doc')">Doc<span class="badge">{{ data.teams.doc }}</span></a></li>
                 </ul>
             </div>
         </div>
@@ -143,6 +117,34 @@
             </div>
 
         </div>
+
+
+    <h3>WTF is this shit? How is priority defined?</h3>
+
+    <div class="row">
+        <div class="col-md-12">
+            <strong>With labels</strong>
+            <ul>
+                <li>"important" = top priority</li>
+                <li>"opinion-needed" = medium priority</li>
+                <li>"work needed" = low priority</li>
+                <li>"inactive/postponed" = very low priority</li>
+            </ul>
+            <strong>Then with creation time</strong>
+            <p>older PRs have higher priority than newer PR</p>
+            <strong>'Dying' status</strong>
+            <p>A PR is considered "dying" if it has been created more than 60
+            days ago and not updated since 30 days. This is meant to be an incentive to
+            either revive it or flag it as inactive/postponed... 'Dying' PRs
+            have a small boost in priority to be listed first</a>
+           </br>
+           <p>Repos considered for now (completely arbitrary) : [yunohost, yunohost-admin, SSOwat, moulinette, doc, ynh-dev,
+        apps, CI_package_check, example_ynh, package_linter, Simone,
+        project-organization, build.yunohost.org, dynette, YunoPorts,
+        rebuildd, cd_build, install_script]</p>
+        </div>
+    </div>
+            
 </div>
 
 
@@ -182,13 +184,17 @@ function filter(team) {
     selector = document.getElementById("select-team");
     li = selector.getElementsByTagName("li");
 
+    if (team == "") { team = "team-all"; }
+
     for (i = 0; i < li.length; i++) 
     {
-        console.log(li[i].getAttribute("id"));
-        console.log("select-".concat(team));
         if (li[i].getAttribute("id") == "select-".concat(team))
         {
             li[i].classList.add("active");
+        }
+        else
+        {
+            li[i].classList.remove("active");
         }
     }
 
