@@ -24,9 +24,8 @@ Usage
 ./publish.py
 ```
 
-- Edit fetch.py and analyze.py to custom list of repo to fetch (should be moved
-to a central conf file)
+- Edit repos.json if needed
 - Don't know the number of API calls someone is allowed to do, so limit the call
 to fetch.py :/
-- Everything is pretty dirty so far and should be cleaned
+- HTML template is pretty dirty so far and should be cleaned
 
