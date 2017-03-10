@@ -11,7 +11,7 @@ Install
 - Install dependencies :
 ```
 apt install -y python3-pip
-pip3 install ansi2html
+pip3 install ansi2html jinja2
 ```
 - Make your web browser serve www/index.html
 
