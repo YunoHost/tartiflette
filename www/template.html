@@ -17,7 +17,7 @@
             background: #333333;
         }
         .container {
-            width:1200px;
+            width:1400px;
         }
         .pr-title {
           white-space: nowrap;
@@ -76,7 +76,7 @@
                     </thead>
                     <tbody>
                     {% for pr in data.prs %}
-                    <tr class="{% for team in pr.teams %}team-{{ team }}{% endfor %}">
+                    <tr class="{% for team in pr.teams %}team-{{ team }} {% endfor %}">
                         <td>
                             <center><a class="btn
                         {% if pr.priority >= 100 %}btn-warning{% else %}
