@@ -79,10 +79,10 @@
                     <tr class="{% for team in pr.teams %}team-{{ team }} {% endfor %}">
                         <td>
                             <center><a class="btn
-                        {% if pr.priority >= 100 %}btn-warning{% else %}
-                        {% if pr.priority >= 50  %}btn-primary{% else %}
-                        {% if pr.priority >= 0   %}btn-info{% else %}
-                        {% if pr.priority >= -50 %}btn-default{% else %}
+                        {% if pr.priority >= 90 %}btn-warning{% else %}
+                        {% if pr.priority >= 40  %}btn-primary{% else %}
+                        {% if pr.priority >= -10   %}btn-info{% else %}
+                        {% if pr.priority >= -60 %}btn-default{% else %}
                                                    btn-link{% endif %}
                         {% endif %}
                         {% endif %}
@@ -127,21 +127,16 @@
             <ul>
                 <li>"important" = top priority</li>
                 <li>"opinion-needed" = medium priority</li>
-                <li>"work needed" = low priority</li>
                 <li>"inactive/postponed" = very low priority</li>
             </ul>
+            <p>PR with 'work needed' have a small malus in priority</p>
+            <p>PR with 'dying' status have a small bonus in priority</p>
             <strong>Then with creation time</strong>
             <p>older PRs have higher priority than newer PR</p>
             <strong>'Dying' status</strong>
             <p>A PR is considered "dying" if it has been created more than 60
             days ago and not updated since 30 days. This is meant to be an incentive to
-            either revive it or flag it as inactive/postponed... 'Dying' PRs
-            have a small boost in priority to be listed first</a>
-           </br>
-           <p>Repos considered for now (completely arbitrary) : [yunohost, yunohost-admin, SSOwat, moulinette, doc, ynh-dev,
-        apps, CI_package_check, example_ynh, package_linter, Simone,
-        project-organization, build.yunohost.org, dynette, YunoPorts,
-        rebuildd, cd_build, install_script]</p>
+            either revive it or flag it as inactive/postponed... </p>
         </div>
     </div>
             

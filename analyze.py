@@ -43,14 +43,15 @@ def priority(pr):
         base_priority = 100
     elif "opinion needed" in pr["labels"]:
         base_priority = 50
-    elif "work needed" in pr["labels"]:
-        base_priority = -50
     elif "postponed" in pr["labels"]:
         base_priority = -100
     elif "inactive" in pr["labels"]:
         base_priority = -100
     else:
         base_priority = 0
+
+    if "work needed" in pr["labels"]:
+        base_priority += -5
 
     if "dying" in pr["labels"] and base_priority > -100:
         base_priority += 5
