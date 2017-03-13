@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>Bootstrap Skin: Eden</title>
+    <title>Yunohost Pull Requests Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" href="css/bootstrap.css" media="screen">
@@ -17,13 +17,25 @@
             background: #333333;
         }
         .container {
-            width:1400px;
+            width:1300px;
         }
-        .pr-title {
+        .column-pr-id {
+            width:190px;
+            text-align:center;
+        }
+        .column-pr-title {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
           max-width: 350px;
+        }
+        .column-pr-created {
+            width:170px;
+        }
+        .column-pr-labels {
+        }
+        .column-pr-reviews {
+            width:150px;
         }
     </style>
 
@@ -77,8 +89,8 @@
                     <tbody>
                     {% for pr in data.prs %}
                     <tr class="{% for team in pr.teams %}team-{{ team }} {% endfor %}">
-                        <td>
-                            <center><a class="btn
+                        <td class="column-pr-id">
+                            <a class="btn
                         {% if pr.priority >= 90 %}btn-warning{% else %}
                         {% if pr.priority >= 40  %}btn-primary{% else %}
                         {% if pr.priority >= -10   %}btn-info{% else %}
@@ -87,26 +99,29 @@
                         {% endif %}
                         {% endif %}
                         {% endif %}"
-                            href="{{ pr.url }}">{{ pr.id }}</a></center></td>
-                        <td class="pr-title"><strong>{{ pr.title }}</strong></td>
-                        <td>{{ pr.createdDaysAgo }} days ago</td>
-                        <td>
+                           href="{{ pr.url }}">{{ pr.id }}</a>
+                        </td>
+                        <td class="column-pr-title"><strong>{{ pr.title }}</strong></td>
+                        <td class="column-pr-created">{{ pr.createdDaysAgo }} days ago</td>
+                        <td class="column-pr-labels">
                             {% for label in pr.labels %}
                             <span class="label 
-                        {% if label == "important" %}label-danger{%endif%}
-                        {% if label == "opinion needed" %}label-warning{%endif%}
-                        {% if label == "small decision" %}label-info{%endif%}
-                        {% if label == "medium decision" %}label-info{%endif%}
-                        {% if label == "big decision" %}label-info{%endif%}
-                        {% if label == "work needed" %}label-primary{%endif%}
-                        {% if label == "inactive" %}label-default{%endif%}
-                        {% if label == "postponed" %}label-default{%endif%}
-                        {% if label == "dying" %}label-danger{%endif%}
+                        {% if label == "important" %}label-danger{%else%}
+                        {% if label == "opinion needed" %}label-warning{%else%}
+                        {% if label == "small decision" %}label-info{%else%}
+                        {% if label == "medium decision" %}label-info{%else%}
+                        {% if label == "big decision" %}label-info{%else%}
+                        {% if label == "work needed" %}label-primary{%else%}
+                        {% if label == "inactive" %}label-default{%else%}
+                        {% if label == "postponed" %}label-default{%else%}
+                        {% if label == "dying" %}label-danger{%else%}
+                                                 label-primary
+                        {%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}
                             ">{{ label }}</span>
                             &nbsp;
                             {% endfor %}
                         </td>
-                        <td>
+                        <td class="column-pr-reviews">
                 <span style="border:1px solid black; border-radius:4px; padding-left:2px; padding-right:2px;">foo <span class="text-success">✔</span></span>
                 <span style="border:1px solid black; border-radius:4px; padding-left:2px; padding-right:2px;">bar <span class="text-danger" >✘</span></span>
                     </tr>
