@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Yunohost Pull Requests Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="css/bootstrap.css" media="screen">
+    <link rel="stylesheet" href="skins/eden.css" media="screen">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+
+    <style>
+        .navbar-holder-dark{
+            padding: 20px 20px 200px 20px;
+            background: #333333;
+        }
+        .progress .progress-bar {
+            padding-top:5px;
+            font-size:16px;
+            font-weight: 600;
+        }
+        .progress-bar-none {
+            background-color:transparent;
+            color: #2c3e50;
+        }
+        .issue-legend {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 100%;
+          text-align: center;
+          font-weight: bold;
+          margin-bottom:20px;
+        }
+    </style>
+
+</head>
+<body>
+
+
+<div class="container">
+
+    <div class="page-header" id="banner">
+        <div class="row">
+            <h1>Yunohost Roadmap Dashboard</h1>
+        </div>
+    </div>
+           
+    <h3>2.6.x</h3>
+
+    <div class="row">
+
+        <div class="col-md-offset-1 col-md-10">
+
+            <div class="issue-legend">All ({{data.all.all}} issues) </div>
+            <div class="bs-component">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-success" style="width:
+                        {{data.all.done[1]}}%">{{data.all.done[0]}} done</div>
+                    <div class="progress-bar progress-bar-warning" style="width:
+                        {{data.all.ongoing[1]}}%">{{data.all.ongoing[0]}}
+                        ongoing</div>
+                    <div class="progress-bar progress-bar-none" style="width:
+                        {{data.all.new[1]}}%">{{data.all.new[0]}} new</div>
+                </div>
+            </div>
+
+            {% for type, statuses in data.items() %}
+            {% if type != "all" %}
+            <div class="bs-component" style="display:inline-block; width: {{
+                         statuses.all[1]-0.5 }}%" >
+                 <div class="progress">
+                    <div class="progress-bar progress-bar-success" style="width: {{statuses.done[1]}}%">
+                    {{ statuses.done[0] }}  
+                    </div>
+                    <div class="progress-bar progress-bar-warning" style="width: {{statuses.ongoing[1]}}%">
+                    {{ statuses.ongoing[0] }}  
+                    </div>
+                    <div class="progress-bar progress-bar-none" style="width:
+                    {{statuses.new[1]}}%">
+                    {{ statuses.new[0] }}  
+                    </div>
+                </div>
+                <div class="issue-legend">{{ type }}<br> ({{ statuses.all[0]
+                    }})</div>
+            </div>
+            {% endif %}
+            {% endfor %}
+
+        </div>
+        
+        <div class="col-md-offset-1 col-md-10">
+    </div>
+            
+</div>
+
+
+<footer>
+    <div class="row">
+        <div class="col-lg-12">
+            <hr/>
+            <p>CSS Skin/boilerplate/whatever you call it : <a href="http://scripteden.com/" rel="nofollow">Script Eden</a>.</p>
+
+        </div>
+    </div>
+
+</footer>
+
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+<script>
+function filter(team) {
+    // Declare variables
+    var input, filter, table, tr, td, i;
+    table = document.getElementById("thePRlist");
+    tr = table.getElementsByTagName("tr");
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) 
+    {
+        if (team == '')                          { tr[i].style.display = ""; }
+        else if (tr[i].classList == "")          { tr[i].style.display = ""; }
+        else if (tr[i].classList.contains(team)) { tr[i].style.display = ""; }
+        else                                     { tr[i].style.display = "none"; }
+    }
+
+    selector = document.getElementById("select-team");
+    li = selector.getElementsByTagName("li");
+
+    if (team == "") { team = "team-all"; }
+
+    for (i = 0; i < li.length; i++) 
+    {
+        if (li[i].getAttribute("id") == "select-".concat(team))
+        {
+            li[i].classList.add("active");
+        }
+        else
+        {
+            li[i].classList.remove("active");
+        }
+    }
+
+}
+</script>
+
+</body>
+</html>
