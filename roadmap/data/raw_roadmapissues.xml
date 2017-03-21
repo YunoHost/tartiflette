@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?><issues total_count="46" offset="0" limit="100" type="array"><issue><id>831</id><project id="1" name="YunoHost"/><tracker id="2" name="Feature"/><status id="1" name="New"/><priority id="2" name="Normal"/><author id="8" name="ljf"/><assigned_to id="8" name="ljf"/><category id="43" name="Backup"/><fixed_version id="11" name="2.6.x"/><subject>Generate a ssh key and display the public-key with yunohost tools public-key</subject><description>To be able to add ssh access to an other instance we need to publish or display a public-key.
+
+The goal is to generate this key inside /home/admin/.ssh or /root/.ssh
+
+Like that the future friend_backup_ynh will be able to add a friend's yunohost easily, just by domain name.
+
+</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2017-03-16T12:18:19Z</created_on><updated_on>2017-03-21T02:12:29Z</updated_on><closed_on/></issue><issue><id>824</id><project id="1" name="YunoHost"/><tracker id="6" name="Improvement"/><status id="3" name="Resolved"/><priority id="3" name="High"/><author id="22812" name="frju365"/><category id="71" name="Security"/><fixed_version id="11" name="2.6.x"/><subject>Improve nginx cipher suite</subject><description>Hello,
+I think we must improve the security of nginx by adding new cipher suites and a new header of security:
+- ~~OCSP-Stapling (https://raymii.org/s/tutorials/OCSP_Stapling_on_nginx.html)~~ -&gt; https://dev.yunohost.org/issues/679
+- ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH" (https://cipherli.st/)
+- ~~Enable by default the dhparam and instead of 2048, add 4096 and enable it FOR EACH DOMAIN !!~~ -&gt; https://dev.yunohost.org/issues/92
+
+other link : https://mozilla.github.io/server-side-tls/ssl-config-generator/ , https://github.com/ssllabs/research/wiki/SSL-and-TLS-Deployment-Best-Practices , https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
+
+I add the tag high priority because it's very important.</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2017-03-09T21:24:26Z</created_on><updated_on>2017-03-20T02:14:36Z</updated_on><closed_on>2017-03-20T02:14:36Z</closed_on></issue><issue><id>823</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="1" name="New"/><priority id="3" name="High"/><author id="22811" name="banquise"/><category id="44" name="Email"/><fixed_version id="11" name="2.6.x"/><subject>rmilter/rspamd segmentation fault on raspberry pi zero</subject><description>rmilter and rspamd seem to not work on raspberry pi zero (as well as probably raspberry pi 1).
+The issue was firstly reported on this post (in addition with other configuration problems) : https://forum.yunohost.org/t/solved-dkim-rmilter-error/2526
+The OP "solved" it by using a respberry pi 3 so we suppose it's caused by differences between armv6/armv7.
+</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>2.5.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Raspbian</value></value></custom_field></custom_fields><created_on>2017-03-09T08:20:16Z</created_on><updated_on>2017-03-20T02:35:07Z</updated_on><closed_on/></issue><issue><id>822</id><project id="1" name="YunoHost"/><tracker id="6" name="Improvement"/><status id="1" name="New"/><priority id="2" name="Normal"/><author id="7" name="moul"/><category id="79" name="DNS"/><fixed_version id="11" name="2.6.x"/><subject>Add 'resolvconf' debian package dependency</subject><description></description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2017-03-07T19:17:14Z</created_on><updated_on>2017-03-15T06:06:27Z</updated_on><closed_on/></issue><issue><id>816</id><project id="1" name="YunoHost"/><tracker id="6" name="Improvement"/><status id="3" name="Resolved"/><priority id="1" name="Low"/><author id="7" name="moul"/><category id="57" name="Command line interface"/><fixed_version id="11" name="2.6.x"/><subject>Creating user from CLI ask arguments in strange order</subject><description>Last name should be asked before email address:
+
+```bash
+yunohost user create &lt;user&gt;
+Administration password: 
+First name:
+Email address:
+Last name: 
+Password: 
+Confirm password: 
+```
+
+I didn't found what make this order on:
+
+- https://github.com/YunoHost/yunohost/blob/unstable/src/yunohost/user.py#L94
+- https://github.com/YunoHost/yunohost/blob/unstable/data/actionsmap/yunohost.yml#L93-L148</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2017-03-03T11:17:01Z</created_on><updated_on>2017-03-20T02:12:41Z</updated_on><closed_on>2017-03-20T02:12:41Z</closed_on></issue><issue><id>807</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="1" name="New"/><priority id="2" name="Normal"/><author id="81" name="alexAubin"/><category id="5" name="DynDns"/><fixed_version id="11" name="2.6.x"/><subject>dyndns cron spam mail because of time out</subject><description>Many user have reported ~recently that they receive a lot of email from the dyndns cron due to timeout (or other issues). Even if the IP didn't changed.
+
+&gt;Communication with server failed: timed out. Unable to update IP address on DynDNS.
+
+Maybe we could optimize the dyndns cron to attempt to update only if the IP changed (or is different from what is resolved by an external DNS)
+
+We could also have an error counter and send an email only if it failed like, say, the last 3 times.</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>2.5.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2017-02-24T21:00:28Z</created_on><updated_on>2017-03-20T02:50:56Z</updated_on><closed_on/></issue><issue><id>806</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="1" name="New"/><priority id="2" name="Normal"/><author id="81" name="alexAubin"/><category id="44" name="Email"/><fixed_version id="11" name="2.6.x"/><subject>Disable / remove old rspam.socket and rmilter.socket systemd services </subject><description>As reported here 
+
+https://forum.yunohost.org/t/etc-yunohost-services-yml-rmilter-socket-et-rspamd-socket-not-active/2505/5
+
+and here
+
+https://forum.yunohost.org/t/dkim-rmilter-error/2526/7
+
+some setups have residual rspam.socket / rmilter.socket which causes some errors/warning in logs. We should find a way to remove them properly (or at least disable them)</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>2.5.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2017-02-23T16:12:30Z</created_on><updated_on>2017-02-23T16:12:30Z</updated_on><closed_on/></issue><issue><id>801</id><project id="1" name="YunoHost"/><tracker id="6" name="Improvement"/><status id="1" name="New"/><priority id="2" name="Normal"/><author id="17" name="Bram"/><category id="63" name="Debian package build"/><fixed_version id="11" name="2.6.x"/><subject>Modify the way we make the changelog</subject><description>Right now, the changelog for a new release is built from the git commit history. This tend to be quite a burden since there is a lot of commits and it's not easy to extract what exactly has happen and needs to be written in the changelog.
+
+We want to change this to make release easier and of better quality.
+
+The current discussion around this question make this solution emerge:
+
+* copy the debian/changelog at the root of the project
+* for each new PR, update the changelog
+* once the release needs to be done, instead of listing the git commit history, simply copy this changelog file
+* add the date of the release/finish the changelog
+* release
+
+Reference : http://keepachangelog.com/en/0.3.0/</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2017-02-20T16:24:01Z</created_on><updated_on>2017-02-20T16:24:01Z</updated_on><closed_on/></issue><issue><id>799</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="1" name="New"/><priority id="3" name="High"/><author id="17" name="Bram"/><category id="54" name="App management"/><fixed_version id="11" name="2.6.x"/><subject>YunoHost shouldn't consider an app as removed if the remove script fails</subject><description>Right now, if the remove script for an application fails, YunoHost consider it to be still installed.
+
+This is very problematic because:
+
+* the promote bad practice for the "remove" script where the app packager simply doesn't care about taking possible errors into account
+* this can let a partially removed app in the system
+
+This is a very bad design and ends up with broken installations hard to fix for non-technical users. This is a major issue (we recently had a `rm -rf /var/www` because of that).
+
+The "don't consider an app to be uninstall if the remove script failed" part is easy to do, but afterward we need to:
+
+* create a "broken" status for app
+* spread this new status everywhere
+* allow app to be still updated to received the new `remove` script while not running the `upgrade` script</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>2.5.x</value><value>2.4.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2017-02-19T17:53:34Z</created_on><updated_on>2017-02-23T16:17:34Z</updated_on><closed_on/></issue><issue><id>787</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="2" name="In Progress"/><priority id="2" name="Normal"/><author id="9302" name="valerian"/><assigned_to id="81" name="alexAubin"/><category id="54" name="App management"/><fixed_version id="11" name="2.6.x"/><subject>Unhandled case in tools update when original app of multi-instance app is not installed anymore</subject><description>Hi,
+
+I had 2 wordpress apps. I uninstalled the first one, installed a third one, uninstalled the second one and reinstalled a fourth one. So now i have wordpress__3 and wordpress__4 only. We talked with opi about this on the chan, and he asked me to try some things
+&gt; yunohost tools update
+
+http://paste.yunohost.org/ruwiqiyedi.coffee
+
+&gt; yunohost tools update --debug
+
+http://paste.yunohost.org/imumukecec.coffee
+
+&gt; yunohost app info wordpress
+
+Erreur : wordpress n'est pas installé
+
+&gt; yunohost app info wordpress__3
+
+description: Logiciel de création de blog ou de site Web
+license: free
+name: WordPress
+version: 4.5.2
+
+&gt; yunohost app list --installed
+http://paste.yunohost.org/gilufezeku.vbs
+
+&gt; yunohost app upgrade wordpress__3
+
+Erreur : Aucune application à mettre à jour
+
+&gt; ls -l /etc/yunohost/apps/
+
+http://paste.yunohost.org/omibesutus.hs
+
+2 more infos :
+- the new wordpress are at the root of subdomains
+- as I tried to upload stuff on the wordpress__4 site, I could't because of rights errors on the folder
+
+As nothing seemed to work, opi suggested to open an issue here : its done ! Thanks for everything you do for yunohost to work so well
+
+
+</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>2.5.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Internet Cube</value></value></custom_field></custom_fields><created_on>2017-02-13T14:04:56Z</created_on><updated_on>2017-02-14T15:23:52Z</updated_on><closed_on/></issue><issue><id>785</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="3" name="Resolved"/><priority id="2" name="Normal"/><author id="33" name="ZeHiro"/><category id="51" name="Regen conf"/><fixed_version id="11" name="2.6.x"/><subject>Unhandled exception in regen-conf</subject><description>Here is the error I get when I try to upgrade yunohost from 2.5.4 to 2.5.5
+
+Regenerating configuration, this might take a while...
+Attention : Le fichier de configuration « /etc/nslcd.conf » a été modifié manuellement et ne sera pas mis à jour
+Succès ! La configuration a été mise à jour pour le service « ssl »
+Traceback (most recent call last):
+  File "/usr/bin/yunohost", line 217, in &lt;module&gt;
+    timeout=opts.timeout,
+  File "/usr/lib/python2.7/dist-packages/moulinette/__init__.py", line 139, in cli
+    moulinette.run(args, output_as=output_as, password=password, timeout=timeout)
+  File "/usr/lib/python2.7/dist-packages/moulinette/interfaces/cli.py", line 358, in run
+    ret = self.actionsmap.process(args, timeout=timeout)
+  File "/usr/lib/python2.7/dist-packages/moulinette/actionsmap.py", line 484, in process
+    return func(**arguments)
+  File "/usr/lib/moulinette/yunohost/service.py", line 452, in service_regen_conf
+    _update_conf_hashes(service, conf_hashes)
+  File "/usr/lib/moulinette/yunohost/service.py", line 656, in _update_conf_hashes
+    service_conf['conffiles'] = hashes
+TypeError: 'NoneType' object does not support item assignment
+dpkg: erreur de traitement du paquet yunohost (--configure) :
+ le sous-processus script post-installation installé a retourné une erreur de sortie d'état 1
+Traitement des actions différées (« triggers ») pour libc-bin (2.19-18+deb8u7) ...
+Des erreurs ont été rencontrées pendant l'exécution :
+ yunohost
+needrestart is being skipped since dpkg has failed
+E: Sub-process /usr/bin/dpkg returned an error code (1)
+</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>2.5.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2017-02-12T09:51:54Z</created_on><updated_on>2017-03-21T18:06:16Z</updated_on><closed_on>2017-03-07T19:20:02Z</closed_on></issue><issue><id>782</id><project id="1" name="YunoHost"/><tracker id="2" name="Feature"/><status id="1" name="New"/><priority id="2" name="Normal"/><author id="5406" name="nicofrand"/><category id="54" name="App management"/><fixed_version id="11" name="2.6.x"/><subject>Allow to modify the name of an installed application</subject><description>It would be great if we could change the name of an application that we installed, through the web interface and through something like 'yunohost app setting [app] name -v "New name"'.
+
+I installed the Redirect app without renaming it, in order to proxy the requests to my CozyCloud instance on port 9104. But now I would like to rename it "Cozy" to make it more clear.</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2017-02-10T16:04:37Z</created_on><updated_on>2017-03-17T15:17:15Z</updated_on><closed_on/></issue><issue><id>777</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="3" name="Resolved"/><priority id="2" name="Normal"/><author id="8" name="ljf"/><assigned_to id="8" name="ljf"/><category id="43" name="Backup"/><fixed_version id="11" name="2.6.x"/><subject>Backup doesn't contains yunohost helpers (or reference to the legacy helpers)</subject><description>With Maniack C we think apps backup should contains a copy of the /usr/share/yunohost/helpers . Like that the restore script could be executed with the exact version of each yunohost helpers.
+
+A small example:
+At this line https://github.com/YunoHost/yunohost/pull/247/commits/d98b5e036c582c1f9040269c1fae70dffc9971ea#diff-48ee89702d6221dfe3ea24923b0f8f9eR104
+
+Maniack offer to fix a bug (thanks to the popd we are always in the same dir at the end of the function), but we are not sure that backup (with restore script in it) will execute properly with this change.
+
+Here the change is very small, but I think we are going to change a lot of behaviour...
+
+So we suggest yunohost core fix this by adding a copy of the helpers in the backup (for exemple in a "legacy_helpers" dir). If the backup is too old, it should change the source /usr/share/yunohost/helpers to redirect to a copy of the current (02/09/2017) version of helpers.
+
+Alternatively, we can conserve copy of each helpers on the system.
+
+What is your point of view ?</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>2.5.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2017-02-08T23:59:04Z</created_on><updated_on>2017-03-07T01:09:32Z</updated_on><closed_on>2017-03-07T01:09:32Z</closed_on></issue><issue><id>773</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="2" name="In Progress"/><priority id="2" name="Normal"/><author id="60" name="maniack_crudelis"/><category id="54" name="App management"/><fixed_version id="11" name="2.6.x"/><subject>Ssowat not purged in case of failed installation</subject><description>Si l'installation d'une app échoue, ssowat n'est pas rechargé.
+L'app reste donc inscrite dans la section des utilisateurs
+
+```
+    "users": {
+        "user1": {
+            "domain.tld/app": "App cassée"
+        }, 
+        "user2": {
+            "domain.tld/app": "App cassée"
+        }
+    }
+}
+```
+
+Il suffit de recharger la conf ssowat, après la suppression pour corriger
+```
+sudo yunohost app ssowatconf
+```
+
+Malheureusement, l'application s'affiche aussi sur le portail utilisateur, alors qu'elle n'est pas installée.
+
+Ceci ne se produit pas si l'application est supprimée normalement.</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>2.5.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2017-02-08T11:41:06Z</created_on><updated_on>2017-03-07T19:19:09Z</updated_on><closed_on/></issue><issue><id>766</id><project id="1" name="YunoHost"/><tracker id="6" name="Improvement"/><status id="3" name="Resolved"/><priority id="2" name="Normal"/><author id="7" name="moul"/><category id="2" name="Web administration"/><fixed_version id="11" name="2.6.x"/><parent id="316"/><subject>Display YunoHost version only if logged in</subject><description></description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2017-02-04T12:59:58Z</created_on><updated_on>2017-03-21T18:15:02Z</updated_on><closed_on>2017-03-07T19:45:58Z</closed_on></issue><issue><id>765</id><project id="1" name="YunoHost"/><tracker id="6" name="Improvement"/><status id="2" name="In Progress"/><priority id="2" name="Normal"/><author id="17" name="Bram"/><assigned_to id="17" name="Bram"/><category id="38" name="General"/><fixed_version id="11" name="2.6.x"/><subject>add a data migrations framework inside YunoHost</subject><description>This will solve a lot of situations where we need to modify things without having retrocompatibility code.
+
+Exemple:
+
+- bad permissions on some certificates
+- clean services.yaml
+- modify data structure (ldap for eg or how lists store their data)</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2017-02-03T14:43:18Z</created_on><updated_on>2017-03-12T03:23:08Z</updated_on><closed_on/></issue><issue><id>764</id><project id="1" name="YunoHost"/><tracker id="6" name="Improvement"/><status id="2" name="In Progress"/><priority id="2" name="Normal"/><author id="17" name="Bram"/><category id="38" name="General"/><fixed_version id="11" name="2.6.x"/><subject>refactor app.py</subject><description>Current code is quite clumsy and hard to maintaint.</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2017-02-03T14:36:15Z</created_on><updated_on>2017-03-12T03:27:52Z</updated_on><closed_on/></issue><issue><id>763</id><project id="1" name="YunoHost"/><tracker id="6" name="Improvement"/><status id="2" name="In Progress"/><priority id="2" name="Normal"/><author id="17" name="Bram"/><assigned_to id="17" name="Bram"/><category id="38" name="General"/><fixed_version id="11" name="2.6.x"/><subject>run app scripts and others (hooks) as root instead of admin</subject><description>https://github.com/YunoHost/yunohost/pull/188</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2017-02-03T14:34:56Z</created_on><updated_on>2017-02-12T03:34:11Z</updated_on><closed_on/></issue><issue><id>759</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="6" name="Rejected"/><priority id="2" name="Normal"/><author id="3201" name="ivom"/><category id="36" name="Installation"/><fixed_version id="11" name="2.6.x"/><subject>postinstall fails because requests module has no attribute ConnectionError</subject><description>Running with an olimex board and the latest image ( from
+https://repo.labriqueinter.net/) + debian package update as of available today.
+
+During the execution of
+
+$ yunohost tools postinstall -d "${settings[yunohost,domain]}" -p "${settings[yunohost,password]}" --verbose 
+
+There is an error which makes the postinstall fail. 
+
+Traceback (most recent call last):
+  File "/usr/bin/yunohost", line 212, in &lt;module&gt;
+    password=opts.password, parser_kwargs={'top_parser': parser}
+  File "/usr/lib/python2.7/dist-packages/moulinette/__init__.py", line 138, in cli
+    moulinette.run(args, output_as=output_as, password=password)
+  File "/usr/lib/python2.7/dist-packages/moulinette/interfaces/cli.py", line 352, in run
+    ret = self.actionsmap.process(args, timeout=5)
+  File "/usr/lib/python2.7/dist-packages/moulinette/actionsmap.py", line 467, in process
+    return func(**arguments)
+  File "/usr/lib/moulinette/yunohost/tools.py", line 180, in tools_postinstall
+    except requests.ConnectionError:
+AttributeError: 'module' object has no attribute 'ConnectionError'
+
+</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>Stable 2.4.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Internet Cube</value></value></custom_field></custom_fields><created_on>2017-01-30T21:36:40Z</created_on><updated_on>2017-02-27T13:29:06Z</updated_on><closed_on>2017-02-27T13:29:06Z</closed_on></issue><issue><id>731</id><project id="1" name="YunoHost"/><tracker id="5" name="Documentation"/><status id="1" name="New"/><priority id="2" name="Normal"/><author id="17" name="Bram"/><category id="48" name="Certificate"/><fixed_version id="11" name="2.6.x"/><subject>certmanager.md doesn't tells how to use it using the admin interface</subject><description>A screenshot would be a nice touch.</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2017-01-27T12:06:00Z</created_on><updated_on>2017-02-01T22:13:51Z</updated_on><closed_on/></issue><issue><id>716</id><project id="1" name="YunoHost"/><tracker id="6" name="Improvement"/><status id="1" name="New"/><priority id="2" name="Normal"/><author id="17" name="Bram"/><fixed_version id="11" name="2.6.x"/><subject>add timeout to every "requests" call in code</subject><description>Quoting the documentation of requests (well, actually, quoting aleks quoting it):
+
+&gt; Nearly all production code should use this parameter in nearly all requests. Failure to do so can cause your program to hang indefinitel
+
+Result of ack on the code gives:
+
+```
+tools.py
+28:import requests
+194:            r = requests.get('https://dyndns.yunohost.org/domains')
+195:        except requests.ConnectionError:
+202:                if requests.get('https://dyndns.yunohost.org/test/%s' % domain).status_code == 200:
+
+certificate.py
+32:import requests
+570:    intermediate_certificate = requests.get(INTERMEDIATE_CERTIFICATE_URL).text
+818:    # because it explicitly requests() the domain.)
+840:        requests.head("http://" + ip, headers={"Host": domain})
+
+vendor/acme_tiny/acme_tiny.py
+56:    # helper function make signed requests
+
+domain.py
+32:import requests
+101:            r = requests.get('https://dyndns.yunohost.org/domains')
+102:        except requests.ConnectionError:
+
+dyndns.py
+32:import requests
+86:        if requests.get('https://%s/test/%s' % (subscribe_host, domain)).status_code != 200:
+88:    except requests.ConnectionError:
+107:        r = requests.post('https://%s/key/%s' % (subscribe_host, base64.b64encode(key)), data={'subdomain': domain})
+108:    except requests.ConnectionError:
+182:                    if requests.get('https://{0}/test/{1}'.format(
+185:                except requests.ConnectionError:
+```</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2017-01-15T20:21:45Z</created_on><updated_on>2017-03-20T02:32:43Z</updated_on><closed_on/></issue><issue><id>691</id><project id="1" name="YunoHost"/><tracker id="2" name="Feature"/><status id="3" name="Resolved"/><priority id="2" name="Normal"/><author id="17" name="Bram"/><category id="2" name="Web administration"/><fixed_version id="11" name="2.6.x"/><parent id="647"/><subject>Can't access faill2ban log on admin interface</subject><description>Quoting:
+
+&gt; Au passage on ne peut pas accéder aux logs de fail2ban coté admin web !
+
+&gt; Pour accéder au log de fail2ban j'ai modifié le /etc/yunohost/services.yml et ajouté dans la partie fail2ban après les "conffiles"
+
+https://forum.yunohost.org/t/firewall-fail2ban/314/6</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2017-01-01T06:11:22Z</created_on><updated_on>2017-03-21T18:15:33Z</updated_on><closed_on>2017-03-07T19:05:52Z</closed_on></issue><issue><id>688</id><project id="1" name="YunoHost"/><tracker id="6" name="Improvement"/><status id="1" name="New"/><priority id="2" name="Normal"/><author id="17" name="Bram"/><category id="54" name="App management"/><fixed_version id="11" name="2.6.x"/><subject>The error message "Unable to install the app in this location" is bad and confuse the user</subject><description>Hello,
+
+On app installation, if the user tries to install an application on a already used path he will get the error message:
+
+    Unable to install the app in this location
+
+This error message only tells the user "it's not possible" and that's all. It's a very unhelpful error message, we should tell the user **why** he can't do that (for example by listing all the apps that are already installed there or for a situation where the path is "/" that there are other apps (and listing them) that are installed on that domain).
+
+Related code: //github.com/YunoHost/yunohost/blob/stable/src/yunohost/app.py#L912
+
+Same problem applies to unstable code.</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2016-12-29T02:39:36Z</created_on><updated_on>2016-12-29T02:39:36Z</updated_on><closed_on/></issue><issue><id>686</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="1" name="New"/><priority id="2" name="Normal"/><author id="81" name="alexAubin"/><category id="54" name="App management"/><fixed_version id="11" name="2.6.x"/><subject>Uncaught exception because of missing lastUpdate field in app info ?</subject><description>Trying to install rainloop (which was actually already installed) :
+
+```
+ &gt; yunohost app install rainloop
+Traceback (most recent call last):
+  File "/usr/bin/yunohost", line 217, in &lt;module&gt;
+    timeout=opts.timeout,
+  File "/usr/lib/python2.7/dist-packages/moulinette/__init__.py", line 138, in cli
+    moulinette.run(args, output_as=output_as, password=password, timeout=timeout)
+  File "/usr/lib/python2.7/dist-packages/moulinette/interfaces/cli.py", line 353, in run
+    ret = self.actionsmap.process(args, timeout=timeout)
+  File "/usr/lib/python2.7/dist-packages/moulinette/actionsmap.py", line 479, in process
+    return func(**arguments)
+  File "/usr/lib/moulinette/yunohost/app.py", line 467, in app_install
+    manifest, extracted_app_folder = _fetch_app_from_git(app)
+  File "/usr/lib/moulinette/yunohost/app.py", line 1301, in _fetch_app_from_git
+    app_info['manifest']['lastUpdate'] = app_info['lastUpdate']
+KeyError: 'lastUpdate'
+```
+
+I'm guessing this is because https://raw.githubusercontent.com/polytan02/rainloop_ynh/master/manifest.json doesn't have the "lastUpdate" entry ?</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>Testing 2.5.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2016-12-28T16:27:36Z</created_on><updated_on>2017-01-02T15:08:37Z</updated_on><closed_on/></issue><issue><id>672</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="3" name="Resolved"/><priority id="2" name="Normal"/><author id="81" name="alexAubin"/><category id="51" name="Regen conf"/><fixed_version id="11" name="2.6.x"/><subject>tools main_domain doesn't refresh the ssowat conf</subject><description>This leads to inconsistent ssowat.conf with respect to current main_domain.
+
+Should add a call here I believe : https://github.com/YunoHost/yunohost/blob/testing/src/yunohost/tools.py#L168</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>Testing 2.5.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2016-12-18T23:33:27Z</created_on><updated_on>2017-03-17T10:24:28Z</updated_on><closed_on>2017-03-17T10:24:28Z</closed_on></issue><issue><id>671</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="3" name="Resolved"/><priority id="3" name="High"/><author id="4" name="Anonymous"/><assigned_to id="81" name="alexAubin"/><category id="48" name="Certificate"/><fixed_version id="11" name="2.6.x"/><subject>Yunohost-admin thinks letsencrypt app is installed (but it's not), blocks access to certificate management interface</subject><description>Reported here https://forum.yunohost.org/t/yunohost-2-5-0-beta-call-for-beta-testers-and-translators/2243/20, and also before on the chat I believe.
+
+Relevant piece of code is here : 
+- https://github.com/YunoHost/yunohost-admin/blob/unstable/src/js/yunohost/controllers/domains.js#L84-L96
+- https://github.com/YunoHost/yunohost-admin/blob/unstable/src/views/domain/domain_info.ms#L61-L65
+
+Not sure how to reproduce, but somehow the flag is set to false...</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>Testing 2.5.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2016-12-17T15:55:33Z</created_on><updated_on>2017-02-14T00:12:27Z</updated_on><closed_on>2017-02-14T00:12:27Z</closed_on></issue><issue><id>668</id><project id="1" name="YunoHost"/><tracker id="6" name="Improvement"/><status id="1" name="New"/><priority id="2" name="Normal"/><author id="68" name="jibec"/><category id="41" name="Organisation"/><fixed_version id="11" name="2.6.x"/><subject>L10N - Weblate administration choices</subject><description>Hi,
+
+I can't decide for everyone in Weblate administration.
+
+I changed new translation creation. YunoHost's owners in YunoHost can now add any language they want.
+=&gt; should I make it available for any registered user ? It's what they do for the translation of weblate itself. I suggest to do it.
+
+
+About pushing changes:
+* what should be the rhythm of pushing content? I feel like today you push translation everytime you notice a few changes. If so, should we add automatic commit to Ynh?
+* can we agree there is no review of code comming from Weblate translation? (if a review should be done, translator should have a weblate based process, so they don't get confused)
+
+About commits from Weblate to GitHub:
+* I can define whether Weblate should merge upstream repository or rebase changes onto it
+
+About automation: there is a few hooks I can set-up, if any of them is useful to you:
+
+* Post-update script : Script to be executed after receiving a repository update, please check documentation for more details.
+* Pre-commit script : Script to be executed before committing translation, please check documentation for more details.
+* Post-commit script : 
+* Script to be executed after committing translation, please check documentation for more details.
+* Post-push script : Script to be executed after pushing translation to remote, please check documentation for more details.
+* Post-add script : Script to be executed after adding new translation, please check documentation for more details.</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2016-12-14T07:11:08Z</created_on><updated_on>2017-01-24T07:01:14Z</updated_on><closed_on/></issue><issue><id>647</id><project id="1" name="YunoHost"/><tracker id="6" name="Improvement"/><status id="3" name="Resolved"/><priority id="2" name="Normal"/><author id="17" name="Bram"/><category id="37" name="Services"/><fixed_version id="11" name="2.6.x"/><subject>clean /etc/yunohost/services.yml as it is full on old unused services and that confuses the user</subject><description>Hello,
+
+Right now we still have a bunch on old services declared in /etc/yunohost/services.yml that aren't used anymore and/or don't make sens ("ssl" for example). We frequently have questions from users asking if it's normal that those services appears disabled/not running and this is confusing for them.
+
+This clean can be a good scenario for a migration framework.</description><start_date/><due_date/><done_ratio>100</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2016-11-29T23:25:04Z</created_on><updated_on>2017-03-21T18:15:33Z</updated_on><closed_on>2017-03-20T01:47:18Z</closed_on></issue><issue><id>646</id><project id="1" name="YunoHost"/><tracker id="6" name="Improvement"/><status id="2" name="In Progress"/><priority id="3" name="High"/><author id="40" name="Scith"/><category id="54" name="App management"/><fixed_version id="11" name="2.6.x"/><subject>[Comm] Badge "Install with YunoHost" to share</subject><description>Hello,
+I saw on several apps' websites that they have "install with" or "deploy to" sections (e.g., https://github.com/RocketChat/Rocket.Chat#deployment)
+So I thought that creating such a badge for YunoHost would make sense to increase our visibility.
+
+The problem is that we can't link directly to users' servers because of decentralization. So I built a small prototype similar to the "share to diaspora" badges. The badge redirects to a page in which users enter their server's URL. They are then redirected to the app install page of their admin panel.
+
+You can find it here: https://github.com/scith/YunoHost-InstallWidget
+Example to install Roundcube: [![Install Roundcube with YunoHost](http://www.scith.ovh/installynh/install-with-yunohost.png)](http://www.scith.ovh/installynh/?app=roundcube)
+
+**Here are some things for discussion:**
+
+* What do you think?
+* Currently, this works only for official apps, or apps in the users' fetchlists. Should we communicate only on official apps? I guess so... Otherwise the code needs to be adapted
+* If you agree on the idea, this page would need to be hosted somewhere on yunohost.org
+* The badge design could be improved... I did not have the YunoHost logo in vector format
+* Who wants to contact apps developers to suggest them including the badge?
+
+Thanks</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2016-11-29T15:43:14Z</created_on><updated_on>2017-03-12T19:02:32Z</updated_on><closed_on/></issue><issue><id>633</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="3" name="Resolved"/><priority id="3" name="High"/><author id="16" name="julienmalik"/><category id="3" name="SSO"/><fixed_version id="11" name="2.6.x"/><subject>Caching issue in SSOwat</subject><description>I regularly have issues when using the portal to add aliases (probably similar issue with forward, but not tested).
+
+Sometimes I need to make the alias addition twice or more, for it to be taken into account. But I don't have a lot of confidence into what is displayed in the portal.
+
+Here is a test case which seems reproducible :
+
+1. [cli] nginx restart
+2. [web] connect to sso as $user, add a new alias $alias
+3. [cli] yunohost user update $user --remove-mailalias $alias
+4. [web] refresh portal : $alias is still present in the aliases list.
+         disconnect/reconnect from the portal : no improvement, $alias is still present in the aliases list.
+
+It is expected that in step 4, $alias does not appear anymore.
+</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>Stable 2.4.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2016-11-14T13:23:35Z</created_on><updated_on>2017-03-21T18:16:25Z</updated_on><closed_on>2017-03-14T21:32:13Z</closed_on></issue><issue><id>628</id><project id="1" name="YunoHost"/><tracker id="2" name="Feature"/><status id="3" name="Resolved"/><priority id="2" name="Normal"/><author id="4" name="Anonymous"/><category id="49" name="Helpers"/><fixed_version id="11" name="2.6.x"/><subject>Add a tool to reset admin password</subject><description>Loosing the LDAP admin password is a recurring issue :
+
+https://forum.yunohost.org/t/how-to-reset-admin-password/1113
+https://forum.yunohost.org/t/reset-admin-password/1681/
+https://github.com/YunoHost/doc/pull/382
+https://listes.labriqueinter.net/pipermail/discussions/2016-November/001235.html
+
+It's pretty frustrating to be logged as root and not be able to administrate Yunohost :).
+
+Some solutions have already been proposed in the various thread/discussions. This page also gives some explanation and steps to properly change the rootdn password :
+
+https://www.digitalocean.com/community/tutorials/how-to-change-account-passwords-on-an-openldap-server#changing-the-rootdn-password
+
+It would be good if Yunohost came with a tool to easily reset the admin password while being logged as root. Bram suggested that it could be a standalone script.</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2016-11-12T18:26:43Z</created_on><updated_on>2017-03-21T18:16:02Z</updated_on><closed_on>2017-03-07T19:08:46Z</closed_on></issue><issue><id>624</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="3" name="Resolved"/><priority id="2" name="Normal"/><author id="4" name="Anonymous"/><assigned_to id="9" name="opi"/><category id="44" name="Email"/><fixed_version id="11" name="2.6.x"/><subject>False DKIM selector  "dkim" instead of "mail"</subject><description>I added a domain example.org and setup DNS according to DNS tab in yunohost admin domain menu including the DKIM TXT entry.
+
+A test with mail-tester.com suggested that DKIM signature could not be verified giving it a poor value, quite likely marking the email as spam.
+
+I then checked in /var/log/mail.log to find this entry:
+
+~~~ text
+share rmilter[8972]: &lt;aa953f8dbc&gt;; cannot find key for domain example.org at /etc/dkim/example.org.dkim.key
+~~~
+
+Apparently the expected **DKIM selector** was **dkim** and not **mail**.
+
+To fix the problem I had to 
+
+1. mv /etc/dkim/example.org.mail.key /etc/dkim/example.org.dkim.key
+2. Update the DNS TXT entry from "mail._domainkey" to "dkim._domainkey"
+
+Is this a general problem or rather specific to my setup?
+
+I later noticed that DKIM selector is set in 
+
+/etc/rmilter.conf (in my case set to "mail")
+/etc/rmilter.conf.common (in my case set to "dkim")
+
+which for a fix I could have probably updated as well.
+
+
+Thanks you for your feedback.
+
+</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>Stable 2.4.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Internet Cube</value></value></custom_field></custom_fields><created_on>2016-11-10T19:35:50Z</created_on><updated_on>2017-02-19T17:39:46Z</updated_on><closed_on>2017-02-19T17:39:46Z</closed_on></issue><issue><id>621</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="3" name="Resolved"/><priority id="2" name="Normal"/><author id="23" name="mbugeia"/><assigned_to id="8" name="ljf"/><category id="43" name="Backup"/><fixed_version id="11" name="2.6.x"/><subject>Can't use common script in backup/restore</subject><description>During the execution of backup and restore script, the current directory is the root of the backup. This prevent to source a common file (like source ./_common.sh) especially since /etc/yunohost/apps/myapp/scripts/_common.sh have 600 permissions.</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>Stable 2.4.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2016-11-06T13:26:14Z</created_on><updated_on>2017-02-27T16:03:18Z</updated_on><closed_on>2017-02-27T16:03:18Z</closed_on></issue><issue><id>524</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="3" name="Resolved"/><priority id="2" name="Normal"/><author id="60" name="maniack_crudelis"/><category id="40" name="Network"/><fixed_version id="11" name="2.6.x"/><subject>resolv-conf vide dans /etc/dnsmasq.d/domain.tld bloque metronome</subject><description>La première ligne de la conf dns de domaine dans /etc/dnsmasq.d/, correspondant à un resolv-conf alternatif, bloque la résolution dns de metronome. Même dans le cas d'un sous-domaine ne concernant pas directement metronome.
+
+```
+Aug 10 20:55:07 adns    debug   Reply for _xmpp-server._tcp.conference.yunohost.org. (thread: 0x8d34030)
+Aug 10 20:55:07 mod_s2s debug   conference.yunohost.org has no SRV records, falling back to A/AAAA
+Aug 10 20:55:07 adns    debug   Records for conference.yunohost.org not in cache, sending query (thread: 0x8d49700)...
+Aug 10 20:55:07 adns    debug   Sending DNS query to 127.0.0.1
+Aug 10 20:55:07 adns    debug   Records for conference.yunohost.org not in cache, sending query (thread: 0x8d4b370)...
+Aug 10 20:55:07 adns    debug   Sending DNS query to 127.0.0.1
+Aug 10 20:55:07 socket  debug   new connection established. id: 8d4a4b0 
+Aug 10 20:55:07 adns    debug   Reply for conference.yunohost.org (thread: 0x8d49700)
+Aug 10 20:55:07 socket  debug   try to close client connection with id: 8d4a4b0 
+Aug 10 20:55:07 socket  debug   closing client with id: 8d4a4b0 client to close 
+Aug 10 20:55:07 adns    debug   Reply for conference.yunohost.org (thread: 0x8d4b370)
+Aug 10 20:55:07 mod_s2s debug   DNS lookup failed to get a response for conference.yunohost.org
+Aug 10 20:55:07 s2sout8cd52e0   info    Out of connection options, can't connect to conference.yunohost.org
+Aug 10 20:55:07 mod_s2s debug   No other records to try for conference.yunohost.org - destroying
+Aug 10 20:55:07 s2sout8cd52e0   debug   Destroying outgoing session crudelis.fr-&gt;conference.yunohost.org: DNS resolution failed
+```
+
+Je ne sais pas si cette ligne a une utilité?
+La commenté suffit à rétablir le fonctionnement normal de metronome.</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>Stable 2.4.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2016-08-10T18:58:21Z</created_on><updated_on>2017-03-21T18:15:18Z</updated_on><closed_on>2017-03-07T19:11:45Z</closed_on></issue><issue><id>523</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="1" name="New"/><priority id="3" name="High"/><author id="60" name="maniack_crudelis"/><category id="37" name="Services"/><fixed_version id="11" name="2.6.x"/><subject>Prévenir la saturation de l'espace disque à cause de /var/lib/mysql/ibdata1</subject><description>Pour le contexte, suite à la mise à jour de Owncloud, il a scanné l'ensemble des disques dur et constitué une table sql de 9.3Go...
+Cette table se répercute dans le fichier ibdata1 qui stocke les meta-infos sql.
+
+Le problème est que ce fichier n'est jamais purgé, même en cas de suppression de la bdd problématique. Il ne fait que grossir avec le temps et deviendra tôt ou tard un problème selon la taille du disque dur système.
+
+Pour owncloud, la solution est assez simple, `sudo yunohost app remove owncloud`, ça évite beaucoup de problème à venir...
+
+Pour le fichier ibdata1, si l'espace est saturé, c'est trop tard, il faut supprimer les tables, supprimer le fichier et recharger un dump.
+
+Pour éviter d'en arriver là, une bonne pratique est de séparer les fichiers de stockages de meta-infos pour chaque tables. Cela permet de supprimer ces fichiers avec les tables sans risque de toucher à l'intégrité des autres tables. Et ça évite également un embonpoint d'un seul fichier avec des tables obsolètes.
+
+Pour obtenir ce comportement, il faut ajouter l'option `innodb_file_per_table=1` au fichier /etc/mysql/my.cnf. Le comportement sera pris en compte pour les nouvelles tables créés. Je pense donc que ce devrait être le réglage par défaut pour une nouvelle installation.</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>2.5.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2016-08-10T16:23:52Z</created_on><updated_on>2017-03-17T15:01:17Z</updated_on><closed_on/></issue><issue><id>341</id><project id="1" name="YunoHost"/><tracker id="6" name="Improvement"/><status id="3" name="Resolved"/><priority id="3" name="High"/><author id="21" name="jvaubourg"/><category id="79" name="DNS"/><fixed_version id="11" name="2.6.x"/><subject>Set main domain as hostname</subject><description>When the administrator sets or changes the main domain on YunoHost, this one should be used for setting the hostname (fqdn) of the system.
+
+With something like that:
+
+~~~
+hostnamectl --static "${domain]}"
+hostnamectl --transient "${domain]}"
+hostnamectl --pretty set-hostname "YunoHost (${domain]})"
+~~~
+
+Without forgetting to update /etc/hosts:
+
+~~~
+::1 ${domain]}
+127.0.0.1 ${domain]}
+~~~
+
+This is especially important since etckeeper is installed by YunoHost. Without a clean hostname on the system, every commit of etckeeper (each time a package is installed/upgraded/removed) will fail. This is because git needs to generate an email for the unix user and does not want to do that when there is no clean hostname with a fqdn defined.
+
+Example:
+
+~~~
+*** Please tell me who you are.
+
+Run
+
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+
+fatal: unable to auto-detect email address (got 'root@olinux.(none)')
+etckeeper commit failed; run it by hand
+~~~
+
+NB: This problem is already solved with installations through HyperCube, but it is not enough, I think.</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2016-05-19T21:59:19Z</created_on><updated_on>2017-03-15T06:08:52Z</updated_on><closed_on>2017-02-13T16:05:03Z</closed_on></issue><issue><id>334</id><project id="1" name="YunoHost"/><tracker id="2" name="Feature"/><status id="2" name="In Progress"/><priority id="2" name="Normal"/><author id="1" name="jerome"/><assigned_to id="8" name="ljf"/><category id="43" name="Backup"/><fixed_version id="11" name="2.6.x"/><parent id="298"/><subject>ynh_backup and ynh_restore helpers improvement</subject><description>As discussed in #298, the current backup system is really not optimal due to a useless first copy made by hooks and apps `backup` scripts.
+
+One way we found to improve that is to get from hooks and scripts a list of files / directories to save. For that, we could pass as argument - and environment variable - a path to the file in which the executed hook / script should write those files / directories.
+
+To ease that process and evolution, the `ynh_backup` helper (see [here](https://dev.yunohost.org/projects/yunohost/repository/yunohost/revisions/unstable/entry/data/helpers.d/filesystem#L11)) has been created and should be use in each backup hook /script as of now.</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2016-05-18T09:34:10Z</created_on><updated_on>2017-03-16T17:45:09Z</updated_on><closed_on/></issue><issue><id>285</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="2" name="In Progress"/><priority id="2" name="Normal"/><author id="9" name="opi"/><category id="4" name="User interface"/><fixed_version id="11" name="2.6.x"/><subject>YunoHost tile is not displayed when the app is installed on root path</subject><description>/ynhpanel.js can't be served
+
+Reported by emile. Dirty fix here https://pad.sebian.fr/p/yuno_icon_fail</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>Stable 2.2.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2016-03-22T15:02:00Z</created_on><updated_on>2017-03-19T16:18:22Z</updated_on><closed_on/></issue><issue><id>276</id><project id="1" name="YunoHost"/><tracker id="6" name="Improvement"/><status id="3" name="Resolved"/><priority id="2" name="Normal"/><author id="9" name="opi"/><category id="54" name="App management"/><fixed_version id="11" name="2.6.x"/><subject>Refactor app_list method</subject><description>Improve formats (raw ?), allow better filtering </description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2016-03-14T22:20:31Z</created_on><updated_on>2017-03-18T02:50:37Z</updated_on><closed_on>2017-03-18T02:50:37Z</closed_on></issue><issue><id>267</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="1" name="New"/><priority id="2" name="Normal"/><author id="16" name="julienmalik"/><category id="8" name="Configuration"/><fixed_version id="11" name="2.6.x"/><subject>dnsmasq generated confs are not in line with 'yunohost domain dns-conf'</subject><description>
+spf does not specify ip addresses (v4 and v6)
+
+there is a jabber txt record in dnsmasq, but not in dns-conf
+
+no dkim/dmarc in dnsmasq
+
+no muc/pubsub/vjud in dnsmasq</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>Stable 2.4.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2016-03-10T12:02:22Z</created_on><updated_on>2017-02-19T17:54:37Z</updated_on><closed_on/></issue><issue><id>254</id><project id="1" name="YunoHost"/><tracker id="2" name="Feature"/><status id="2" name="In Progress"/><priority id="2" name="Normal"/><author id="16" name="julienmalik"/><category id="8" name="Configuration"/><fixed_version id="11" name="2.6.x"/><subject>Global settings / Managing conf modifications</subject><description>This feature request is a call for discussion about the general idea of better management of conf modifications.
+
+The (my, currently) problem :
+I apply custom conf modifications for my server, currently at least :
+- modifying the postfix max mail size
+- modifying nginx conf to enable the dhparam
+I can think of others, like :
+- modifying the ssl params for custom ciphers&amp;co (think supporting different ssl modes like in https://mozilla.github.io/server-side-tls/ssl-config-generator/)
+- apply or not a weak-password checking implementation (#231)
+- setup for frequency of backups to configure an associated cron (for the future maybe)
+- ... what would you add to this customization-list ?
+
+
+Each time a new yunohost package version is installed, regenconf is called so I get errors during conf regen, and I need to merge my own modification with the new version of the conf. This already becomes annoying after a few months of regenconf usage.
+
+
+
+I do think there should be a better way of managing at least the kind of parameters above.
+The first simple solution I'm thinking about is to introduce global server settings : similar to apps settings, but for the core of Yunohost :
+- could be interfaced with the moulinette, so could be made available in the webadmin
+- values can be extracted by regenconf hooks/postinst script/... to apply them where/when they are needed
+- are initialized with a default value if not present, and can then be modified by the admin of the server.
+
+What do you think ?
+
+</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2016-03-07T16:03:56Z</created_on><updated_on>2017-03-07T19:35:55Z</updated_on><closed_on/></issue><issue><id>246</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="1" name="New"/><priority id="2" name="Normal"/><author id="17" name="Bram"/><category id="5" name="DynDns"/><fixed_version id="11" name="2.6.x"/><subject>"yunohost dyndns update" doesn't provide the reason on why it failed</subject><description>While doing support for a user, the "yunohost dyndns update" command failed, probably for a legitimate reason, the problem is that the output provided by the error message is basically useless, it just say "I failed", this make debugging complicated.
+
+A more explicit error message should be displayed and should provide the exact reason of the failure, and if possible, a way to solve this situation.
+
+Here is the output from the user:
+
+&gt; admin@serveur:~$ sudo yunohost dyndns update
+&gt; Outgoing update query:
+&gt; ;; -&gt;&gt;HEADER&lt;&lt;- opcode: UPDATE, status: NOERROR, id:      0
+&gt; ;; flags:; ZONE: 0, PREREQ: 0, UPDATE: 0, ADDITIONAL: 0
+&gt; ;; ZONE SECTION:
+&gt; ;nohost.me.			IN	SOA
+&gt; 
+&gt; ;; UPDATE SECTION:
+&gt; wilibre.nohost.me.	0	ANY	A	
+&gt; wilibre.nohost.me.	0	ANY	AAAA	
+&gt; wilibre.nohost.me.	0	ANY	MX	
+&gt; wilibre.nohost.me.	0	ANY	TXT	
+&gt; pubsub.wilibre.nohost.me. 0	ANY	A	
+&gt; muc.wilibre.nohost.me.	0	ANY	A	
+&gt; vjud.wilibre.nohost.me.	0	ANY	A	
+&gt; _xmpp-client._tcp.wilibre.nohost.me. 0 ANY SRV	
+&gt; _xmpp-server._tcp.wilibre.nohost.me. 0 ANY SRV	
+&gt; wilibre.nohost.me.	1800	IN	A	176.184.169.254
+&gt; wilibre.nohost.me.	1800	IN	AAAA	::
+&gt; wilibre.nohost.me.	14400	IN	MX	5 wilibre.nohost.me.
+&gt; wilibre.nohost.me.	14400	IN	TXT	"v=spf1 a mx -all"
+&gt; pubsub.wilibre.nohost.me. 1800	IN	A	176.184.169.254
+&gt; pubsub.wilibre.nohost.me. 1800	IN	AAAA	::
+&gt; muc.wilibre.nohost.me.	1800	IN	A	176.184.169.254
+&gt; muc.wilibre.nohost.me.	1800	IN	AAAA	::
+&gt; vjud.wilibre.nohost.me.	1800	IN	A	176.184.169.254
+&gt; vjud.wilibre.nohost.me.	1800	IN	AAAA	::
+&gt; _xmpp-client._tcp.wilibre.nohost.me. 14400 IN SRV 0 5 5222 wilibre.nohost.me.
+&gt; _xmpp-server._tcp.wilibre.nohost.me. 14400 IN SRV 0 5 5269 wilibre.nohost.me.
+&gt; 
+&gt; update failed: REFUSED
+&gt; Erreur : Impossible de mettre à jour l'adresse IP sur le domaine DynDNS
+
+
+I think that this is the part of the code that should be modified: https://github.com/YunoHost/yunohost/blob/unstable/src/yunohost/dyndns.py#L232</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>Stable 2.4.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2016-03-05T15:50:54Z</created_on><updated_on>2017-01-09T21:17:15Z</updated_on><closed_on/></issue><issue><id>170</id><project id="1" name="YunoHost"/><tracker id="2" name="Feature"/><status id="2" name="In Progress"/><priority id="2" name="Normal"/><author id="17" name="Bram"/><assigned_to id="17" name="Bram"/><category id="38" name="General"/><fixed_version id="11" name="2.6.x"/><subject>YunoHost should store a report per app installation and make them available in the admin interface</subject><description>For now, the installation of an app is displayed on the admin interface and logged in /var/log/yunohost/yunohost-admin.log (and probably /var/log/yunohost.log). For a classical user, once the installation is done, the only way for him to access to this information is via ssh and this is a no-go for a lot of no-technically knowledgable users and this makes support very hard in those situations.
+
+A place to display this information could be in app page in the admin interface, for example in the debugging section.</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2016-01-27T11:48:02Z</created_on><updated_on>2017-01-11T08:13:51Z</updated_on><closed_on/></issue><issue><id>127</id><project id="1" name="YunoHost"/><tracker id="2" name="Feature"/><status id="2" name="In Progress"/><priority id="3" name="High"/><author id="7" name="moul"/><assigned_to id="17" name="Bram"/><category id="7" name="App packaging"/><fixed_version id="11" name="2.6.x"/><subject>Manage changing domain and path of installed apps</subject><description>It could be to:
+
+* Change domain
+* Change path
+* …
+
+I propose a new script called _move_ to change this parameters on the app.
+If the package don't use domain and path parameters, like for non-webapps, the script don't need to be implemented.
+
+Jerome propose to use the update script to do this changements. I think we should seperate actions in differents scripts.
+
+</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2015-12-15T21:10:33Z</created_on><updated_on>2017-03-15T12:12:47Z</updated_on><closed_on>2017-03-15T04:15:28Z</closed_on></issue><issue><id>125</id><project id="1" name="YunoHost"/><tracker id="1" name="Bug"/><status id="2" name="In Progress"/><priority id="2" name="Normal"/><author id="4" name="Anonymous"/><category id="8" name="Configuration"/><fixed_version id="11" name="2.6.x"/><parent id="40"/><subject>Removal of default app on a domain does not remove domain redirection</subject><description>Removing an app marked as a default app on a domain does not remove the redirection placed on the domain at /etc/ssowat/conf.json.persistent. This can have unintended side effects when later installing an app as root under that domain. This happens in both the web and command line interfaces.
+
+To reproduce:
+1. Add a new domain to the Yunohost instance using the web or command line interface.
+2. Add a new app under this domain, using the default directory.
+3. After installation, go to the app page in the web interface and click "Make Default" to redirect the domain root to the application directory.
+4. Uninstall the app.
+5. Install an app -- it can be the same app -- in the same domain, using the root directory as the app directory.
+6. After installation, navigate to the domain the app is in.
+
+Expected behavior: The root app is displayed in the browser.
+Current behavior: The browser is redirected to the old app directory, producing an error.
+
+This can probably be mitigated by doing one of the following:
+* On the removal of an app, checking to see if that app is default on the domain and deleting the corresponding redirection line in /etc/ssowat/conf.json.persistent.
+* Moving the redirections to the non-persistent ssowat configuration file, and regenerating the default redirections with app changes.</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><custom_fields type="array"><custom_field id="1" name="YunoHost Version" multiple="true"><value type="array"><value>Stable 2.4.x</value></value></custom_field><custom_field id="2" name="Debian Version" multiple="true"><value type="array"><value>Jessie (only supported version)</value></value></custom_field><custom_field id="4" name="Debian type" multiple="true"><value type="array"><value>Debian mainstream</value></value></custom_field></custom_fields><created_on>2015-12-14T15:16:25Z</created_on><updated_on>2017-01-09T21:52:40Z</updated_on><closed_on/></issue><issue><id>32</id><project id="1" name="YunoHost"/><tracker id="6" name="Improvement"/><status id="6" name="Rejected"/><priority id="2" name="Normal"/><author id="4" name="Anonymous"/><category id="54" name="App management"/><fixed_version id="11" name="2.6.x"/><subject>Changing default domain / remove domain are not efficients</subject><description>Hello
+
+I try in english first (sorry for the bad expression) : 
+
+I tried to build a custom image for labriqueinternet in order to have an easy to use configuration for a end-user. For that, I need to install some apps and define a false domain name (that will be changed after first configuration by the end-user), all of this before building the image of course. So, moulinette must have the hability to properly remove the default domain and to re-assign a new default domain to the installed apps.
+
+So, what I did is to add a new domain (`new.domain.org`). For that, no problems.
+I tried to remove the default domain (`old.domain.org`) but it tell me that I can't because some apps are installed on this domain. But there is no possibility to change the domain for this apps. The only solution is to remove them that is pretty bad if you have configurations.
+
+So, I tried to make it manually, just to test ;)
+
+I changed the domain option in the `settings.yml` file for all this apps to force removing `old.domain.org`. I removed the default domain (`old.domain.org`) and cleared my browser cache. After that, I don't have any access to SSO (because my user is still under `old.domain.org`) and I don't have any access to the apps administration pages (because the nginx confs have been removed with `old.domain.org` directory).
+
+After that, I tried another thing : changing the domain option in `settings.yml`, moving all nginx configuration files from `/etc/nginx/conf.d/old.domain.org/` to `/etc/nginx/conf.d/new.domain.org/` and finally, removing `old.domain.org`. It's working better but there is still problems like accessing the apps administration pages with my user. On the access restriction for each app, I defined my user and after that, it's possible to reach the configuration pages.
+
+So, it should be great to have one of this functionnality : 
+
+* Possibility to change the domain for each app (before removing an old domain)
+or
+* If a domain is removed, moving all apps installed under this domain to the default one
+
+I think the behaviour of each app should differ when trying to change his domain. For that, it should be interesting to give the possibilty to have this option when building an app. So, at least for these apps, moving domain should be possible.
+
+Quite complicated, sorry for the amount of informations. I precise that I have worked on this apps : hotspot, piratebox, torclient and vpnclient
+
+Thanks !!</description><start_date/><due_date/><done_ratio>0</done_ratio><is_private>false</is_private><estimated_hours/><created_on>2015-10-25T12:31:50Z</created_on><updated_on>2017-03-15T04:15:28Z</updated_on><closed_on>2017-03-15T04:15:28Z</closed_on></issue></issues>

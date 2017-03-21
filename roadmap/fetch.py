@@ -5,7 +5,7 @@ import json
 
 def get_roadmapissues():
 
-    roadmapissues = requests.get("https://dev.yunohost.org/issues.xml?fixed_version_id=11&status_id=*&limit=100")
+    roadmapissues = requests.get("https://dev.yunohost.org/issues.xml?fixed_version_id=11&status_id=*&limit=100", verify=False)
 
 
     with open("data/raw_roadmapissues.xml", "w") as f:

@@ -9,10 +9,10 @@ from ansi2html.style import get_styles
 
 ###############################################################################
 
-output_dir = "./www/"
+output_dir = "../www/"
 
-template_path = os.path.join(output_dir,"template.html")
-output_path   = os.path.join(output_dir,"index.html")
+template_path = os.path.join(output_dir,"template_roadmapdashboard.html")
+output_path   = os.path.join(output_dir,"roadmap.html")
 
 summary_path = os.path.join("./", "summary.json")
 
