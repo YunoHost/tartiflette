@@ -11,7 +11,7 @@ from ansi2html.style import get_styles
 
 output_dir = "../www/"
 
-template_path = os.path.join(output_dir,"template_roadmapdashboard.html")
+template_path = os.path.join(output_dir,"template_roadmap.html")
 output_path   = os.path.join(output_dir,"roadmap.html")
 
 summary_path = os.path.join("./", "summary.json")
