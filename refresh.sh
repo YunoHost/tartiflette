@@ -1,8 +1,9 @@
 cd roadmap
 ./fetch.py
-./analayze.py
+./analyze.py
 ./publish.py
+cd ..
 cd pullrequests
 ./fetch.py
-./analayze.py
+./analyze.py
 ./publish.py
