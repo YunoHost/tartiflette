@@ -17,25 +17,22 @@
             background: #333333;
         }
         .container {
-            width:1300px;
+            width:1250px;
         }
         .column-pr-id {
-            width:190px;
+            width:230px;
             text-align:center;
         }
         .column-pr-title {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          max-width: 350px;
+          max-width: 400px;
         }
         .column-pr-created {
             width:170px;
         }
         .column-pr-labels {
-        }
-        .column-pr-reviews {
-            width:150px;
         }
     </style>
 
@@ -73,8 +70,6 @@
     <div class="row">
 
         <div class="col-md-12">
-            <div>
-
 
                 <table id="thePRlist" class="table table-striped table-responsive">
                     <thead>
@@ -83,7 +78,6 @@
                         <th>Title</th>
                         <th>Created</th>
                         <th>Labels</th>
-                        <th>Reviews</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -121,10 +115,6 @@
                             &nbsp;
                             {% endfor %}
                         </td>
-                        <td class="column-pr-reviews">
-                <span style="border:1px solid black; border-radius:4px; padding-left:2px; padding-right:2px;">foo <span class="text-success">✔</span></span>
-                <span style="border:1px solid black; border-radius:4px; padding-left:2px; padding-right:2px;">bar <span class="text-danger" >✘</span></span>
-                    </tr>
                     {% endfor %}
                     </tbody>
                 </table>
@@ -155,18 +145,14 @@
         </div>
     </div>
             
-</div>
-
 
 <footer>
     <div class="row">
         <div class="col-lg-12">
             <hr/>
-            <p>CSS Skin/boilerplate/whatever you call it : <a href="http://scripteden.com/" rel="nofollow">Script Eden</a>.</p>
-
+	    <p>CSS Skin/boilerplate/whatever you call it : <a href="http://scripteden.com/download/eden-ui-bootstrap-3-skin/" rel="nofollow">Eden UI</a>. Generated with <a href="https://github.com/YunoHost/tartiflette">Tartiflette</a>!</p>
         </div>
     </div>
-
 </footer>
 
 
