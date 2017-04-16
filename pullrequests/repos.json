@@ -2,7 +2,7 @@
 "core": ["yunohost", "yunohost-admin", "SSOwat", "moulinette", "Vagrantfile", 
     "ynh-dev" ],
 "doc": [ "doc", "Simone", "project-organization" ],
-"apps": [ "apps", "CI_package_check", "example_ynh", "package_linter" ],
+"apps": [ "apps", "CI_package_check", "example_ynh", "package_linter", "package_check" ],
 "infra": [ "build.yunohost.org", "dynette", "YunoPorts", "rebuildd", "cd_build", 
-    "install_script", "trotinette","bicyclette", "Vagrantfile"]
+    "install_script", "trotinette","bicyclette", "Vagrantfile", "install-app", "tartiflette" ]
 }
