@@ -5,6 +5,8 @@ import datetime
 
 prs = {}
 
+prioritary_milestone = "2.6.x"
+
 def get_teams():
 
     with open("repos.json", "r") as f:
@@ -56,6 +58,9 @@ def priority(pr):
     if "dying" in pr["labels"] and base_priority > -100:
         base_priority += 5
 
+    if pr["milestone"] != None and pr["milestone"] != prioritary_milestone:
+        base_priority -= 10
+
     return base_priority
 
 
@@ -74,6 +79,10 @@ def main():
             if "pull_request" not in issue.keys():
                 continue
 
+            milestone = None
+            if issue["milestone"]:
+                milestone = issue["milestone"]["title"]
+
             pr = {
                "repo":    repo,
                "title":   issue["title"],
@@ -81,9 +90,16 @@ def main():
                "id":      "%s-%s" % (repo, issue["number"]),
                "createdDaysAgo": githubDateToDaysAgo(issue["created_at"]),
                "updatedDaysAgo": githubDateToDaysAgo(issue["updated_at"]),
-               "url":     issue["pull_request"]["html_url"],
-               "teams":   teams
+               "url":       issue["pull_request"]["html_url"],
+               "teams":     teams,
+               "milestone": milestone,
+               "size": None
             }
+
+            for size in ["small", "medium", "big"]:
+                if "%s decision" % size in pr["labels"]:
+                    pr["labels"].remove("%s decision" % size)
+                    pr["labels"].insert(0,size)
 
             if isPRDying(pr):
                 pr["labels"].append("dying")
