@@ -102,15 +102,16 @@
                             <span class="label 
                         {% if label == "important" %}label-danger{%else%}
                         {% if label == "opinion needed" %}label-warning{%else%}
-                        {% if label == "small decision" %}label-info{%else%}
-                        {% if label == "medium decision" %}label-info{%else%}
-                        {% if label == "big decision" %}label-info{%else%}
+                        {% if label == "small" %}label-info{%else%}
+                        {% if label == "medium" %}label-info{%else%}
+                        {% if label == "big" %}label-info{%else%}
+                        {% if label == "ready to merge" %}label-success{%else%}
                         {% if label == "work needed" %}label-primary{%else%}
                         {% if label == "inactive" %}label-default{%else%}
                         {% if label == "postponed" %}label-default{%else%}
                         {% if label == "dying" %}label-danger{%else%}
                                                  label-primary
-                        {%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}
+                        {%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}
                             ">{{ label }}</span>
                             &nbsp;
                             {% endfor %}
