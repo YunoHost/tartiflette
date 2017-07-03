@@ -55,30 +55,32 @@
             <h1>Yunohost Roadmap Dashboard</h1>
         </div>
     </div>
-           
-    <h3>2.6.x</h3>
-
+     
+    {% for roadmap, summary in data.summary.items() %}
+    <h3>{{ roadmap }}</h3>
     <div class="row">
 
         <div class="col-md-offset-1 col-md-10">
 
-            <div class="issue-legend">All ({{data.summary.all}} issues) </div>
+            <div class="issue-legend">All ({{summary.all}} issues) </div>
             <div class="bs-component">
                 <div class="progress">
                     <div class="progress-bar progress-bar-success" style="width:
-                        {{data.summary.done[1]}}%">{{data.summary.done[0]}} done</div>
+                        {{summary.done[1]}}%">{{summary.done[0]}} done</div>
                     <div class="progress-bar progress-bar-warning" style="width:
-                        {{data.summary.ongoing[1]}}%">{{data.summary.ongoing[0]}}
+                        {{summary.ongoing[1]}}%">{{summary.ongoing[0]}}
                         ongoing</div>
                     <div class="progress-bar progress-bar-none" style="width:
-                        {{data.summary.new[1]}}%">{{data.summary.new[0]}} new</div>
+                        {{summary.new[1]}}%">{{summary.new[0]}} new</div>
                 </div>
             </div>
 
         </div>
         
     </div>
+    {% endfor %}
 
+     
     <div class="row">
 
         <div class="col-md-12">
