@@ -1,2 +1,5 @@
 data/*.json
 www
+token
+pullrequests/data/*.json
+roadmap/data/*.xml
