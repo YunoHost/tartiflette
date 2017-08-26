@@ -3,7 +3,7 @@
 import json
 import BeautifulSoup
 
-roadmaps = { "2.6.x": 11, "2.7.x": 13 }
+roadmaps = { "2.7": 15, "3.0": 14, "3.1": 13 }
 
 status_filters = {
     "all": None,
