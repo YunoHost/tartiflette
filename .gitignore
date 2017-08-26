@@ -1,5 +1,6 @@
 data/*.json
 www
 token
-pullrequests/data/*.json
-roadmap/data/*.xml
+pullrequests/data/
+roadmap/data/
+appci/data/
