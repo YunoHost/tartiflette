@@ -1,3 +1,4 @@
+#!/bin/bash
 
 while read APP;
 do
