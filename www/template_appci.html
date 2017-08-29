@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Bootstrap Skin: Eden</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="css/bootstrap.css" media="screen">
+    <link rel="stylesheet" href="skins/eden.css" media="screen">
+    <!--<link
+        href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
+        rel="stylesheet">-->
+    <link href="css/animate.css" rel="stylesheet">
+
+    <style>
+        #appci
+	{
+		margin-left:auto;
+		margin-right:auto;
+		width:1000px;
+	}
+        .navbar-holder-dark{
+            padding: 20px 20px 200px 20px;
+            background: #333333;
+        }
+        
+        table, thead, tbody { display: block; width: 100%;}
+        table.apps { margin: 0 auto; margin-top: 200px; width: 1000px;  overflow-x: visible; }
+
+        th.testname 
+        { 
+            margin:5px;
+            white-space: nowrap; 
+        }
+
+        th.testname > div 
+        {
+            position:relative;
+            transform: 
+                translate(0px, -10px)
+                rotate(315deg);
+            width: 33px;
+        }
+
+        th.testname > div > span 
+        {
+            border-bottom: 1px solid #aaa;
+            padding: 0;
+	    border:none;
+        }
+
+        tr { display: block; width: 100%; }
+        th, td { display: block; border: none; padding; 0px;float: left; height:33px; width: 33px; margin: 5px; }
+
+        th.appname, td.appname { text-align: center; width:130px; padding-top:9px !important; }
+        td.appstatus > div { position:relative; background-color: #bdc3c7; border-radius:5px; width: 100%; height:100%;}
+	td.appstatus { text-align:center; }
+        
+	td.appstatus > div.success { background-color: rgb(46,204,113); }
+	td.appstatus > div.danger  { background-color: rgb(225,80,62); }
+
+	.table > thead > tr > th { border : none; }
+	.table > tbody > tr > td { border : none; }
+
+    </style>
+
+</head>
+<body>
+<!-- Tables
+================================================== -->
+<div class="bs-docs-section">
+
+    <div class="row">
+        <div id="appci">
+            <div>
+                <table class="table table-responsive apps">
+                    <thead>
+                    <tr>
+                        <th class="appname"><div></div></th>
+                        <th class="testname"><div>Level</div></th>
+                        {% for testname in data.testnames %}
+			<th class="testname"><div><span>{{ testname }}</span></div></th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for app in data.apps %}
+                    <tr>
+		        <td class="appname"><div><strong>{{ app.name }}</strong></div></td>
+			<td><div><strong>{{ app.level }}</strong></div></td>
+                        {% for status in app.statuses %}
+                        <td class="appstatus"><div class="{{ status }}"></div></td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+</body>
+</html>
