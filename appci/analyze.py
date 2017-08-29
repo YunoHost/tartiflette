@@ -18,6 +18,9 @@ def main():
         data["name"] = app
         data["statuses"] = []
 
+        if len(appdata.split("\n")) != 2:
+            print "Ignoring %s - bad/unavailable data" % app
+            continue
         applevel = appdata.split("\n")[1][0]
         appdata = appdata.split("\n")[0]
         data["level"] = int(applevel)
@@ -39,7 +42,7 @@ def main():
 
         apps.append(data)
 
-    apps.sort(key=lambda a: (a["level"], a["statusescore"], a["name"])), reverse=True)
+    apps.sort(key=lambda a: (a["level"], a["statusescore"], a["name"]), reverse=True)
 
     with open("apps.json", "w") as f: 
         json.dump(apps, f)

@@ -1,16 +1,36 @@
 #!/bin/bash
 
+python fetchlist.py | sort > list_apps 
+
 while read APP;
 do
 	APPNAME=$(echo $APP | awk '{print $1}')
 	echo $APPNAME
 	wget -q -O data/$APPNAME "https://ci-apps.yunohost.org/jenkins/job/$APP/lastBuild/consoleText" --prefer-family=IPv4
 
-	CHECKS=$(cat data/$APPNAME | grep "Package linter:" -A15 | tail -n 16 | sed -e 's/FAIL/0/g' -e 's/SUCCESS/1/g' -e 's/Not evaluated./X/' | awk '{print $NF}' | tr -d '\n')
-	LEVELS=$(cat data/$APPNAME | grep 'Level of this application'  -A10 | tail -n 11 | sed -e 's@N/A@X@g' -e 's/	   Level //g' -e 's/Level of this application//g' | awk '{print $2}' | tr -d '\n')
+	TESTS_RESULTS=""
+	while read TESTNAME
+	do
+		RESULTS=$(grep "^$TESTNAME:" data/$APPNAME)
+		if echo $RESULTS | grep -q "FAIL"
+		then
+			TESTS_RESULTS="${TESTS_RESULTS}0"
+		elif echo $RESULTS | grep -q "SUCCESS"
+		then
+			TESTS_RESULTS="${TESTS_RESULTS}1"
+		else
+			TESTS_RESULTS="${TESTS_RESULTS}X"
+		fi
+	done < list_tests
 
-	echo $CHECKS > data/$APPNAME
+	LEVELS=$(grep -A10 'Level of this application' data/$APPNAME \
+		| tail -n 11 \
+		| sed -e 's@N/A@X@g' -e 's/	   Level //g' -e 's/Level of this application//g' \
+		| awk '{print $2}' \
+		| tr -d '\n')
+
+	echo $TESTS_RESULTS > data/$APPNAME
 	echo $LEVELS >> data/$APPNAME
 
-done < apps
+done < list_apps
 
