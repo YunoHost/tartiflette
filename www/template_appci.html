@@ -88,9 +88,9 @@
                     {% for app in data.apps %}
                     <tr id="{{ app.name }}">
                         <td class="appname"><div title="App name"><strong>{{ app.name }}</strong></div></td>
-                        <td class="applevel"><div title="level"><strong>{{ app.level }}</strong></div></td>
+                        <td class="applevel"><div title="Level"><strong>{{ app.level }}</strong></div></td>
                         {% for status in app.statuses %}
-                        <td class="appstatus"><div title="{{ data.testnames[loop.index] }}" class="{{ status }}"></div></td>
+                        <td class="appstatus"><div title="{{ data.testnames[loop.index-1] }}" class="{{ status }}"></div></td>
                         {% endfor %}
                     </tr>
                     {% endfor %}
