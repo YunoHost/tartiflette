@@ -32,9 +32,8 @@ if __name__ == '__main__':
 
     #summary = json.load(open(summary_path))
 
-
-    summary = { "testnames" : ["Package linter","Installation","Deleting","Installation in a sub path","Deleting from a sub path","Installation on the root","Deleting from root","Upgrade","Installation in private mode","Installation in public mode","Multi-instance installations","Malformed path","Port already used","Backup","Restore","Change URL"]}
-
+    summary = {}
+    summary["testnames"] = open("list_tests").read().strip().split('\n')
     summary["apps"] = json.loads(open("apps.json").read())
 
     # Generate the output using the template
