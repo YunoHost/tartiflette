@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>Bootstrap Skin: Eden</title>
+    <title>Apps CI Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" href="css/bootstrap.css" media="screen">
@@ -18,7 +18,7 @@
 	{
 		margin-left:auto;
 		margin-right:auto;
-		width:1000px;
+		/*width:1000px;*/
 	}
         .navbar-holder-dark{
             padding: 20px 20px 200px 20px;
@@ -50,7 +50,7 @@
 	    border:none;
         }
 
-        tr { display: block; width: 100%; }
+        /*tr { display: block; width: 100%; }*/
         th, td { display: block; border: none; padding; 0px;float: left; height:33px; width: 33px; margin: 5px; }
 
         th.appname, td.appname { text-align: center; width:130px; padding-top:9px !important; }
@@ -76,21 +76,21 @@
             <div>
                 <table class="table table-responsive apps">
                     <thead>
-                    <tr>
-                        <th class="appname"><div></div></th>
-                        <th class="testname"><div>Level</div></th>
-                        {% for testname in data.testnames %}
-			<th class="testname"><div><span>{{ testname }}</span></div></th>
-                        {% endfor %}
-                    </tr>
+                        <tr>
+                            <th class="appname"><div></div></th>
+                            <th class="testname"><div>Level</div></th>
+                            {% for testname in data.testnames %}
+                             <th class="testname"><div><span>{{ testname }}</span></div></th>
+                            {% endfor %}
+                        </tr>
                     </thead>
                     <tbody>
                     {% for app in data.apps %}
-                    <tr>
-		        <td class="appname"><div><strong>{{ app.name }}</strong></div></td>
-			<td><div><strong>{{ app.level }}</strong></div></td>
+                    <tr id="{{ app.name }}">
+                        <td class="appname"><div title="App name"><strong>{{ app.name }}</strong></div></td>
+                        <td class="applevel"><div title="level"><strong>{{ app.level }}</strong></div></td>
                         {% for status in app.statuses %}
-                        <td class="appstatus"><div class="{{ status }}"></div></td>
+                        <td class="appstatus"><div title="{{ data.testnames[loop.index] }}" class="{{ status }}"></div></td>
                         {% endfor %}
                     </tr>
                     {% endfor %}
