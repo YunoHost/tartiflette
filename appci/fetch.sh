@@ -23,11 +23,18 @@ do
 		fi
 	done < list_tests
 
+	# Get the level of this application and the value of each level
 	LEVELS=$(grep -A10 'Level of this application' data/$APPNAME \
-		| tail -n 11 \
-		| sed -e 's@N/A@X@g' -e 's/	   Level //g' -e 's/Level of this application//g' \
-		| awk '{print $2}' \
+		| tail -n11 \
+		| sed 's/.*: \| (.*//g' \
+		| sed 's@N/A@X@g' \
 		| tr -d '\n')
+
+#	LEVELS=$(grep -A10 'Level of this application' data/$APPNAME \
+#		| tail -n 11 \
+#		| sed -e 's@N/A@X@g' -e 's/	   Level //g' -e 's/Level of this application//g' \
+#		| awk '{print $2}' \
+#		| tr -d '\n')
 
 	echo $TESTS_RESULTS > data/$APPNAME
 	echo $LEVELS >> data/$APPNAME
