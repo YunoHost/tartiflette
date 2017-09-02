@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Yunohost Roadmap Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="css/bootstrap.css" media="screen">
+    <link rel="stylesheet" href="skins/eden.css" media="screen">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+
+    <style>
+        #banner
+	{
+		margin-top:100px;
+		text-align:center;
+		font-weight:bold;
+		font-size:3em;
+	}
+	.btn-dash {
+		margin-top:30px;
+		margin-bottom:30px;
+	}
+    </style>
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+
+    <div class="row page-header" id="banner">
+	Yunohost Dashboards
+    </div>
+    
+    <div class="row">
+
+        <div class="col-md-offset-2 col-md-8">
+		<a class="btn btn-info btn-lg btn-block btn-dash" href="./pullrequests.html" style="font-size:2em">Pull Requests</a>
+		<a class="btn btn-info btn-lg btn-block btn-dash" href="./roadmap.html" style="font-size:2em">Roadmap</a>
+        	<a class="btn btn-info btn-lg btn-block btn-dash" href="./appci.html" style="font-size:2em">Application C.I.</a>
+        	<a class="btn btn-info btn-lg btn-block btn-dash" href="./unlistedapps.html" style="font-size:2em">Unlisted apps</a>
+        </div>
+
+    </div>
+
+
+
+
+<footer>
+    <div class="row">
+        <div class="col-md-12" style="text-align:center">
+            <hr/>
+	    <p>Powered with <a href="http://scripteden.com/download/eden-ui-bootstrap-3-skin/" rel="nofollow">Eden UI</a> and <a href="https://github.com/YunoHost/tartiflette">Tartiflette</a>!</p>
+        </div>
+    </div>
+</footer>
+
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+<script>
+function filter(team) {
+    // Declare variables
+    var input, filter, table, tr, td, i;
+    table = document.getElementById("thePRlist");
+    tr = table.getElementsByTagName("tr");
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) 
+    {
+        if (team == '')                          { tr[i].style.display = ""; }
+        else if (tr[i].classList == "")          { tr[i].style.display = ""; }
+        else if (tr[i].classList.contains(team)) { tr[i].style.display = ""; }
+        else                                     { tr[i].style.display = "none"; }
+    }
+
+    selector = document.getElementById("select-team");
+    li = selector.getElementsByTagName("li");
+
+    if (team == "") { team = "team-all"; }
+
+    for (i = 0; i < li.length; i++) 
+    {
+        if (li[i].getAttribute("id") == "select-".concat(team))
+        {
+            li[i].classList.add("active");
+        }
+        else
+        {
+            li[i].classList.remove("active");
+        }
+    }
+
+}
+</script>
+
+</body>
+</html>
