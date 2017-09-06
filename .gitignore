@@ -1,6 +1,7 @@
-data/*.json
+*.json
 www
 token
 pullrequests/data/
 roadmap/data/
 appci/data/
+appci/badges/

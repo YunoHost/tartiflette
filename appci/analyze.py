@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import os
 import json
 import glob
 
@@ -48,6 +49,14 @@ def main():
 
     with open("apps.json", "w") as f: 
         json.dump(apps, f)
+
+
+    for link in glob.glob("../www/integration/*.svg"):
+        os.unlink(link);
+
+    for app in apps:
+        os.symlink("%s/badges/level%s.svg"      % (os.getcwd(), app["level"]), 
+                   "../www/integration/%s.svg" % app["name"])
 
 main()
 
