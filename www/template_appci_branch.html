@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Apps CI Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="css/bootstrap.css" media="screen">
+    <link rel="stylesheet" href="skins/eden.css" media="screen">
+
+    <style>
+        #app-test-results
+        {
+            margin-left:auto;
+            margin-right:auto;
+            /*width:1000px;*/
+        }
+        .navbar-holder-dark {
+            padding: 20px 20px 200px 20px;
+            background: #333333;
+        }
+        
+        table, thead, tbody { display: block; width: 100%;}
+        table.apps { margin: 0 auto; margin-top: 100px; width: 1000px;  overflow-x: visible; }
+
+        th.ci-test-title 
+        { 
+            margin:5px;
+            white-space: nowrap; 
+        }
+
+        th.ci-test-title > div 
+        {
+            position:relative;
+            transform: 
+                translate(0px, -10px)
+                rotate(315deg);
+            width: 33px;
+        }
+
+        th.ci-test-title > div > span 
+        {
+            border-bottom: 1px solid #aaa;
+            padding: 0;
+	    border:none;
+        }
+
+        /*tr { display: block; width: 100%; }*/
+        th, td { display: block; border: none; padding; 0px;float: left; height:33px; width: 33px; margin: 5px; }
+
+        th.ci-app-name, td.ci-app-name { text-align: center; width:130px; padding-top:9px !important; }
+        td.ci-test-result > div { position:relative; background-color: #bdc3c7; border-radius:5px; width: 100%; height:100%;}
+        td.ci-test-result { text-align:center; }
+            
+        td.ci-test-result > div.success { background-color: rgb(46,204,113); }
+        td.ci-test-result > div.danger  { background-color: rgb(225,80,62); }
+
+        .table > thead > tr > th { border : none; }
+        .table > tbody > tr > td { border : none; }
+
+        .canvasjs-chart-credit { display: none; }
+
+    </style>
+
+</head>
+<body>
+<div class="bs-docs-section">
+
+    <div class="row text-center">
+    <h2>{{ data.ci_branch[1] }}</h2>
+    <div id="levelSummary" style="height: 270px; width: 100%;"></div>
+    </div>
+
+    <div class="row">
+        <div id="app-test-results">
+            <div>
+                <table class="table table-responsive apps">
+                    <thead>
+                        <tr>
+                            <th class="ci-app-name"><div></div></th>
+                            <th class="ci-test-title"><div>Level</div></th>
+                            {% for test in data.tests %}
+                             <th class="ci-test-title"><div><span>{{ test }}</span></div></th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for app, test_results in data.apps %}
+                    <tr id="ci-app-{{ app }}">
+                        <td class="ci-app-name"><div title="App"><strong>{{ app }}</strong></div></td>
+                        {% if test_results %}
+                            <td><div title="Level"><strong>{{ test_results["level"] or '?' }}</strong></div></td>
+                            {% for test in data.tests %}
+                            <td class="ci-test-result">
+                                <div title="{{ test }}" class="{{ data.result_to_class[test_results["tests"][test]] }}"></div>
+                            </td>
+                            {% endfor %}
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+<script src="js/jquery-2.1.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/canvasjs.min.js"></script>
+
+<script>
+window.onload = function () {
+
+var chart = new CanvasJS.Chart("levelSummary", {
+	animationEnabled: true,
+	data: [{
+		type: "doughnut",
+		startAngle: -90,
+		//innerRadius: 60,
+		indexLabelFontSize: 17,
+		indexLabel: "{label} - #percent%",
+		toolTipContent: "<b>{label}:</b> {y} (#percent%)",
+		dataPoints: [
+			{ y: {{ data.summary_per_level[0] }}, label: "Untested", color: "#cccccc" },
+			{ y: {{ data.summary_per_level[1] }}, label: "Level 0",  color: "#d9534f" },
+			{ y: {{ data.summary_per_level[2] }}, label: "Level 1",  color: "#E26D4F" },
+			{ y: {{ data.summary_per_level[3] }}, label: "Level 2",  color: "#E98D4E" },
+			{ y: {{ data.summary_per_level[4] }}, label: "Level 3",  color: "#f0ad4e" },
+			{ y: {{ data.summary_per_level[5] }}, label: "Level 4",  color: "#CBB052" },
+			{ y: {{ data.summary_per_level[6] }}, label: "Level 5",  color: "#A6B255" },
+			{ y: {{ data.summary_per_level[7] }}, label: "Level 6",  color: "#7AB659" },
+			{ y: {{ data.summary_per_level[8] }}, label: "Level 7",  color: "#5cb85c" }
+		]
+	}]
+});
+chart.render();
+
+}
+</script>
+
+</body>
+</html>

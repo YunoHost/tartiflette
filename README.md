@@ -12,6 +12,7 @@ Install
 ```
 apt install -y python3-pip
 pip3 install ansi2html jinja2
+pip2.7 install python-dateutil
 ```
 - Make your web browser serve www/index.html
 
