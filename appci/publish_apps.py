@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python2.7
 
 import os
 import json
@@ -7,34 +7,12 @@ import glob
 from jinja2 import Template
 from ansi2html import Ansi2HTMLConverter
 from ansi2html.style import get_styles
+from common import tests, ci_branches
 
 ###############################################################################
 
 output_dir = "../www/"
-
-template_path = os.path.join(output_dir,"template_appci_perapp.html")
-
-tests = [ "Package linter",
-          "Installation",
-          "Deleting",
-          "Upgrade",
-          "Backup",
-          "Restore",
-          "Change URL",
-          "Installation in a sub path",
-          "Deleting from a sub path",
-          "Installation on the root",
-          "Deleting from root",
-          "Installation in private mode",
-          "Installation in public mode",
-          "Multi-instance installations",
-          "Malformed path",
-          "Port already used" ]
-
-ci_branches = [ ("stable", "Stable (x86)"),
-                ("arm", "Stable (ARM)"),
-                ("testing", "Testing"),
-                ("unstable", "Unstable") ]
+template_path = "./templates/app.html"
 
 ###############################################################################
 
@@ -46,7 +24,7 @@ def shell_to_html(shell):
 
 ###############################################################################
 
-if __name__ == '__main__':
+def main():
 
     # Load the template
     template = open(template_path, "r").read()
@@ -56,19 +34,28 @@ if __name__ == '__main__':
 
     for app in apps:
 
-        print app
+        results = json.loads(open("data/" + app).read())
+
+        # Meh
+        try:
+            level = "level" + str(int(results["stable"]["level"]))
+        except:
+            level = "unknown"
+
+        os.symlink("%s/badges/%s.svg" % (os.getcwd(), level),
+                   "../www/integration/%s.svg" % app)
 
         data = {
             "appname": app,
             "ci_branches": ci_branches,
             "tests": tests,
-            "results": json.loads(open("data/" + app).read()),
+            "results": results,
             "result_to_class": { None:"unknown", False:"danger", True:"success" }
-
         }
+
         # Generate the output using the template
         result = t.render(data=data, convert=shell_to_html, shell_css=shell_css)
 
-        output_path = os.path.join(output_dir,"ciperapp", "%s.html" % app)
+        output_path = os.path.join(output_dir, "appci", "app", "%s.html" % app)
         open(output_path, "w").write(result)
 
