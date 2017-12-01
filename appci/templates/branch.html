@@ -61,6 +61,8 @@
 
         .canvasjs-chart-credit { display: none; }
 
+        .daysAgo { font-size: 12px; width:100px; }
+
     </style>
 
 </head>
@@ -83,6 +85,7 @@
                             {% for test in data.tests %}
                              <th class="ci-test-title"><div><span>{{ test }}</span></div></th>
                             {% endfor %}
+                             <th class="ci-test-title"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -97,6 +100,8 @@
                             </td>
                             {% endfor %}
                         {% endif %}
+                        <td class="daysAgo" timestamp="{{ test_results['date'] }}">
+                        </td>
                     </tr>
                     {% endfor %}
                     </tbody>
@@ -142,6 +147,20 @@ var chart = new CanvasJS.Chart("levelSummary", {
 chart.render();
 
 }
+</script>
+
+<script>
+function daysAgo(timestamp) {
+    var difference = Math.round(+new Date()/1000) - timestamp;
+    var daysDifference = Math.round(difference/60/60/24);
+    //return (new Date(timestamp*1000));
+    return "(" + daysDifference + " days ago)";
+}
+$(".daysAgo").each(function () {
+    console.log($(this));
+    var t = $(this).attr("timestamp");
+    $(this).text(daysAgo(t));
+});
 </script>
 
 </body>
