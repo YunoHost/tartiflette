@@ -1,0 +1,63 @@
+
+#main {
+    margin-top:1em;
+    max-width: 98%;
+}
+
+#footer {
+    margin-top:4em;
+}    
+
+#app-ci-test-results
+{
+    margin-left:auto;
+    margin-right:auto;
+    /*width:1000px;*/
+}
+
+table, thead, tbody { display: block; width: 100%;}
+table.ci-app { margin: 0 auto; margin-top: 100px; max-width: 1070px;  overflow-x: visible; }
+
+th.ci-app-test-title 
+{ 
+    margin:5px;
+    white-space: nowrap; 
+}
+
+th.ci-app-test-title > div 
+{
+    position:relative;
+    transform: 
+        translate(0px, -10px)
+        rotate(315deg);
+    width: 33px;
+}
+
+th.ci-app-test-title > div > span 
+{
+    border-bottom: 1px solid #aaa;
+    padding: 0;
+    border:none;
+}
+
+
+th, td { display: block; border: none; padding; 0px;float: left; height:33px; width: 33px; margin: 5px; }
+
+.ci-app-row-title { text-align: center; width:150px; }
+td.ci-app-test-result { text-align:center; padding: 14px 8px 8px 8px; }
+td.ci-app-test-result > div { position:relative; background-color: #bdc3c7; border-radius:5px; width: 18px; height: 18px;}
+td.ci-app-test-result > div.success { background-color: rgb(46,204,83); }
+td.ci-app-test-result > div.danger  { background-color: rgb(225,80,62); }
+
+.table > thead > tr > th { border : none; }
+.table > tbody > tr > td { border : none; }
+
+.canvasjs-chart-credit { display: none; }
+
+.ci-app-test-info { width:150px; font-size: 12px; }
+.daysAgo a { color: #777; }
+.official-star { color: #f0ad4e; }
+.level-improvement { color: #2d2; }
+.level-regression { color: #f22; }
+.level-unknown { color: #aaa; }
+.text-warning { color: #f0ad0e !important; }

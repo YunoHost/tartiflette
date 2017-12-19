@@ -1,7 +1,4 @@
-*.json
-www
-token
-pullrequests/data/
-roadmap/data/
-appci/data/
-appci/badges/
+__pycache__
+app/settings.py
+app/db.sqlite
+venv

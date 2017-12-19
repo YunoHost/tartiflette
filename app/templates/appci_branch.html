@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="text-center">{{ branch.display_name }}</h2>
+<div id="levelSummary" style="height: 270px;" class="col-sm-6 offset-sm-3"></div>
+
+<div class="row">
+    <div id="app-ci-test-results">
+        <div>
+            <table class="table table-responsive ci-app">
+                <thead>
+                    <tr>
+                        <th class="ci-app-row-title"><div></div></th>
+                        <th class="ci-app-test-title"><div>Level</div></th>
+                        {% for test in tests %}
+                         <th class="ci-app-test-title"><div><span>{{ test }}</span></div></th>
+                        {% endfor %}
+                         <th class="ci-app-test-title"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for result in app_results %}
+                <tr app="{{ result.app.name }}">
+                    <td class="ci-app-row-title">
+                        {% if result.app.list.name == "official" %}
+                            <span class="official-star oi oi-star" title="Official" aria-hidden="true"></span>
+                        {% endif %}
+                        <a href="{{ url_for('appci_app', app=result.app.name) }}">
+                            <span title="App">
+                            <strong>{{ result.app.name }}</strong></span>
+                        </a>
+                    </td>
+                    <td class="ci-app-level" value="{{ result.level }}">
+                    <div title="Level"><strong>{{ result.level if result.level >= 0 else "?" }}</strong></div></td>
+                    {% for test, r in result.results.items() %}
+                        <td class="ci-app-test-result">
+                            <div title="{{ test }}" value="{{ r }}"></div>
+                        </td>
+                    {% endfor %}
+                    <td class="ci-app-test-info">
+                        {% if result.date == None %}
+                            <span class="daysAgo" console="{{ result.url }}">???</span>
+                        {% else %}
+                            <span class="daysAgo" timestamp="{{ result.date.timestamp() }}" console="{{ result.url }}"></span>
+                        {% endif %}
+                        {% if result.commit != result.app.master_commit %}
+                        <span class="oi oi-clock text-warning" 
+                              aria-hidden="true"
+                              title="This test is outdated : a more recent commit exists in master than the one tested."></span>
+                        {% endif %}
+                        {% if result.app.public_commit != result.app.master_commit %}
+                        <span class="oi oi-warning text-warning" 
+                              aria-hidden="true"
+                              title="Master commit is not up to date with {{ result.app.list.name }}.json !"></span>
+                        {% endif %}
+                        {% if result.app.testing_diff > 0 %}
+                        <span class="oi oi-fork text-info" 
+                              aria-hidden="true"
+                              title="An active testing branch exists for this app."></span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/canvasjs.min.js') }}"></script>
+<script>
+window.onload = function () {
+  var chart = new CanvasJS.Chart("levelSummary", {
+      animationEnabled: false,
+      data: [{
+          type: "doughnut",
+          startAngle: -90,
+          //innerRadius: 60,
+          indexLabelFontSize: 17,
+          indexLabel: "{label} - #percent%",
+          toolTipContent: "<b>{label}:</b> {y} (#percent%)",
+          dataPoints: [
+              { y: $(".ci-app-level[value=-1]").length, label: "Unknown", color:"#cccccc" },
+              { y: $(".ci-app-level[value=0]").length,  label: "Level 0", color: "#d9534f" },
+              { y: $(".ci-app-level[value=1]").length,  label: "Level 1", color: "#E26D4F" },
+              { y: $(".ci-app-level[value=2]").length,  label: "Level 2", color: "#E98D4E" },
+              { y: $(".ci-app-level[value=3]").length,  label: "Level 3", color: "#f0ad4e" },
+              { y: $(".ci-app-level[value=4]").length,  label: "Level 4", color: "#CBB052" },
+              { y: $(".ci-app-level[value=5]").length,  label: "Level 5", color: "#A6B255" },
+              { y: $(".ci-app-level[value=6]").length,  label: "Level 6", color: "#7AB659" },
+              { y: $(".ci-app-level[value=7]").length,  label: "Level 7", color: "#5cb85c" }
+          ]
+      }]
+  });
+  chart.render();
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="text-center">{{ ref.display_name }} vs. {{ target.display_name }}</h2>
+
+<div class="row">
+    <div id="app-ci-test-results">
+        <div>
+            <table class="table table-responsive ci-app">
+                <thead>
+                    <tr>
+                        <th class="ci-app-row-title"><div></div></th>
+                        <th class="ci-app-test-title"><div>{{ ref.display_name }} </div></th>
+                        <th class="ci-app-test-title"><div>{{ target.display_name }} </div></th>
+                        <th class="ci-app-test-title"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for result in results %}
+                <tr app="{{ result.app.name }}">
+                    <td class="ci-app-row-title">
+                        {% if result.app.list.name == "official" %}
+                            <span class="official-star oi oi-star" title="Official" aria-hidden="true"></span>
+                        {% endif %}
+                        <a href="{{ url_for('appci_app', app=result.app.name) }}">
+                            <span title="App">
+                            <strong>{{ result.app.name }}</strong></span>
+                        </a>
+                    </td>
+                    <td class="ci-app-level" value="{{ result.level }}"><div title="Level">
+                    <strong>
+                        {{ result.level if result.level >= 0 else "" }}
+                    </strong></div></td>
+                    <td class="ci-app-level" value="{{ result.level_compare }}"><div title="Level">
+                    <strong>
+                        {{ result.level_compare if result.level_compare >= 0 else "" }}
+                    </strong></div></td>
+                    <td class="compare">
+                    {% if result.level == -1 or result.level_compare == -1 %}
+                        <span class="oi oi-question-mark level-unknown" title="Don't know" aria-hidden="true"></span>
+                    {% elif result.level > result.level_compare %}
+                        <span class="oi oi-chevron-bottom level-regression" title="Regression" aria-hidden="true"></span>
+                    {% elif result.level < result.level_compare %}
+                        <span class="oi oi-chevron-top level-improvement" title="Improvement" aria-hidden="true"></span>
+                    {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

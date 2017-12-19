@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="text-center">{{ app.name.title() }}</h2>
+
+<div class="row">
+    <div id="app-ci-test-results">
+        <div>
+            <table class="table table-responsive ci-app">
+                <thead>
+                    <tr>
+                        <th class="ci-app-row-title"><div></div></th>
+                        <th class="ci-app-test-title"><div>Level</div></th>
+                        {% for test in tests %}
+                         <th class="ci-app-test-title"><div><span>{{ test }}</span></div></th>
+                        {% endfor %}
+                         <th class="ci-app-test-title"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for result in branch_results %}
+                <tr branch="{{ result.branch.name }}">
+                    <td class="ci-app-row-title">
+                        <a href="{{ url_for('appci_branch', branch=result.branch.name) }}">
+                            <span title="Branch">
+                            <strong>{{ result.branch.display_name }}</strong></span>
+                        </a>
+                    </td>
+                    <td class="ci-app-level" value="{{ result.level }}">
+                        <div title="Level"><strong>{{ result.level if result.level >= 0 else "?" }}</strong></div></td>
+                    {% for test, r in result.results.items() %}
+                        <td class="ci-app-test-result">
+                            <div title="{{ test }}" value="{{ r }}"></div>
+                        </td>
+                    {% endfor %}
+                    <td class="ci-app-test-info">
+                        {% if result.date == None %}
+                            <span class="daysAgo" console="{{ result.url }}">???</span>
+                        {% else %}
+                            <span class="daysAgo" timestamp="{{ result.date.timestamp() }}" console="{{ result.url }}"></span>
+                        {% endif %}
+                        {% if result.commit != result.app.master_commit %}
+                        <span class="oi oi-clock text-warning" 
+                              aria-hidden="true"
+                              title="This test is outdated : a more recent commit exists in master than the one tested."></span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<div class="row">
+    <div class="col-sm-4 offset-sm-4">
+        <div class="card">
+            <div class="card-body">
+                {% if app.public_commit == app.master_commit %}
+                    <p class="card-text text-success">
+                    <span class="oi oi-task" aria-hidden="true"></span>
+                    Master commit is up to date with {{ app.list.name }}.json !
+                    </p>
+                {% else %}
+                    <p class="card-text text-warning">
+                    <span class="oi oi-warning" aria-hidden="true"></span>
+                    Commit is not up to date on {{ app.list.name }}.json !
+                    </p>
+                {% endif %}
+               
+                {% if app.testing_diff > 0 %}
+                    <p class="card-text text-info">
+                    <span class="oi oi-fork" aria-hidden="true"></span>
+                    A testing branch exists for this app with +{{ app.testing_diff }} commits.
+                    </p>
+                {% else %}
+                    <p class="card-text text-muted">
+                    <span class="oi oi-fork" aria-hidden="true"></span>
+                    No active testing branch for this app.
+                    </p>
+                {% endif %}
+
+                {% if app.opened_issues > 0 %}
+                <p class="card-text text-warning">
+                    <span class="oi oi-bug" aria-hidden="true"></span>
+                    There are <a class="text-warning" href="{{ app.repo }}/issues">{{ app.opened_issues }} opened issues</a> for this app.
+                </p>
+                {% else %}
+                <p class="card-text text-success">
+                    <span class="oi oi-task" aria-hidden="true"></span>
+                    No issues opened for this app !
+                </p>
+                {% endif %}
+                
+                {% if app.opened_prs > 0 %}
+                <p class="card-text text-info">
+                    <span class="oi oi-beaker" aria-hidden="true"></span>
+                    There are <a class="text-beaker" href="{{ app.repo }}/pulls">{{ app.opened_prs }} opened pull requests</a> for this app.
+                </p>
+                {% else %}
+                <p class="card-text text-muted">
+                    <span class="oi oi-beaker" aria-hidden="true"></span>
+                    There are no pull requests opened.
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

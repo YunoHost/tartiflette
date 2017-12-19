@@ -1,31 +1,36 @@
 Tartiflette
 ===========
 
-A quick and dirty PR dashboard for yunohost's repos
+A dashboard for YunoHost core & app development/packaging
 
 Install
 -------
 
 - Clone this repo
-- Download and unzip Eden UI into www : http://scripteden.com/download/eden-ui-bootstrap-3-skin/
-- Install dependencies :
-```
-apt install -y python3-pip
-pip3 install ansi2html jinja2
-```
-- Make your web browser serve www/index.html
-
-Usage
------
+- Setup the venv :
 
 ```
-./fetch.py
-./analyze.py
-./publish.py
+virtualenv -p python3 venv
+source venv/bin/activate
 ```
 
-- Edit repos.json if needed
-- Don't know the number of API calls someone is allowed to do, so limit the call
-to fetch.py :/
-- HTML template is pretty dirty so far and should be cleaned
+- Install the dependencies : 
 
+```
+pip install -r requirements.txt
+```
+
+- Configure `GITHUB_USER` and `GITHUB_TOKEN` in settings.py
+
+- Init the database :
+
+```
+./manage.py nuke
+./manage.py init
+```
+
+- Fetch/update the DB 
+
+```
+./manage.py update
+```
