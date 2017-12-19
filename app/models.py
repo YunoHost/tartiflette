@@ -197,16 +197,13 @@ class AppCI():
 
         # Updating applists...
         for applist in applists:
-            pass
-            #applist.update()
+            applist.update()
 
         apps = App.query.all()
         cibranches = AppCIBranch.query.all()
 
         # Scrap jenkins
         for branch in cibranches:
-            if branch.name != "stretch":
-                continue
             for app in apps:
                 print("> Fetching {} for C.I. branch {}".format(app.name, branch.name))
                 url, raw_ci_output = AppCI.fetch_raw_ci_output(branch, app)
