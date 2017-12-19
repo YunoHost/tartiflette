@@ -12,16 +12,9 @@ def sort_test_results(results):
     for r in results:
         r.level = -1 if r.level is None else r.level
 
-    print(results)
-
     return sorted(results,
                   key=lambda r: (-r.level, -r.score(), r.app.name))
 
-
-@main.route('/tartiflette')
-@main.route('/tartiflette/')
-def woopsies():
-    return "Woopsies"
 
 @main.route('/')
 def index():

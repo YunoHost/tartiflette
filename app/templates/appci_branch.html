@@ -32,7 +32,8 @@
                     </td>
                     <td class="ci-app-level" value="{{ result.level }}">
                     <div title="Level"><strong>{{ result.level if result.level >= 0 else "?" }}</strong></div></td>
-                    {% for test, r in result.results.items() %}
+                    {% for test in tests %}
+                    {% set r = result.results[test] %}
                         <td class="ci-app-test-result">
                             <div title="{{ test }}" value="{{ r }}"></div>
                         </td>
