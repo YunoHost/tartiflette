@@ -1,8 +1,9 @@
-from flask import Flask, render_template, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask import render_template, Blueprint
 from .models import App, AppCI, AppCIBranch
+from .settings import SITE_ROOT
 
-app = Flask(__name__)
+main = Blueprint('main', __name__, url_prefix=SITE_ROOT)
+
 
 def sort_test_results(results):
 
@@ -14,14 +15,20 @@ def sort_test_results(results):
     print(results)
 
     return sorted(results,
-                 key=lambda r: (-r.level, -r.score(), r.app.name))
+                  key=lambda r: (-r.level, -r.score(), r.app.name))
 
 
-@app.route('/')
+@main.route('/tartiflette')
+@main.route('/tartiflette/')
+def woopsies():
+    return "Woopsies"
+
+@main.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/appci/branch/<branch>')
+
+@main.route('/appci/branch/<branch>')
 def appci_branch(branch):
 
     branch = AppCIBranch.query.filter_by(name=branch).first_or_404()
@@ -32,7 +39,8 @@ def appci_branch(branch):
                                                 branch=branch,
                                                 app_results=app_results)
 
-@app.route('/appci/app/<app>')
+
+@main.route('/appci/app/<app>')
 def appci_app(app):
 
     app = App.query.filter_by(name=app).first_or_404()
@@ -46,7 +54,8 @@ def appci_app(app):
                                              app=app,
                                              branch_results=branch_results)
 
-@app.route('/appci/compare/<ref>...<target>')
+
+@main.route('/appci/compare/<ref>...<target>')
 def appci_compare(ref, target):
 
     assert ref != target, "Can't compare the same branches, bruh"

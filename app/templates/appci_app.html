@@ -21,7 +21,7 @@
                 {% for result in branch_results %}
                 <tr branch="{{ result.branch.name }}">
                     <td class="ci-app-row-title">
-                        <a href="{{ url_for('appci_branch', branch=result.branch.name) }}">
+                        <a href="{{ url_for('main.appci_branch', branch=result.branch.name) }}">
                             <span title="Branch">
                             <strong>{{ result.branch.display_name }}</strong></span>
                         </a>

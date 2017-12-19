@@ -22,7 +22,7 @@
                         {% if result.app.list.name == "official" %}
                             <span class="official-star oi oi-star" title="Official" aria-hidden="true"></span>
                         {% endif %}
-                        <a href="{{ url_for('appci_app', app=result.app.name) }}">
+                        <a href="{{ url_for('main.appci_app', app=result.app.name) }}">
                             <span title="App">
                             <strong>{{ result.app.name }}</strong></span>
                         </a>

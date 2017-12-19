@@ -5,7 +5,11 @@ db = SQLAlchemy()
 
 def create_app():
 
-    from .app import app
+    from .app import main
+    from .settings import STATIC_ROOT
+
+    app = Flask(__name__, static_url_path=STATIC_ROOT)
+    app.register_blueprint(main)
 
     SQLALCHEMY_DATABASE_URI = 'sqlite:///./db.sqlite'
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
