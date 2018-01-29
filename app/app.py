@@ -1,5 +1,6 @@
 from flask import render_template, Blueprint
-from .models import App, AppCI, AppCIBranch
+from .models.pr import PullRequest
+from .models.appci import App, AppCI, AppCIBranch
 from .settings import SITE_ROOT
 
 main = Blueprint('main', __name__, url_prefix=SITE_ROOT)
@@ -19,6 +20,23 @@ def sort_test_results(results):
 @main.route('/')
 def index():
     return render_template('index.html')
+
+
+@main.route('/pullrequests')
+def pullrequests():
+
+    prs = PullRequest.query.all()
+
+    prs = sorted(prs, key=lambda pr: (pr.review_priority, pr.created), reverse=True)
+
+    active_prs = [ pr for pr in prs if pr.review_priority >= 0]
+    count_by_team = { "all": len(active_prs),
+                      "core": len([pr for pr in active_prs if pr.repo.team == "core"]),
+                      "apps": len([pr for pr in active_prs if pr.repo.team == "apps"]),
+                      "infra": len([pr for pr in active_prs if pr.repo.team == "infra"]),
+                      "doc": len([pr for pr in active_prs if pr.repo.team == "doc"]) }
+
+    return render_template("pullrequests.html", prs=prs,  count_by_team=count_by_team)
 
 
 @main.route('/appci/branch/<branch>')

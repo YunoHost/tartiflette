@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2 class="text-center">{{ app.name.title() }}</h2>
+<h2 class="text-center my-3">{{ app.name.title() }}</h2>
 
 <div class="row">
-    <div id="app-ci-test-results">
+    <div class="mx-auto">
         <div>
-            <table class="table table-responsive ci-app">
+            <table class="table table-responsive ci-app-table">
                 <thead>
                     <tr>
-                        <th class="ci-app-row-title"><div></div></th>
+                        <th class="ci-app-row-title"></th>
                         <th class="ci-app-test-title"><div>Level</div></th>
                         {% for test in tests %}
                          <th class="ci-app-test-title"><div><span>{{ test }}</span></div></th>
@@ -36,9 +36,9 @@
                     {% endfor %}
                     <td class="ci-app-test-info">
                         {% if result.date == None %}
-                            <span class="daysAgo" console="{{ result.url }}">???</span>
+                            <span class="daysAgo" href="{{ result.url }}">???</span>
                         {% else %}
-                            <span class="daysAgo" timestamp="{{ result.date.timestamp() }}" console="{{ result.url }}"></span>
+                            <span class="daysAgo" timestamp="{{ result.date.timestamp() }}" href="{{ result.url }}"></span>
                         {% endif %}
                         {% if result.commit != result.app.master_commit %}
                         <span class="oi oi-clock text-warning" 

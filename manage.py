@@ -5,23 +5,34 @@ from app import db, create_app
 
 app = create_app()
 
+
 def main():
     manager = Manager(app)
     manager.add_command('shell', Shell(make_context=lambda:{"app":app, "db":db}))
     manager.add_command('nuke', Nuke(db))
     manager.add_command('init', Init(db))
-    manager.add_command('update', Update(db))
+    manager.add_command('update-appci', Update(db, "appci"))
+    manager.add_command('update-pr', Update(db, "pr"))
     manager.run()
+
 
 class Update(Command):
 
-    def __init__(self, db):
+    def __init__(self, db, what):
         self.db = db
+        self.what = what
 
     def run(self):
 
-        from app.models import AppCI
-        AppCI.update()
+        if self.what == "appci":
+            from app.models.appci import AppCI
+            AppCI.update()
+        elif self.what == "pr":
+            from app.models.pr import Repo
+            for repo in Repo.query.all():
+                repo.update()
+        else:
+            pass
 
 
 class Nuke(Command):
@@ -32,13 +43,16 @@ class Nuke(Command):
 
     def run(self):
 
-        import app.models
+        import app.models.appci
+        import app.models.pr
+
         print("> Droping tables...")
         self.db.drop_all()
         print("> Creating tables...")
         self.db.create_all()
         print("> Comitting sessions...")
         self.db.session.commit()
+
 
 class Init(Command):
 
@@ -48,8 +62,12 @@ class Init(Command):
     def run(self):
         import app.models
 
-        stuff_in_module = [ app.models.__dict__.get(s) for s in dir(app.models) ]
-        models = [ m for m in stuff_in_module if isinstance(m, type(db.Model)) ]
+        # Black magic to extract list of models from 'models' folder
+        submodules = [ app.models.__dict__.get(m) for m in dir(app.models) if not m.startswith('__') ]
+        stuff = []
+        for submodule in submodules:
+            stuff.extend([submodule.__dict__.get(s) for s in dir(submodule)])
+        models = [s for s in stuff if isinstance(s, type(db.Model))]
 
         for model in models:
             objs = model.init()
@@ -58,6 +76,7 @@ class Init(Command):
                 for obj in model.init():
                     db.session.add(obj)
         db.session.commit()
+
 
 if __name__ == '__main__':
     main()

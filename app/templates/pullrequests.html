@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<h3 class="text-center my-5">What should you review today ?</h3>
+
+<div class="row">
+
+    <div class="mx-auto mb-5">
+        <ul id="select-team" class="nav nav-pills">
+            <li class="nav-item">
+                <a id="select-team-all" class="nav-link active" href="javascript:void(0)" onclick="filter('')">All <span class="badge badge-secondary badge-pill">{{ count_by_team["all"] }}</span></a>
+            </li>
+            <li class="nav-item"><a id="select-team-core"  class="nav-link" href="javascript:void(0)" onclick="filter('team-core')">Core <span class="badge badge-secondary badge-pill">{{ count_by_team["core"] }}</span></a></li>
+            <li class="nav-item"><a id="select-team-apps"  class="nav-link" href="javascript:void(0)" onclick="filter('team-apps')">Apps <span class="badge badge-secondary badge-pill">{{ count_by_team["apps"] }}</span></a/li>
+            <li class="nav-item"><a id="select-team-infra" class="nav-link" href="javascript:void(0)" onclick="filter('team-infra')">Infra / dist <span class="badge badge-secondary badge-pill">{{ count_by_team["infra"] }}</span></a></li>
+            <li class="nav-item"><a id="select-team-doc"   class="nav-link" href="javascript:void(0)" onclick="filter('team-doc')">Doc <span class="badge badge-secondary badge-pill">{{ count_by_team["doc"] }}</span></a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="mx-auto">
+        <table id="pullrequests" class="table table-responsive table-sm table-pullrequests">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Labels</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for pr in prs %}
+            <tr class="team-{{ pr.repo.team }}">
+                <td class="col-md-2 text-center">
+                    <a class="btn btn-sm mx-4 py-2 px-3
+                {% if pr.review_priority >= 90 %}btn-warning{% else %}
+                {% if pr.review_priority >= 40  %}btn-success{% else %}
+                {% if pr.review_priority >= -10   %}btn-info{% else %}
+                {% if pr.review_priority >= -60 %}btn-secondary{% else %}
+                                           btn-link{% endif %}
+                {% endif %}
+                {% endif %}
+                {% endif %} text-uppercase font-weight-bold"
+                   href="{{ pr.url }}">{{ pr.id_ }}</a>
+                </td>
+                <td class="column-pr-title font-weight-bold"><strong>{{ pr.title }}</strong></td>
+                <td class="col-md-1 daysAgo" timestamp="{{ pr.created.timestamp() }}"
+                    style="font-size: 12px;" ></td>
+                <td class="col-md-4">
+                    {% for label in pr.labels %}
+                    <span class="badge ml-1 
+                {% if label == "important" %}badge-danger{%else%}
+                {% if label == "opinion needed" %}badge-warning{%else%}
+                {% if label == "small" %}badge-info{%else%}
+                {% if label == "medium" %}badge-info{%else%}
+                {% if label == "big" %}badge-info{%else%}
+                {% if label == "ready to merge" %}badge-success{%else%}
+                {% if label == "work needed" %}badge-primary{%else%}
+                {% if label == "inactive" %}badge-secondary{%else%}
+                {% if label == "postponed" %}badge-secondary{%else%}
+                {% if label == "dying" %}badge-danger{%else%}
+                                         badge-secondary
+                {%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}{%endif%}
+                    ">{{ label }}</span>
+                    {% endfor %}
+                </td>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+function filter(team) {
+    // Declare variables
+    var input, filter, table, tr, td, i;
+    table = document.getElementById("pullrequests");
+    tr = table.getElementsByTagName("tr");
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) 
+    {
+        if (team == '')                          { tr[i].style.display = ""; }
+        else if (tr[i].classList == "")          { tr[i].style.display = ""; }
+        else if (tr[i].classList.contains(team)) { tr[i].style.display = ""; }
+        else                                     { tr[i].style.display = "none"; }
+    }
+    selector = document.getElementById("select-team");
+    a = selector.getElementsByTagName("a");
+    if (team == "") { team = "team-all"; }
+    for (i = 0; i < a.length; i++) 
+    {
+        if (a[i].getAttribute("id") == "select-".concat(team))
+        {
+            a[i].classList.add("active");
+        }
+        else
+        {
+            a[i].classList.remove("active");
+        }
+    }
+}
+</script>
+
+{% endblock %}

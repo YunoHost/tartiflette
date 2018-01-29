@@ -1,12 +1,10 @@
 import os
-import time
 import json
 import requests
 import dateutil.parser
 
-from flask_sqlalchemy import SQLAlchemy
+from .. import db
 
-from . import db
 
 class AppList(db.Model):
 
@@ -293,7 +291,7 @@ class Github():
 
     def __init__(self):
 
-        from .settings import GITHUB_USER, GITHUB_TOKEN
+        from ..settings import GITHUB_USER, GITHUB_TOKEN
 
         self.user = GITHUB_USER
         self.token = GITHUB_TOKEN
