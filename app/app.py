@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint
+from flask import render_template, make_response, Blueprint
 from .models.pr import PullRequest
 from .models.appci import App, AppCI, AppCIBranch
 from .settings import SITE_ROOT
@@ -85,4 +85,26 @@ def appci_compare(ref, target):
     return render_template("appci_compare.html", ref=ref,
                                                  target=target,
                                                  results=ref_results)
+
+@main.route('/integration/<app>')
+@main.route('/integration/<app>.svg')
+def badge(app):
+
+    app = App.query.filter_by(name=app).first_or_404()
+    branch_results = list(app.most_recent_tests_per_branch())
+    level = None
+    for r in branch_results:
+        if r.branch.name == "stable":
+            level = r.level
+            break
+
+    badge = "level%s.svg" % level if level else "unknown.svg"
+
+    svg = open("./app/static/badges/%s" % badge).read()
+    response = make_response(svg)
+    response.content_type = 'image/svg+xml'
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+
+    return response
 
