@@ -22,21 +22,11 @@
 
   <div class="collapse navbar-collapse">
       <ul class="navbar-nav mr-auto">
-          <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" data-toggle="dropdown"
-                  href="#">Core<span class="caret"></span></a>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">Pull Requests</a>
-                <a class="dropdown-item" href="#">Roadmap</a>
-              </div>
+          <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('main.pullrequests') }}">Pull Requests</span></a>
           </li>
           <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" data-toggle="dropdown"
-                  href="#">Apps<span class="caret"></span></a>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">Continuous Integration</a>
-                <a class="dropdown-item" href="#">Unlisted Apps</a>
-              </div>
+              <a class="nav-link" href="{{ url_for('main.appci_branch', branch="stable")}}">Apps CI</span></a>
           </li>
       </ul>
   </div>
