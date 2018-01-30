@@ -86,7 +86,10 @@ def appci_compare(ref, target):
         elif ref_r.level == ref_r.level_compare:
             ref_r.compare = "same"
         elif ref_r.level > ref_r.level_compare:
-            ref_r.compare = "regression"
+            if ref_r.level_compare == 0:
+                ref_r.compare = "broken"
+            else:
+                ref_r.compare = "regression"
         elif ref_r.level < ref_r.level_compare:
             ref_r.compare = "improvement"
         else:

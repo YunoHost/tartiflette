@@ -67,8 +67,9 @@ window.onload = function () {
           toolTipContent: "<b>{label}:</b> {y} (#percent%)",
           dataPoints: [
               { y: $(".ci-branch-comparison[value=unknown]").length, label: "Unknown", color:"#cccccc" },
-              { y: $(".ci-branch-comparison[value=regression]").length,  label: "Regressions", color: "#d9534f" },
-              { y: $(".ci-branch-comparison[value=same]").length,  label: "Same", color: "#67e0d0" },
+              { y: $(".ci-branch-comparison[value=broken]").length, label:"Broken", color: "#d9534f" },
+              { y: $(".ci-branch-comparison[value=regression]").length,  label: "Regressions", color: "#f0ad4e" },
+              { y: $(".ci-branch-comparison[value=same]").length,  label: "Same", color: "#419fef" },
               { y: $(".ci-branch-comparison[value=improvement]").length,  label: "Improvements", color: "#46bd32" }
           ]
       }]
