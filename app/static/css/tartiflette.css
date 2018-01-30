@@ -11,7 +11,7 @@
 a { color:#007bff; }
 
 .ci-app-table > thead, .ci-app-table > tbody { display: block; width: 100%;}
-.ci-app-table { margin: 0 auto; margin-top: 100px; max-width: 1150px;  overflow-x: visible; }
+.ci-app-table { margin: 0 auto; margin-top: 100px; max-width: 1200px;  overflow-x: visible; }
 .ci-app-table th, .ci-app-table td { display: block; border: none; padding; 0px;float: left; height:33px; width: 33px; margin: 5px; }
 
 th.ci-app-test-title 
