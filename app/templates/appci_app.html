@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2 class="text-center my-3">{{ app.name.title() }}</h2>
+<h2 class="text-center my-3">{{ app.name.title() }}
+                        <a href="{{ app.repo }}" style="font-size:15px">
+                         <span class="oi oi-external-link text-info"
+                              aria-hidden="true"
+                              title="To the Git repo!"></span>
+                        </a></h2>
 
 <div class="row">
     <div class="mx-auto">
@@ -41,7 +46,7 @@
                             <span class="daysAgo" timestamp="{{ result.date.timestamp() }}" href="{{ result.url }}"></span>
                         {% endif %}
                         {% if result.commit != result.app.master_commit %}
-                        <span class="oi oi-clock text-warning" 
+                        <span class="oi oi-clock text-warning"
                               aria-hidden="true"
                               title="This test is outdated : a more recent commit exists in master than the one tested."></span>
                         {% endif %}
@@ -70,7 +75,7 @@
                     Commit is not up to date on {{ app.list.name }}.json !
                     </p>
                 {% endif %}
-               
+
                 {% if app.testing_diff > 0 %}
                     <p class="card-text text-info">
                     <span class="oi oi-fork" aria-hidden="true"></span>
@@ -94,7 +99,7 @@
                     No issues opened for this app !
                 </p>
                 {% endif %}
-                
+
                 {% if app.opened_prs > 0 %}
                 <p class="card-text text-info">
                     <span class="oi oi-beaker" aria-hidden="true"></span>

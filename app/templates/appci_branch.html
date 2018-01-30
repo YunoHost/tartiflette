@@ -16,6 +16,7 @@
                          <th class="ci-app-test-title"><div><span>{{ test }}</span></div></th>
                         {% endfor %}
                          <th class="ci-app-test-title"></th>
+                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -26,8 +27,8 @@
                             <span class="official-star oi oi-star" title="Official" aria-hidden="true"></span>
                         {% endif %}
                         <a href="{{ url_for('main.appci_app', app=result.app.name) }}">
-                            <span title="App">
-                            <strong>{{ result.app.name }}</strong></span>
+                            <span class="font-weight-bold" title="More tests / info for this app">
+                                {{ result.app.name }}</span>
                         </a>
                     </td>
                     <td class="ci-app-level" value="{{ result.level }}">
@@ -38,27 +39,34 @@
                             <div title="{{ test }}" value="{{ r }}"></div>
                         </td>
                     {% endfor %}
-                    <td class="ci-app-test-info">
+                    <td class="ci-app-test-info px-0">
                         {% if result.date == None %}
                             <span class="daysAgo" href="{{ result.url }}">???</span>
                         {% else %}
                             <span class="daysAgo" timestamp="{{ result.date.timestamp() }}" href="{{ result.url }}"></span>
                         {% endif %}
                         {% if result.commit != result.app.master_commit %}
-                        <span class="oi oi-clock text-warning" 
+                        <span class="oi oi-clock text-warning"
                               aria-hidden="true"
                               title="This test is outdated : a more recent commit exists in master than the one tested."></span>
                         {% endif %}
                         {% if result.app.public_commit != result.app.master_commit %}
-                        <span class="oi oi-warning text-warning" 
+                        <span class="oi oi-warning text-warning"
                               aria-hidden="true"
                               title="Master commit is not up to date with {{ result.app.list.name }}.json !"></span>
                         {% endif %}
                         {% if result.app.testing_diff > 0 %}
-                        <span class="oi oi-fork text-info" 
+                        <span class="oi oi-fork text-info"
                               aria-hidden="true"
                               title="An active testing branch exists for this app."></span>
                         {% endif %}
+                    </td>
+                    <td class="px-0">
+                        <a href="{{ result.app.repo }}">
+                         <span class="oi oi-external-link text-info"
+                              aria-hidden="true"
+                              title="To the Git repo!"></span>
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}
