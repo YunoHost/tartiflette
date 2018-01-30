@@ -81,6 +81,16 @@ def appci_compare(ref, target):
         ref_r.level_compare = next((r.level for r in target_results
                                                 if r.app == ref_r.app),
                                     -1)
+        if ref_r.level == -1 or ref_r.level_compare == -1:
+            ref_r.compare = "unknown"
+        elif ref_r.level == ref_r.level_compare:
+            ref_r.compare = "same"
+        elif ref_r.level > ref_r.level_compare:
+            ref_r.compare = "regression"
+        elif ref_r.level < ref_r.level_compare:
+            ref_r.compare = "improvement"
+        else:
+            ref_r.compare = "unknown"
 
     return render_template("appci_compare.html", ref=ref,
                                                  target=target,

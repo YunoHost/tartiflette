@@ -2,6 +2,7 @@
 {% block content %}
 
 <h2 class="text-center my-3">{{ ref.display_name }} vs. {{ target.display_name }}</h2>
+<div id="compareSummary" style="height: 270px;" class="col-sm-6 offset-sm-3 my-3"></div>
 
 <div class="row">
     <div class="mx-auto">
@@ -17,7 +18,7 @@
                 </thead>
                 <tbody>
                 {% for result in results %}
-                <tr app="{{ result.app.name }}">
+                <tr class="ci-branch-comparison" value="{{ result.compare }}" app="{{ result.app.name }}">
                     <td class="ci-app-row-title">
                         {% if result.app.list.name == "official" %}
                             <span class="official-star oi oi-star" title="Official" aria-hidden="true"></span>
@@ -51,5 +52,31 @@
         </div>
     </div>
 </div>
+
+<script src="{{ url_for('static', filename='js/canvasjs.min.js') }}"></script>
+<script>
+window.onload = function () {
+  var chart = new CanvasJS.Chart("compareSummary", {
+      animationEnabled: false,
+      data: [{
+          type: "doughnut",
+          startAngle: -90,
+          //innerRadius: 60,
+          indexLabelFontSize: 17,
+          indexLabel: "{label} - #percent%",
+          toolTipContent: "<b>{label}:</b> {y} (#percent%)",
+          dataPoints: [
+              { y: $(".ci-branch-comparison[value=unknown]").length, label: "Unknown", color:"#cccccc" },
+              { y: $(".ci-branch-comparison[value=regression]").length,  label: "Regressions", color: "#d9534f" },
+              { y: $(".ci-branch-comparison[value=same]").length,  label: "Same", color: "#67e0d0" },
+              { y: $(".ci-branch-comparison[value=improvement]").length,  label: "Improvements", color: "#46bd32" }
+          ]
+      }]
+  });
+  chart.render();
+}
+</script>
+
+
 
 {% endblock %}
