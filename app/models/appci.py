@@ -154,10 +154,10 @@ class AppCIResult(db.Model):
 
     results = db.Column(db.PickleType)
 
-    date = db.Column(db.DateTime)
-    level = db.Column(db.Integer)
+    date = db.Column(db.DateTime, nullable=True)
+    level = db.Column(db.Integer, nullable=True)
     url = db.Column(db.String(128), nullable=False)
-    commit = db.Column(db.String(64), nullable=False)
+    commit = db.Column(db.String(64), nullable=True)
 
     def __repr__(self):
         return '<AppTestResults %s>' % self.date
