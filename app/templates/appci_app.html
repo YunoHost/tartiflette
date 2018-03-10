@@ -70,7 +70,11 @@
                     Master commit is up to date with {{ app.list.name }}.json !
                     </p>
                 {% else %}
+                    {% if app.public_vs_master_time_diff > 60 %}
+                    <p class="card-text text-danger">
+                    {% else %}
                     <p class="card-text text-warning">
+                    {% endif %}
                     <span class="oi oi-warning" aria-hidden="true"></span>
                     Commit is not up to date on {{ app.list.name }}.json !
                     </p>
