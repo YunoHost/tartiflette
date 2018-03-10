@@ -58,6 +58,11 @@ class AppList(db.Model):
             known_app.opened_issues = issues_and_prs["nb_issues"]
             known_app.opened_prs = issues_and_prs["nb_prs"]
 
+            known_app.public_vs_master_time_diff = \
+                    (g.commit_date(known_app, known_app.master_commit) -
+                    g.commit_date(known_app, known_app.public_commit)).days
+
+
         db.session.commit()
 
 
@@ -77,6 +82,7 @@ class App(db.Model):
     testing_diff = db.Column(db.Integer, default=-1)
     opened_issues = db.Column(db.Integer, default=-1)
     opened_prs = db.Column(db.Integer, default=-1)
+    public_vs_master_time_diff = db.Column(db.Integer, default=9999)
 
     def __repr__(self):
         return '<App %r>' % self.name
@@ -324,3 +330,11 @@ class Github():
 
         repo = app.repo.replace("https://github.com/", "")
         return self.request('repos/{}/git/refs/heads/{}'.format(repo, ref))["object"]["sha"]
+
+
+    def commit_date(self, app, sha):
+
+        repo = app.repo.replace("https://github.com/", "")
+        github_date = self.request('repos/{}/commits/{}'.format(repo, sha))["commit"]["author"]["date"]
+        parsed_date = datetime.datetime.strptime(github_date, "%Y-%m-%dT%H:%M:%SZ")
+        return parsed_date
