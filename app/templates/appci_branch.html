@@ -51,7 +51,11 @@
                               title="This test is outdated : a more recent commit exists in master than the one tested."></span>
                         {% endif %}
                         {% if result.app.public_commit != result.app.master_commit %}
-                        <span class="oi oi-warning text-warning"
+                            {% if result.app.public_vs_master_time_diff > 60 %}
+                            <span class="oi oi-warning text-warning"
+                            {% else %}
+                            <span class="oi oi-warning text-danger"
+                            {% endif %}
                               aria-hidden="true"
                               title="Master commit is not up to date with {{ result.app.list.name }}.json !"></span>
                         {% endif %}
