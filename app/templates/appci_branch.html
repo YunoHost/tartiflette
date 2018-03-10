@@ -52,9 +52,9 @@
                         {% endif %}
                         {% if result.app.public_commit != result.app.master_commit %}
                             {% if result.app.public_vs_master_time_diff > 60 %}
-                            <span class="oi oi-warning text-warning"
-                            {% else %}
                             <span class="oi oi-warning text-danger"
+                            {% else %}
+                            <span class="oi oi-warning text-warning"
                             {% endif %}
                               aria-hidden="true"
                               title="Master commit is not up to date with {{ result.app.list.name }}.json !"></span>
