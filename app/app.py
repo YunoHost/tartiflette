@@ -111,7 +111,7 @@ def badge(app):
             level = r.level
             break
 
-    badge = "level%s.svg" % level if level else "unknown.svg"
+    badge = "level%s.svg" % level if not level is None else "unknown.svg"
 
     svg = open("./app/static/badges/%s" % badge).read()
     response = make_response(svg)
