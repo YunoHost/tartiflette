@@ -1,0 +1,19 @@
+Hello !
+
+This is a friendly automatic notice from the Yunohost Apps team : our tool noticed that this app is listed in the community/official app lists - but this app appears to be inactive.
+
+Hence, **this issue was created automatically to check if this app is still actively maintained.**
+
+## You are the current maintainer ? :construction_worker_man: :construction_worker_woman: 
+
+#### You still actively maintain this app ? :tada: 
+
+Please close this issue to signify that you still actively maintain this app. Nothing else, and thank you for your work :heart: !
+
+#### You don't intend to maintain this app anymore ? :cry: 
+
+Either don't do anything, or add a comment to explicitly state that you do not intend / have time / ... to maintain this app (but thanks for your work so far ! :kissing_heart:). After 15 days, if this issue is still opened, the app will be considered *unmaintained*.
+
+## You wish to become the new maintainer of this app ? :smile: 
+
+You are welcome and free to comment in this thread that you wish to become the new maintainer, amd/or to create the corresponding pull request to fix this issue ! (If you do not already have commit rights on this repo, we can then arrange things with the rest of the app team. :wink:) Once this issue is closed, the app will then be flagged again as *maintained* !
