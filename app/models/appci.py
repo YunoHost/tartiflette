@@ -122,14 +122,19 @@ class AppCIBranch(db.Model):
                           url='https://ci-apps.yunohost.org/jenkins',
                           console_uri='/job/{} ({})/lastBuild/consoleText')
 
+        yield AppCIBranch(name='testing',
+                          display_name='Testing (x86)',
+                          url='https://ci-apps.yunohost.org/jenkins',
+                          console_uri='/job/{} ({}) (testing)/lastBuild/consoleText')
+
         yield AppCIBranch(name='arm',
                           display_name='Stable (ARM)',
-                          url='https://ci-apps.yunohost.org/jenkins',
+                          url='https://ci-apps-arm.yunohost.org/jenkins',
                           console_uri='/job/{} ({}) (~ARM~)/lastBuild/consoleText')
 
         yield AppCIBranch(name='stretch',
                           display_name='Stretch (x86)',
-                          url="http://212.47.243.98:8080",
+                          url="https://ci-stretch.nohost.me/jenkins",
                           console_uri="/job/{} ({})/lastBuild/consoleText")
 
 
