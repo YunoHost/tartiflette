@@ -110,9 +110,9 @@ def get_status_and_todo(repo):
             # no - > maintained ! (but status being questionned)
             return ("maintained?", None)
 
-    # Commit in master or testing in last 12 months ?
-    if get_commit_days_ago(repo, "master")  < 12*30 \
-    or get_commit_days_ago(repo, "testing") < 12*30:
+    # Commit in master or testing in last 18 months ?
+    if get_commit_days_ago(repo, "master")  < 18*30 \
+    or get_commit_days_ago(repo, "testing") < 18*30:
         # ok, maintained
         return ("maintained", None)
 
@@ -135,7 +135,8 @@ def get_apps_to_check():
     raw_apps += json.loads(requests.get(official).text).values()
     raw_apps += json.loads(requests.get(community).text).values()
 
-    return [ app for app in raw_apps \
+    return [ app["url"].replace("https://github.com/","") \
+            for app in raw_apps \
             if app["state"] in ["validated", "working", "inprogress"] ]
 
 
@@ -149,16 +150,18 @@ def main():
     # For each monitored app :
     for app in monitored_apps:
 
-        app = app["url"].replace("https://github.com/","")
+        print("Checking {} ...".format(app))
 
         try:
             status[app], todo[app] = get_status_and_todo(app)
         except:
             continue
 
-    #print("maintained?")
-    #print(len([ app for app in monitored_apps if status[app] == "maintained?"]))
-    #print("maintained")
-    #print(len([ app for app in monitored_apps if status[app] == "maintained"]))
+    to_ping = [ app for app in monitored_apps if status[app] == "maintained?" ]
+    print("To ping :")
+    print(len(to_ping))
+    print("--------")
+    for app in to_ping:
+        print(app)
 
 main()
