@@ -6,6 +6,9 @@
 
 <div class="row">
     <div class="mx-auto">
+	<div style="text-align:center;">
+<button id="filter_onlyOfficials" type="button" class="btn btn-default btn-lg" href="javascript:void(0)" onclick="toggle(this)">Show only officials</button>
+	</div>
         <div>
             <table class="table table-responsive ci-app-table">
                 <thead>
@@ -21,7 +24,7 @@
                 </thead>
                 <tbody>
                 {% for result in app_results %}
-                <tr app="{{ result.app.name }}">
+                <tr app="{{ result.app.name }}" class="resultline {% if result.app.list.name == "official" %}official{% endif %}">
                     <td class="ci-app-row-title">
                         {% if result.app.list.name == "official" %}
                             <span class="official-star oi oi-star" title="Official" aria-hidden="true"></span>
@@ -106,7 +109,21 @@ window.onload = function () {
       }]
   });
   chart.render();
+  update_filters();
 }
+
+function toggle(e) {
+    $(e).toggleClass("btn-default");
+    $(e).toggleClass("btn-primary");
+    update_filters();
+}
+function update_filters() {
+    var onlyOfficials = $("#filter_onlyOfficials").hasClass("btn-primary");
+    $(".resultline").show();
+    if (onlyOfficials) { $(".resultline:not(.official)").hide(); }
+}
+
+
 </script>
 
 {% endblock %}
