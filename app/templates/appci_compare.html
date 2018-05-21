@@ -6,6 +6,10 @@
 
 <div class="row">
     <div class="mx-auto">
+	<div>
+<button id="filter_onlyDiffs" type="button" class="btn btn-primary btn-lg" href="javascript:void(0)" onclick="toggle(this)">Show only diffs</button>
+<button id="filter_onlyOfficials" type="button" class="btn btn-default btn-lg" href="javascript:void(0)" onclick="toggle(this)">Show only officials</button>
+	</div>
         <div>
             <table class="table table-responsive ci-app-table">
                 <thead>
@@ -18,7 +22,7 @@
                 </thead>
                 <tbody>
                 {% for result in results %}
-                <tr class="ci-branch-comparison" value="{{ result.compare }}" app="{{ result.app.name }}">
+                <tr class="ci-branch-comparison {% if result.app.list.name == "official" %}official{% endif %}" value="{{ result.compare }}" app="{{ result.app.name }}">
                     <td class="ci-app-row-title">
                         {% if result.app.list.name == "official" %}
                             <span class="official-star oi oi-star" title="Official" aria-hidden="true"></span>
@@ -75,7 +79,22 @@ window.onload = function () {
       }]
   });
   chart.render();
+  update_filters();
 }
+
+function toggle(e) {
+    $(e).toggleClass("btn-default");
+    $(e).toggleClass("btn-primary");
+    update_filters();
+}
+function update_filters() {
+    var onlyDiffs = $("#filter_onlyDiffs").hasClass("btn-primary");
+    var onlyOfficials = $("#filter_onlyOfficials").hasClass("btn-primary");
+    $(".ci-branch-comparison").show();
+    if (onlyDiffs) { $(".ci-branch-comparison[value='same']").hide(); }
+    if (onlyOfficials) { $(".ci-branch-comparison:not(.official)").hide(); }
+}
+
 </script>
 
 
