@@ -5,14 +5,16 @@ import requests
 import json
 from functools import partial
 
-LOGIN=open("./login").read().strip()
-TOKEN=open("./token").read().strip()
+import sys
+sys.path.insert(0, '../..')
+from settings import GITHUB_USER, GITHUB_TOKEN
+
 MAINTENANCE_PING_BODY=open("./maintenance_ping_body").read().strip()
 UNMAINTAINED_WARNING=open("./unmaintained_warning").read().strip()
 
 def get_github(uri):
     with requests.Session() as s:
-        s.headers.update({"Authorization": "token {}".format(TOKEN)})
+        s.headers.update({"Authorization": "token {}".format(GITHUB_TOKEN)})
         r = s.get("https://api.github.com" + uri)
 
     #assert r.status_code == 200, "Couldn't get {uri} . Reponse : {text}".format(uri=uri, text=r.text)
@@ -69,14 +71,14 @@ def create_maintenance_ping(repo):
             }
 
     with requests.Session() as s:
-        s.headers.update({"Authorization": "token {}".format(TOKEN)})
+        s.headers.update({"Authorization": "token {}".format(GITHUB_TOKEN)})
         s.post(api_url, json.dumps(issue))
 
 def warn_unmaintained_if_needed(repo, issue):
 
     issue_id = issue["number"]
     comments = get_github("/repos/{repo}/issues/{id}/comments".format(repo=repo, id=issue_id))
-    existing_warning = [ c for c in comments if c["user"]["login"] == LOGIN
+    existing_warning = [ c for c in comments if c["user"]["login"] == GITHUB_USER
                                              and c["body"].startswith(UNMAINTAINED_WARNING[:20]) ]
     # Nothing to do if there's already a warning about unmaintenained status...
     if existing_warning:
@@ -87,7 +89,7 @@ def warn_unmaintained_if_needed(repo, issue):
               .format(repo=repo, id=issue_id)
     comment = { "body": UNMAINTAINED_WARNING }
     with requests.Session() as s:
-        s.headers.update({"Authorization": "token {}".format(TOKEN)})
+        s.headers.update({"Authorization": "token {}".format(GITHUB_TOKEN)})
         s.post(api_url, json.dumps(comment))
 
 
@@ -163,5 +165,6 @@ def main():
     print("--------")
     for app in to_ping:
         print(app)
+        #todo[app](app)
 
 main()
