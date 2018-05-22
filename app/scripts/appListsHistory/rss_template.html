@@ -1,0 +1,39 @@
+{% if data.new %}
+<h2>New apps</h2>
+<ul>
+{% for app in data.new %}
+<li><a href="{{ app.url }}">{{ app.name.title() }}</a> 
+    ({{ app.state }}{% if app.level %}, level {{ app.level }}{% endif %}) </li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if data.updates %}
+<h2>Apps changes</h2>
+<ul>
+{% for app, changes in data.updates %}
+<li><a href="{{ app.url }}">{{ app.name.title() }}</a>:
+    {% for change in changes %}
+    {% if change == "updated" %}
+        Updated{{ "," if not loop.last }}
+    {% elif change[0] == "state" %}
+        State {{ change[1] }} -&gt; {{ change[2] }}{{ "," if not loop.last }}
+    {% elif change[0] == "level" %}
+        Level {{ change[1] }} -&gt; {{ change[2] }}{{ "," if not loop.last }}
+    {% endif %}
+    {% endfor %}
+</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if data.removed %}
+<h2>Apps removed</h2>
+<ul>
+{% for app in data.removed %}
+<li><a href="{{ app.url }}">{{ app.name.title() }}</a>
+({{ app.state }}{% if app.level %}, level {{ app.level }}{% endif %})
+</li>
+{% endfor %}
+</ul>
+{% endif %}
