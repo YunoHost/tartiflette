@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div id="levelHistory" style="height: 270px;" class="col-sm-8 offset-sm-2 my-3"></div>
+<div id="stateHistory" style="height: 270px;" class="col-sm-8 offset-sm-2 my-3"></div>
+
+<script src="{{ url_for('static', filename='js/canvasjs.min.js') }}"></script>
+<script>
+window.onload = function () {
+   
+    var colors_per_level = [
+        "#d9534f",
+        "#E26D4F",
+        "#E98D4E",
+        "#f0ad4e",
+        "#CBB052",
+        "#A6B255",
+        "#7AB659",
+        "#5cb85c"
+    ];
+
+    var colors_per_state = {
+        official: "#0000ff",
+        working: "#5cb85c",
+        inprogress: "#f0ad4e",
+        notworking: "#d9534f"
+    };
+
+    var chart = new CanvasJS.Chart("levelHistory", {
+        animationEnabled: false,
+        title:{
+            text: "Apps level (officials + community working)"
+        },
+        toolTip: {
+            reversed: true,
+            shared: true
+        },
+        data: [
+            {% for level in range(8) %}
+                {
+                color: colors_per_level[{{ level }}],
+                type: "stackedArea",
+                showInLegend: true,
+                toolTipContent: "<span style=\"color:"+colors_per_level[{{ level }}]+"\"><strong>Level {{ level }}: </strong></span> {y}{% if loop.first %}<br><b>Total:<b> #total{% endif %}",
+                name: "Level {{ level }}",
+                dataPoints: [
+                    {% for d in data %}
+                        { label: "{{ d.date }}", y: {{ d["level-"+level|string] }} },
+                    {% endfor %}
+                ]
+                },
+            {% endfor %}
+        ]
+    });
+    chart.render();
+
+    var chart2 = new CanvasJS.Chart("stateHistory", {
+        animationEnabled: false,
+        title:{
+            text: "Apps state"
+        },
+        toolTip: {
+            reversed: true,
+            shared: true
+        },
+        data: [
+            {% for state in ["official", "working", "inprogress", "notworking"]  %}
+                {
+                color: colors_per_state.{{ state }},
+                type: "stackedArea",
+                showInLegend: true,
+                toolTipContent: "<span style=\"color:"+colors_per_state.{{ state }}+"\"><strong>{{ state.title() }}: </strong></span> {y}{% if loop.first %}<br><b>Total:<b> #total{% endif %}",
+                name: "{{ state.title() }}",
+                dataPoints: [
+                    {% for d in data %}
+                        { label: "{{ d.date }}", y: {{ d[state] }} },
+                    {% endfor %}
+                ]
+                },
+            {% endfor %}
+        ]
+    });
+    chart2.render();
+
+
+}
+
+</script>
+
+{% endblock %}
