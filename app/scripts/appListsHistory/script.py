@@ -125,5 +125,36 @@ def make_rss_feed():
 
     fg.atom_file('atom.xml')
 
+def make_count_summary():
+
+    states = ["official", "working", "inprogress", "notworking"]
+    history = []
+
+    per_state = { state: [] for state in states }
+    per_level = { "level-%s"%i: [] for i in range(0,8) }
+
+    for d in time_points_until_today:
+
+        print("Analyzing %s ..." % d.strftime("%y-%m-%d"))
+
+        # Load corresponding json
+        j = json.loads(open("./.work/merged_lists.json.%s" % d.strftime("%y-%m-%d")).read())
+        d_label = d.strftime("%b %d %Y")
+
+        summary = {}
+        summary["date"] = d_label
+        for state in states:
+            summary[state] = len([ k for k, infos in j.items() if infos["state"] == state ])
+
+        for level in range(0,8):
+            summary["level-%s"%level] = len([ k for k, infos in j.items() \
+                                              if  infos["state"] in ["working", "official"] \
+                                              and infos.get("level", None) == level ])
+
+        history.append(summary)
+
+    json.dump(history, open('count_history.json', 'w'))
+
 #get_lists_history()
 make_rss_feed()
+#make_count_summary()

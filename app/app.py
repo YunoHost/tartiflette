@@ -2,6 +2,7 @@ from flask import render_template, make_response, Blueprint
 from .models.pr import PullRequest
 from .models.appci import App, AppCI, AppCIBranch
 from .settings import SITE_ROOT
+import json
 
 main = Blueprint('main', __name__, url_prefix=SITE_ROOT)
 
@@ -21,6 +22,10 @@ def sort_test_results(results):
 def index():
     return render_template('index.html')
 
+@main.route('/applist_history')
+def applist_history():
+    data = json.loads(open("./app/scripts/appListsHistory/count_history.json").read())
+    return render_template('applist_history.html', data=data)
 
 @main.route('/pullrequests')
 def pullrequests():

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask_script import Manager, Shell, Command
+from flask_script import Manager, Shell, Command, Server
 from app import db, create_app
 
 app = create_app()
@@ -13,6 +13,7 @@ def main():
     manager.add_command('init', Init(db))
     manager.add_command('update-appci', Update(db, "appci"))
     manager.add_command('update-pr', Update(db, "pr"))
+    manager.add_command("runserver", Server())
     manager.run()
 
 
