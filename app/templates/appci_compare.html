@@ -6,9 +6,9 @@
 
 <div class="row">
     <div class="mx-auto">
-	<div>
-<button id="filter_onlyDiffs" type="button" class="btn btn-primary btn-lg" href="javascript:void(0)" onclick="toggle(this)">Show only diffs</button>
-<button id="filter_onlyOfficials" type="button" class="btn btn-default btn-lg" href="javascript:void(0)" onclick="toggle(this)">Show only officials</button>
+	<div style="text-align:center;">
+<button id="filter_onlyDiffs" type="button" class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="toggle(this)">Show only diffs</button>
+<button id="filter_onlyOfficials" type="button" class="btn btn-light btn-sm" href="javascript:void(0)" onclick="toggle(this)">Show only officials</button>
 	</div>
         <div>
             <table class="table table-responsive ci-app-table">
@@ -83,7 +83,7 @@ window.onload = function () {
 }
 
 function toggle(e) {
-    $(e).toggleClass("btn-default");
+    $(e).toggleClass("btn-light");
     $(e).toggleClass("btn-primary");
     update_filters();
 }

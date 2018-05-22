@@ -7,7 +7,40 @@
 <div class="row">
     <div class="mx-auto">
 	<div style="text-align:center;">
-<button id="filter_onlyOfficials" type="button" class="btn btn-default btn-lg" href="javascript:void(0)" onclick="toggle(this)">Show only officials</button>
+<label for="level-all">Level : </label>
+<div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-sm btn-light active">
+    <input type="radio" name="options" level="all" id="filter_level-all" autocomplete="off" checked> All
+  </label>
+  <label class="btn btn-sm btn-light">
+    <input type="radio" name="options" level="?" autocomplete="off"> ?
+  </label>
+  <label class="btn btn-sm btn-light">
+    <input type="radio" name="options" level="0" autocomplete="off"> 0
+  </label>
+  <label class="btn btn-sm btn-light">
+    <input type="radio" name="options" level="1" autocomplete="off"> 1
+  </label>
+  <label class="btn btn-sm btn-light">
+    <input type="radio" name="options" level="2" autocomplete="off"> 2
+  </label>
+  <label class="btn btn-sm btn-light">
+    <input type="radio" name="options" level="3" autocomplete="off"> 3
+  </label>
+  <label class="btn btn-sm btn-light">
+    <input type="radio" name="options" level="4" autocomplete="off"> 4
+  </label>
+  <label class="btn btn-sm btn-light">
+    <input type="radio" name="options" level="5" autocomplete="off"> 5
+  </label>
+  <label class="btn btn-sm btn-light">
+    <input type="radio" name="options" level="6" autocomplete="off"> 6
+  </label>
+  <label class="btn btn-sm btn-light">
+    <input type="radio" name="options" level="7" autocomplete="off"> 7
+  </label>
+</div>
+<button id="filter_onlyOfficials" type="button" class="btn btn-light btn-sm" href="javascript:void(0)" onclick="toggle(this)" style="margin-left:30px;">Show only officials</button>
 	</div>
         <div>
             <table class="table table-responsive ci-app-table">
@@ -24,7 +57,7 @@
                 </thead>
                 <tbody>
                 {% for result in app_results %}
-                <tr app="{{ result.app.name }}" class="resultline {% if result.app.list.name == "official" %}official{% endif %}">
+                <tr app="{{ result.app.name }}" class="resultline {% if result.app.list.name == "official" %}official{% endif %}" level="{{ result.level if result.level >= 0 else "?" }}">
                     <td class="ci-app-row-title">
                         {% if result.app.list.name == "official" %}
                             <span class="official-star oi oi-star" title="Official" aria-hidden="true"></span>
@@ -96,7 +129,7 @@ window.onload = function () {
           indexLabel: "{label} - #percent%",
           toolTipContent: "<b>{label}:</b> {y} (#percent%)",
           dataPoints: [
-              { y: $(".ci-app-level[value=-1]").length, label: "Unknown", color:"#cccccc" },
+              { y: $(".ci-app-level[value=-1]").length, label: "Unknown", color: "#cccccc" },
               { y: $(".ci-app-level[value=0]").length,  label: "Level 0", color: "#d9534f" },
               { y: $(".ci-app-level[value=1]").length,  label: "Level 1", color: "#E26D4F" },
               { y: $(".ci-app-level[value=2]").length,  label: "Level 2", color: "#E98D4E" },
@@ -109,20 +142,23 @@ window.onload = function () {
       }]
   });
   chart.render();
+  $("input[type='radio']").change(function() { update_filters(); });
   update_filters();
 }
 
 function toggle(e) {
-    $(e).toggleClass("btn-default");
+    $(e).toggleClass("btn-light");
     $(e).toggleClass("btn-primary");
     update_filters();
 }
+
 function update_filters() {
     var onlyOfficials = $("#filter_onlyOfficials").hasClass("btn-primary");
+    var levelFilter = $("input[type='radio']:checked").attr("level");
     $(".resultline").show();
     if (onlyOfficials) { $(".resultline:not(.official)").hide(); }
+    if (levelFilter != "all") { $(".resultline[level!='"+levelFilter+"']").hide(); }
 }
-
 
 </script>
 

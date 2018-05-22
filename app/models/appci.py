@@ -34,7 +34,8 @@ class AppList(db.Model):
                         if app["state"] == self.state_for_ci ]
 
         for app in apps_for_ci:
-
+             
+            app['url'] = app["url"].strip('/')
             name = os.path.basename(app["url"]).replace("_ynh", "")
 
             # Try to find an app for this name
@@ -326,8 +327,11 @@ class Github():
         repo = app.repo.replace("https://github.com/", "")
         j = self.request('repos/{}/issues'.format(repo))
 
-        nb_issues = len([ i for i in j if not "pull_request" in i.keys() ])
-        nb_prs = len([ i for i in j if "pull_request" in i.keys() ])
+        try:
+            nb_issues = len([ i for i in j if not "pull_request" in i.keys() ])
+            nb_prs = len([ i for i in j if "pull_request" in i.keys() ])
+        except:
+            import pdb; pdb.set_trace()
 
         return { "nb_issues": nb_issues,
                  "nb_prs": nb_prs }
