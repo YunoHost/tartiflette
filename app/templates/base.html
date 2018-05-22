@@ -28,7 +28,19 @@
               <a class="nav-link" href="{{ url_for('main.pullrequests') }}">Pull Requests</span></a>
           </li>
           <li class="nav-item dropdown">
-              <a class="nav-link" href="{{ url_for('main.appci_branch', branch="stable")}}">Apps CI</span></a>
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">Apps CI</a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <span class="dropdown-header">Per branch</span>
+                  <a class="dropdown-item" href="{{ url_for('main.appci_branch', branch="stable")}}">Stable</a>
+                  <a class="dropdown-item" href="{{ url_for('main.appci_branch', branch="testing")}}">Testing</a>
+                  <a class="dropdown-item" href="{{ url_for('main.appci_branch', branch="arm")}}">ARM</a>
+                  <a class="dropdown-item" href="{{ url_for('main.appci_branch', branch="stretch")}}">Stretch</a>
+                  <div class="dropdown-divider"></div>
+                  <span class="dropdown-header">Branch comparisons</span>
+                  <a class="dropdown-item" href="{{ url_for('main.appci_compare', ref="stable", target="arm")}}">Stable vs. ARM</a>
+                  <a class="dropdown-item" href="{{ url_for('main.appci_compare', ref="stable", target="testing")}}">Stable vs. Testing</a>
+                  <a class="dropdown-item" href="{{ url_for('main.appci_compare', ref="stable", target="stretch")}}">Stable vs. Stretch</a>
+              </div>
           </li>
       </ul>
   </div>
