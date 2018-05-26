@@ -46,7 +46,9 @@ def get_lists_history():
         official = json.loads(open(".work/apps/official.json").read())
         for key in official:
             official[key]["state"] = "official"
-        merged = {**community, **official}
+        merged = {}
+        merged.update(community)
+        merged.update(official)
 
         # Save it
         json.dump(merged, open('./.work/merged_lists.json.%s' % t.strftime("%y-%m-%d"), 'w'))
