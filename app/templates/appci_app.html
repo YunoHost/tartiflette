@@ -64,7 +64,12 @@
     <div class="col-sm-4 offset-sm-4">
         <div class="card">
             <div class="card-body">
-                {% if app.public_commit == app.master_commit %}
+                {% if result.app.public_commit == 'HEAD' %}
+                    <p class="card-text text-success">
+                    <span class="oi oi-task" aria-hidden="true"></span>
+                    This app points to HEAD in {{ app.list.name }}.json !
+                    </p>
+                {% elif app.public_commit == app.master_commit %}
                     <p class="card-text text-success">
                     <span class="oi oi-task" aria-hidden="true"></span>
                     Master commit is up to date with {{ app.list.name }}.json !
