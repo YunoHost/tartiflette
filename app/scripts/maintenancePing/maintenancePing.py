@@ -92,7 +92,9 @@ def add_comment_about_unmaintained_state(repo, issue):
     comment = { "body": UNMAINTAINED_WARNING }
     with requests.Session() as s:
         s.headers.update({"Authorization": "token {}".format(GITHUB_TOKEN)})
-        s.post(api_url, json.dumps(comment))
+        r = s.post(api_url, json.dumps(comment))
+
+    return "Added comment %s" % json.loads(r.text)["html_url"]
 
 
 def get_status_and_todo(repo):
@@ -170,7 +172,9 @@ def run_todolist(todolist):
 
     done = []
 
-    for app, todo in todolist:
+    for app, todo in todolist.items():
+        if todo is None:
+            continue
         print("Running todo action for app %s" % app)
         try:
             answer = todo(app)
@@ -178,6 +182,9 @@ def run_todolist(todolist):
             print("Failed to run todo action %s for app %s" % (todo, app))
             continue
         done.append(answer)
+
+    for d in done:
+        print(d)
 
 
 def update_community_list(status, workdir):
@@ -263,18 +270,17 @@ def create_pull_request(repo, watdo, pr_infos):
 
     with requests.Session() as s:
         s.headers.update({"Authorization": "token {token}".format(token=GITHUB_TOKEN)})
-        s.post(api_url, json.dumps(PR))
+        r = s.post(api_url, json.dumps(PR))
+
+    if r.status_code != 200:
+        print(r.text)
+    else:
+        json.loads(r.text)["html_url"]
 
 
 def main():
 
     monitored, maintained, todolist = analyze_apps()
-
-    for app, action in todolist.items():
-        print("===")
-        print(app)
-        print(maintained[app])
-        #print(todolist[app])
 
     run_todolist(todolist)
 
