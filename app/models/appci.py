@@ -1,4 +1,5 @@
 import os
+import time
 import json
 import requests
 import dateutil.parser
@@ -34,7 +35,7 @@ class AppList(db.Model):
                         if app["state"] == self.state_for_ci ]
 
         for app in apps_for_ci:
-             
+
             app['url'] = app["url"].strip('/')
             name = os.path.basename(app["url"]).replace("_ynh", "")
 
@@ -52,20 +53,31 @@ class AppList(db.Model):
             else:
                 print("Updating already known app {}".format(name))
 
-            issues_and_prs = g.issues(known_app)
+            if "github" in known_app.repo:
+                issues_and_prs = g.issues(known_app)
 
-            known_app.public_commit = app["revision"]
-            known_app.master_commit = g.commit(known_app, "master")
-            known_app.testing_diff = g.diff(known_app, "master", "testing")["ahead_by"]
-            known_app.opened_issues = issues_and_prs["nb_issues"]
-            known_app.opened_prs = issues_and_prs["nb_prs"]
+                known_app.public_commit = app["revision"]
+                known_app.master_commit = g.commit(known_app, "master")
+                known_app.testing_diff = g.diff(known_app, "master", "testing")["ahead_by"]
+                known_app.opened_issues = issues_and_prs["nb_issues"]
+                known_app.opened_prs = issues_and_prs["nb_prs"]
 
-            known_app.public_vs_master_time_diff = \
-                    (g.commit_date(known_app, known_app.master_commit) -
+                known_app.public_vs_master_time_diff = \
+                   (g.commit_date(known_app, known_app.master_commit) -
                     g.commit_date(known_app, known_app.public_commit)).days
+            else:
+                known_app.public_commit = "???"
+                known_app.master_commit = "???"
+                known_app.testing_diff = -1
+                known_app.opened_issues = 0
+                known_app.opened_prs = 0
+                known_app.public_vs_master_time_diff = 0
 
-
-        db.session.commit()
+        try:
+           db.session.commit()
+        except Exception as e:
+           print(e)
+           import pdb; pdb.set_trace()
 
 
 
@@ -309,15 +321,21 @@ class Github():
         self.user = GITHUB_USER
         self.token = GITHUB_TOKEN
 
-    def request(self, uri):
+    def request(self, uri, autoretry=True):
 
-        r = requests.get('https://api.github.com/{}'.format(uri), auth=(self.user, self.token))
-        return r.json()
+        r = requests.get('https://api.github.com/{}'.format(uri), auth=(self.user, self.token)).json()
+        if "message" in r and r["message"] == "Not Found" and autoretry:
+            time.sleep(30)
+            r = requests.get('https://api.github.com/{}'.format(uri), auth=(self.user, self.token)).json()
+            if "message" in r and r["message"] == "Not Found":
+                print('https://api.github.com/{}'.format(uri))
+                return {}
+        return r
 
     def diff(self, app, ref, commit):
 
         repo = app.repo.replace("https://github.com/", "")
-        j = self.request('repos/{}/compare/{}...{}'.format(repo, ref, commit))
+        j = self.request('repos/{}/compare/{}...{}'.format(repo, ref, commit), autoretry=False)
 
         return { "ahead_by": j.get("ahead_by", -1),
                  "behind_by": j.get("behind_by", -1) }
@@ -327,11 +345,8 @@ class Github():
         repo = app.repo.replace("https://github.com/", "")
         j = self.request('repos/{}/issues'.format(repo))
 
-        try:
-            nb_issues = len([ i for i in j if not "pull_request" in i.keys() ])
-            nb_prs = len([ i for i in j if "pull_request" in i.keys() ])
-        except:
-            import pdb; pdb.set_trace()
+        nb_issues = len([ i for i in j if not "pull_request" in i.keys() ])
+        nb_prs = len([ i for i in j if "pull_request" in i.keys() ])
 
         return { "nb_issues": nb_issues,
                  "nb_prs": nb_prs }
@@ -339,7 +354,11 @@ class Github():
     def commit(self, app, ref):
 
         repo = app.repo.replace("https://github.com/", "")
-        return self.request('repos/{}/git/refs/heads/{}'.format(repo, ref))["object"]["sha"]
+        j = self.request('repos/{}/git/refs/heads/{}'.format(repo, ref))
+        if not "object" in j:
+            print('Failed to fetch repos/{}/git/refs/heads/{}'.format(repo, ref))
+            return "???"
+        return j["object"]["sha"]
 
 
     def commit_date(self, app, sha):
