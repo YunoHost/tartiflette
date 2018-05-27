@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import os
 import datetime
 import requests
 import json
@@ -132,7 +132,7 @@ def get_status_and_todo(repo):
 
 def get_apps_to_check():
 
-    official="https://raw.githubusercontent.com/YunoHost/apps/master/official.json"
+    #official="https://raw.githubusercontent.com/YunoHost/apps/master/official.json"
     community="https://raw.githubusercontent.com/YunoHost/apps/master/community.json"
 
     raw_apps = []
@@ -157,13 +157,13 @@ def analyze_apps():
         print("Checking {} ...".format(app))
 
         try:
-            maintained[app], todo[app] = get_status_and_todo(app)
+            status[app], todo[app] = get_status_and_todo(app)
         except Exception as e:
             print("Failed to fetch status / todo for %s" % app)
-            print(e.str)
+            print(e)
             continue
 
-    return (monitored_apps, maintained, todo)
+    return (monitored_apps, status, todo)
 
 
 def run_todolist(todolist):
@@ -180,18 +180,109 @@ def run_todolist(todolist):
         done.append(answer)
 
 
+def update_community_list(status, workdir):
+
+    filename = workdir + "/community.json"
+
+    j = json.loads(open(filename).read())
+
+    def findapp(repo):
+        for app in j.keys():
+            if j[app]["url"].endswith('/'+repo):
+                return app
+
+    for apprepo, state in status.items():
+        app = findapp(apprepo)
+        current_state = j[app].get("maintained", True)
+        if state != current_state:
+            j[app]["maintained"] = False
+
+    open(filename, "w").write(json.dumps(j,
+                              sort_keys=True,
+                              indent=4,
+                              separators=(',', ': ')))
+
+
+def create_pull_request(repo, watdo, pr_infos):
+
+    owner, reponame = repo.split('/')
+    branch, title, body = pr_infos
+
+    #
+    # Phase 1 : Clone and prepare
+    #
+
+    cmds = [
+        "rm -rf .work",
+        "mkdir .work",
+        "git clone https://github.com/{repo} .work/{reponame}",
+        "cd .work/{reponame} && git remote rm origin",
+        "cd .work/{reponame} && git remote add origin https://{login}:{token}@github.com/{login}/{reponame}",
+        "cd .work/{reponame} && git checkout -b {branch}"
+    ]
+
+    for cmd in cmds:
+        print(cmd)
+        r = os.system(cmd.format(repo=repo,
+                                 reponame=reponame,
+                                 login=GITHUB_USER,
+                                 token=GITHUB_TOKEN,
+                                 branch=branch))
+        assert r == 0
+
+    #
+    # Phase 2 : apply changes, commit and push
+    #
+
+    watdo(workdir=".work/%s" % reponame)
+
+    cmds = [
+        "cd .work/{reponame} && git add .",
+        "cd .work/{reponame} && git commit -a -m '{title}'",
+        "cd .work/{reponame} && git push origin {branch}"
+    ]
+
+    for cmd in cmds:
+        print(cmd)
+        r = os.system(cmd.format(reponame=reponame,
+                                 branch=branch,
+                                 title=title))
+        assert r == 0
+
+    #
+    # Phase 3 : create the PR
+    #
+
+    api_url = "https://api.github.com/repos/{repo}/pulls".format(repo=repo)
+
+    PR = { "title": title,
+            "head": GITHUB_USER+":"+branch,
+            "base": "master",
+            "maintainer_can_modify": True
+    }
+
+    with requests.Session() as s:
+        s.headers.update({"Authorization": "token {token}".format(token=GITHUB_TOKEN)})
+        s.post(api_url, json.dumps(PR))
+
+
 def main():
 
     monitored, maintained, todolist = analyze_apps()
 
-    for app, action in todo.items():
+    for app, action in todolist.items():
         print("===")
         print(app)
-        print(status[app])
-        print(todo[app])
+        print(maintained[app])
+        #print(todolist[app])
 
     run_todolist(todolist)
 
-    #update_maintained_states(maintained)
+    create_pull_request("YunoHost/apps",
+                        partial(update_community_list, status=maintained),
+                        ("update-maintained-state",
+                         "Update maintained state",
+                         "Automatic update of maintenance state following maintenance pings")
+                        )
 
 main()
