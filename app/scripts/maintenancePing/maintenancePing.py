@@ -17,7 +17,7 @@ def get_github(uri):
         s.headers.update({"Authorization": "token {}".format(GITHUB_TOKEN)})
         r = s.get("https://api.github.com" + uri)
 
-    #assert r.status_code == 200, "Couldn't get {uri} . Reponse : {text}".format(uri=uri, text=r.text)
+    assert r.status_code == 200, "Couldn't get {uri} . Reponse : {text}".format(uri=uri, text=r.text)
     j = json.loads(r.text)
     return j
 
@@ -29,7 +29,7 @@ def github_date_to_days_ago(date):
 def get_issues(repo):
     return get_github("/repos/{repo}/issues".format(repo=repo))
 
-def get_active_maintenance_ping(issues):
+def look_for_active_maintenance_ping(issues):
 
     for issue in issues:
         if issue["title"].startswith("[Maintenance ping]"):
@@ -40,7 +40,7 @@ def get_active_maintenance_ping(issues):
     return None
 
 
-def get_old_maintenance_ping(issues):
+def look_for_old_maintenance_ping(issues):
 
     for issue in issues:
         if issue["title"].startswith("[Maintenance ping]"):
@@ -72,9 +72,11 @@ def create_maintenance_ping(repo):
 
     with requests.Session() as s:
         s.headers.update({"Authorization": "token {}".format(GITHUB_TOKEN)})
-        s.post(api_url, json.dumps(issue))
+        r = s.post(api_url, json.dumps(issue))
 
-def warn_unmaintained_if_needed(repo, issue):
+    return "Created maintenance ping %s" % json.loads(r.text)["html_url"]
+
+def add_comment_about_unmaintained_state(repo, issue):
 
     issue_id = issue["number"]
     comments = get_github("/repos/{repo}/issues/{id}/comments".format(repo=repo, id=issue_id))
@@ -99,34 +101,34 @@ def get_status_and_todo(repo):
     issues = get_issues(repo)
 
     # Is a maintenance ping already opened ?
-    active_maintenance_ping = get_active_maintenance_ping(issues)
+    active_maintenance_ping = look_for_active_maintenance_ping(issues)
 
     if active_maintenance_ping:
         # since more than 15 days ?
-        if active_maintenance_ping["created_days_ago"] > 15:
+        if active_maintenance_ping["created_days_ago"] >= 14:
             # yes - > unmaintained !
             # -> post a comment if not already done
-            return ("unmaintained", partial(warn_unmaintained_if_needed,
-                                           issue=active_maintenance_ping))
+            return (False, partial(add_comment_about_unmaintained_state,
+                                   issue=active_maintenance_ping))
         else:
             # no - > maintained ! (but status being questionned)
-            return ("maintained?", None)
+            return (True, None)
 
     # Commit in master or testing in last 18 months ?
     if get_commit_days_ago(repo, "master")  < 18*30 \
     or get_commit_days_ago(repo, "testing") < 18*30:
         # ok, maintained
-        return ("maintained", None)
+        return (True, None)
 
     # Maintainenance status is now being questionned...
     # Was there a (now closed) maintenance ping in the last 6 months ?
-    old_maintenance_ping = get_old_maintenance_ping(issues)
+    old_maintenance_ping = look_for_old_maintenance_ping(issues)
     if old_maintenance_ping and old_maintenance_ping["update_days_ago"] < 6*30:
         # Yes - > ok, maintained
-        return ("maintained", None)
+        return (True, None)
     else:
         # No - > Gotta create a maintenance ping ! (but still considered maintained)
-        return ("maintained?", create_maintenance_ping)
+        return (True, create_maintenance_ping)
 
 def get_apps_to_check():
 
@@ -134,7 +136,7 @@ def get_apps_to_check():
     community="https://raw.githubusercontent.com/YunoHost/apps/master/community.json"
 
     raw_apps = []
-    raw_apps += json.loads(requests.get(official).text).values()
+    #raw_apps += json.loads(requests.get(official).text).values()
     raw_apps += json.loads(requests.get(community).text).values()
 
     return [ app["url"].replace("https://github.com/","") \
@@ -142,7 +144,7 @@ def get_apps_to_check():
             if app["state"] in ["validated", "working", "inprogress"] ]
 
 
-def main():
+def analyze_apps():
 
     monitored_apps = get_apps_to_check()
 
@@ -155,16 +157,41 @@ def main():
         print("Checking {} ...".format(app))
 
         try:
-            status[app], todo[app] = get_status_and_todo(app)
-        except:
+            maintained[app], todo[app] = get_status_and_todo(app)
+        except Exception as e:
+            print("Failed to fetch status / todo for %s" % app)
+            print(e.str)
             continue
 
-    to_ping = [ app for app in monitored_apps if status[app] == "maintained?" ]
-    print("To ping :")
-    print(len(to_ping))
-    print("--------")
-    for app in to_ping:
+    return (monitored_apps, maintained, todo)
+
+
+def run_todolist(todolist):
+
+    done = []
+
+    for app, todo in todolist:
+        print("Running todo action for app %s" % app)
+        try:
+            answer = todo(app)
+        except:
+            print("Failed to run todo action %s for app %s" % (todo, app))
+            continue
+        done.append(answer)
+
+
+def main():
+
+    monitored, maintained, todolist = analyze_apps()
+
+    for app, action in todo.items():
+        print("===")
         print(app)
-        #todo[app](app)
+        print(status[app])
+        print(todo[app])
+
+    run_todolist(todolist)
+
+    #update_maintained_states(maintained)
 
 main()
