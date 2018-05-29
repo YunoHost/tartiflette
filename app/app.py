@@ -27,6 +27,13 @@ def applist_history():
     data = json.loads(open("./app/scripts/appListsHistory/count_history.json").read())
     return render_template('applist_history.html', data=data)
 
+@main.route('/apps.rss')
+def apps_rss():
+    file_ = open("./app/scripts/appListsHistory/atom.xml").read()
+    response = make_response(file_)
+    response.headers['Content-Type'] = 'application/rss+xml'
+    return response
+
 @main.route('/pullrequests')
 def pullrequests():
 

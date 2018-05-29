@@ -120,7 +120,7 @@ def make_rss_feed():
 
     for diff in diffs():
         fe = fg.add_entry()
-        fe.id(diff["end"].strftime("%y-%m-%d"))
+        fe.id('https://github.com/YunoHost/Apps/#'+diff["end"].strftime("%y-%m-%d"))
         fe.title('Changes between %s and %s' % (diff["begin"].strftime("%b %d"), diff["end"].strftime("%b %d")))
         fe.link(href='https://github.com/YunoHost/apps/commits/master/community.json')
         fe.content(jinja2.Template(open("rss_template.html").read()).render(data=diff), type="html")
