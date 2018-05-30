@@ -22,18 +22,6 @@ def sort_test_results(results):
 def index():
     return render_template('index.html')
 
-@main.route('/applist_history')
-def applist_history():
-    data = json.loads(open("./app/scripts/appListsHistory/count_history.json").read())
-    return render_template('applist_history.html', data=data)
-
-@main.route('/apps.rss')
-def apps_rss():
-    file_ = open("./app/scripts/appListsHistory/atom.xml").read()
-    response = make_response(file_)
-    response.headers['Content-Type'] = 'application/rss+xml'
-    return response
-
 @main.route('/pullrequests')
 def pullrequests():
 
@@ -49,6 +37,10 @@ def pullrequests():
                       "doc": len([pr for pr in active_prs if pr.repo.team == "doc"]) }
 
     return render_template("pullrequests.html", prs=prs,  count_by_team=count_by_team)
+
+#
+# Apps CI
+#
 
 
 @main.route('/appci/branch/<branch>')
@@ -131,5 +123,23 @@ def badge(app):
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response.headers['Pragma'] = 'no-cache'
 
+    return response
+
+#
+# Apps observatory
+#
+
+@main.route('/applist_history')
+@main.route('/appsobservatory/history')
+def appsobservatory_history():
+    data = json.loads(open("./app/scripts/appListsHistory/count_history.json").read())
+    return render_template('applist_history.html', data=data)
+
+
+@main.route('/appsobservatory/rss')
+def appsobservatory_rss():
+    file_ = open("./app/scripts/appListsHistory/atom.xml").read()
+    response = make_response(file_)
+    response.headers['Content-Type'] = 'application/rss+xml'
     return response
 
