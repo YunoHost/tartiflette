@@ -4,61 +4,59 @@ from flask_script import Manager, Shell, Command, Server
 from app import db, create_app
 
 app = create_app()
-
-
+manager = Manager(app)
 def main():
-    manager = Manager(app)
     manager.add_command('shell', Shell(make_context=lambda:{"app":app, "db":db}))
-    manager.add_command('nuke', Nuke(db))
-    manager.add_command('init', Init(db))
-    manager.add_command('update-appci', Update(db, "appci"))
-    manager.add_command('update-pr', Update(db, "pr"))
     manager.add_command("runserver", Server())
     manager.run()
 
-
+@manager.add_command
 class Update(Command):
+    name = "update"
+    capture_all_args = True
 
-    def __init__(self, db, what):
-        self.db = db
-        self.what = what
+    def run(self, args=None):
 
-    def run(self):
+        valid_what = ["appci", "pr", "appobservatory"]
+        what = args[0] if args else None
+        assert what in valid_what, "Please specify what to update among %s" % ', '.join(valid_what)
 
-        if self.what == "appci":
+        if what == "appci":
             from app.models.appci import AppCI
             AppCI.update()
-        elif self.what == "pr":
+        elif what == "pr":
             from app.models.pr import Repo
             for repo in Repo.query.all():
                 repo.update()
+        elif what == "appobservatory":
+            from app.models.unlistedapps import UnlistedApp
+            UnlistedApp.update()
         else:
             pass
 
 
+@manager.add_command
 class Nuke(Command):
     """Nuke the database (except the platform table)"""
-
-    def __init__(self, db):
-        self.db = db
+    name = "nuke"
 
     def run(self):
 
         import app.models.appci
         import app.models.pr
+        import app.models.unlistedapps
 
         print("> Droping tables...")
-        self.db.drop_all()
+        db.drop_all()
         print("> Creating tables...")
-        self.db.create_all()
+        db.create_all()
         print("> Comitting sessions...")
-        self.db.session.commit()
+        db.session.commit()
 
 
+@manager.add_command
 class Init(Command):
-
-    def __init__(self, db):
-        self.db = db
+    name = "init"
 
     def run(self):
         import app.models
