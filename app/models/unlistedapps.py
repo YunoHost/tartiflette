@@ -63,16 +63,6 @@ class UnlistedApp(db.Model):
 
         db.session.commit()
 
-        #apps = sorted(apps, key=lambda x: x["updated_days_ago"])
-
-        #for app in apps:
-        #    if app["updated_days_ago"] > 100:
-        #        continue
-        #    print(app["name"] + " ... " + app["url"] + " ... " + str(app["updated_days_ago"]))
-
-        #with open('apps.json', 'w') as f:
-        #    json.dump(apps, f)
-
 
 def githubDateToDaysAgo(date):
     now = datetime.datetime.now()

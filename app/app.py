@@ -1,6 +1,7 @@
 from flask import render_template, make_response, Blueprint
 from .models.pr import PullRequest
 from .models.appci import App, AppCI, AppCIBranch
+from .models.unlistedapps import UnlistedApp
 from .settings import SITE_ROOT
 import json
 
@@ -142,4 +143,11 @@ def appsobservatory_rss():
     response = make_response(file_)
     response.headers['Content-Type'] = 'application/rss+xml'
     return response
+
+@main.route('/appsobservatory/unlisted')
+def appsobservatory_unlisted():
+
+    apps = sorted(UnlistedApp.query.all(), key=lambda a: a.updated_days_ago)
+
+    return render_template("unlistedapps.html", apps=apps)
 
