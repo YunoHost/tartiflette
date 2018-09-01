@@ -53,7 +53,14 @@ def look_for_old_maintenance_ping(issues):
 
 def get_commit_days_ago(repo, branch):
 
-    ref = get_github("/repos/{repo}/git/refs/heads/{branch}".format(repo=repo, branch=branch))
+    try:
+       ref = get_github("/repos/{repo}/git/refs/heads/{branch}".format(repo=repo, branch=branch))
+    except Exception as e:
+       if branch != "master":
+         return 99999
+       else:
+         raise e
+
     if not "object" in ref:
         return 99999
 
@@ -116,9 +123,9 @@ def get_status_and_todo(repo):
             # no - > maintained ! (but status being questionned)
             return (True, None)
 
-    # Commit in master or testing in last 18 months ?
-    if get_commit_days_ago(repo, "master")  < 18*30 \
-    or get_commit_days_ago(repo, "testing") < 18*30:
+    # Commit in master or testing in last 12 months ?
+    if get_commit_days_ago(repo, "master")  < 12*30 \
+    or get_commit_days_ago(repo, "testing") < 12*30:
         # ok, maintained
         return (True, None)
 
@@ -281,6 +288,12 @@ def create_pull_request(repo, watdo, pr_infos):
 def main():
 
     monitored, maintained, todolist = analyze_apps()
+
+    for app, todo in todolist.items():
+        if todo is None:
+            continue
+        else:
+            print("[%s] %s" % (app, str(todo)[:40]))
 
     run_todolist(todolist)
 
