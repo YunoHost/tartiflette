@@ -112,7 +112,12 @@ class App(db.Model):
                                           .first()
             if most_recent_test:
                 yield most_recent_test
-
+            else:
+                yield AppCIResult(app = self,
+                                  branch = branch,
+                                  level = None,
+                                  date = datetime.datetime.fromtimestamp(0),
+                                  results = [ None for t in AppCI.tests ])
 
 class AppCIBranch(db.Model):
 
@@ -156,6 +161,12 @@ class AppCIBranch(db.Model):
                                           .first()
             if most_recent_test:
                 yield most_recent_test
+            else:
+                yield AppCIResult(app = app,
+                                  branch = self,
+                                  level = None,
+                                  date = datetime.datetime.fromtimestamp(0),
+                                  results = [ None for t in AppCI.tests ])
 
 
 class AppCIResult(db.Model):
@@ -183,7 +194,7 @@ class AppCIResult(db.Model):
 
     def score(self):
         s_dict = { True: +1, False: -1, None: 0 }
-        return sum([ s_dict[result] for result in self.results.values() ])
+        return sum([ s_dict[result] for result in self.results ])
 
 
 class AppCI():
