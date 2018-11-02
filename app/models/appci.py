@@ -2,7 +2,6 @@ import os
 import time
 import json
 import requests
-import dateutil.parser
 import datetime
 
 from .. import db
@@ -46,9 +45,9 @@ class AppList(db.Model):
             if not known_app:
                 print("Adding new app {}".format(name))
                 known_app = App(name=name,
-                              repo=app["url"],
-                              list=self,
-                              public_commit=app["revision"])
+                                repo=app["url"],
+                                list=self,
+                                public_commit=app["revision"])
                 db.session.add(known_app)
             else:
                 print("Updating already known app {}".format(name))
@@ -77,8 +76,6 @@ class AppList(db.Model):
            db.session.commit()
         except Exception as e:
            print(e)
-           import pdb; pdb.set_trace()
-
 
 
 class App(db.Model):
@@ -109,19 +106,20 @@ class App(db.Model):
         branches = AppCIBranch.query.all()
         for branch in branches:
             most_recent_test = AppCIResult.query \
-                                           .filter_by(branch = branch) \
-                                           .filter_by(app = self) \
-                                           .order_by('date desc') \
-                                           .first()
+                                          .filter_by(branch = branch) \
+                                          .filter_by(app = self) \
+                                          .order_by('date desc') \
+                                          .first()
             if most_recent_test:
                 yield most_recent_test
-
 
 
 class AppCIBranch(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False)
+    arch = db.Column(db.String(64), nullable=False)
+    branch = db.Column(db.String(64), nullable=False)
     display_name = db.Column(db.String(64), unique=True, nullable=False)
     url = db.Column(db.String(128), nullable=False)
     console_uri = db.Column(db.String(128), nullable=False)
@@ -131,25 +129,18 @@ class AppCIBranch(db.Model):
 
     def init():
         yield AppCIBranch(name='stable',
+                          arch="x86",
+                          branch="stable",
                           display_name='Stable (x86)',
-                          url='https://ci-apps.yunohost.org/jenkins',
+                          url='https://ci-apps.yunohost.org/ci/logs/list_level_stable.json',
                           console_uri='/job/{} ({})/lastBuild/consoleText')
 
-        yield AppCIBranch(name='testing',
-                          display_name='Testing (x86)',
-                          url='https://ci-apps.yunohost.org/jenkins',
-                          console_uri='/job/{} ({}) (testing)/lastBuild/consoleText')
-
         yield AppCIBranch(name='arm',
+                          arch="arm",
+                          branch="stable",
                           display_name='Stable (ARM)',
-                          url='https://ci-apps-arm.yunohost.org/jenkins',
+                          url='https://ci-apps-arm.yunohost.org/ci/logs/list_level_stable.json',
                           console_uri='/job/{} ({}) (~ARM~)/lastBuild/consoleText')
-
-        yield AppCIBranch(name='stretch',
-                          display_name='Stretch (x86)',
-                          url="https://ci-stretch.nohost.me/jenkins",
-                          console_uri="/job/{} ({})/lastBuild/consoleText")
-
 
     def last_build_url(self, app):
         return self.url + self.console_uri.format(app.name, app.list.name.title())
@@ -159,10 +150,10 @@ class AppCIBranch(db.Model):
         apps = App.query.all()
         for app in apps:
             most_recent_test = AppCIResult.query \
-                                           .filter_by(branch = self) \
-                                           .filter_by(app = app) \
-                                           .order_by('date desc') \
-                                           .first()
+                                          .filter_by(branch = self) \
+                                          .filter_by(app = app) \
+                                          .order_by('date desc') \
+                                          .first()
             if most_recent_test:
                 yield most_recent_test
 
@@ -181,7 +172,7 @@ class AppCIResult(db.Model):
 
     date = db.Column(db.DateTime, nullable=True)
     level = db.Column(db.Integer, nullable=True)
-    url = db.Column(db.String(128), nullable=False)
+    url = db.Column(db.String(128), nullable=True)
     commit = db.Column(db.String(64), nullable=True)
 
     def __repr__(self):
@@ -222,94 +213,31 @@ class AppCI():
         for applist in applists:
             applist.update()
 
-        apps = App.query.all()
         cibranches = AppCIBranch.query.all()
 
+        def symbol_to_bool(s):
+            return bool(int(s)) if s in [ "1", "0" ] else None
+
         # Scrap jenkins
-        for branch in cibranches:
-            for app in apps:
-                print("> Fetching {} for C.I. branch {}".format(app.name, branch.name))
-                url, raw_ci_output = AppCI.fetch_raw_ci_output(branch, app)
-                if raw_ci_output is None:
-                    print("  Not found, going next")
+        for cibranch in cibranches:
+            print("> Fetching current CI results for C.I. branch {}".format(cibranch.name))
+            result_json = requests.get(cibranch.url).text
+            cleaned_json = [ line for line in result_json.split("\n") if "test_name" in line ]
+            cleaned_json = [ line.replace('"level": ?,', '"level": null,') for line in cleaned_json ]
+            cleaned_json = "[" + ''.join(cleaned_json)[:-1] + "]"
+            j = json.loads(cleaned_json)
+            for test_summary in j:
+                if (test_summary["arch"], test_summary["branch"]) != (cibranch.arch, cibranch.branch):
                     continue
-                print("> Analyzing...")
-                results = AppCI.scrap_raw_ci_output(raw_ci_output)
-                print("> Saving...")
-                results = AppCIResult(app = app,
-                                      branch = branch,
-                                      url = url,
-                                      date = results["date"],
-                                      level = results["level"],
-                                      results = results["tests"],
-                                      commit = results["commit"])
+
+                results = AppCIResult(app = App.query.filter_by(name=test_summary["app"]).first(),
+                                      branch = cibranch,
+                                      level = test_summary["level"],
+                                      date = datetime.datetime.fromtimestamp(test_summary["timestamp"]),
+                                      results = [ symbol_to_bool(s) for s in test_summary["detailled_success"] ])
                 db.session.add(results)
 
         db.session.commit()
-
-
-    def fetch_raw_ci_output(cibranch, app):
-
-        console_url = cibranch.last_build_url(app)
-        r = requests.get(console_url)
-        return (console_url, r.text.split('\n') if r.status_code == 200 else None)
-
-
-    def scrap_raw_ci_output(raw_console):
-
-        tests_results = {}
-
-        # Find individual tests results
-        for test in AppCI.tests:
-            # A test can have been done several times... We grep all lines
-            # corresponding to this test
-            test_results = [ line for line in raw_console if line.startswith(test+":") ]
-
-            # For each line corresponding to this test, if there's at least one
-            # failed, it means this test failed
-            if [ line for line in test_results if "FAIL" in line ]:
-                tests_results[test] = False
-            # Otherwise, if there's at least one success, it means this test
-            # succeeded
-            elif [ line for line in test_results if "SUCCESS" in line ]:
-                tests_results[test] = True
-            # Otherwise, this means it has not been evaluated
-            else:
-                tests_results[test] = None
-
-        # Find level
-        level = None
-        for line in raw_console:
-            if line.startswith('Level of this application:'):
-                try:
-                    level = int(line.replace('Level of this application:', '').split()[0])
-                except:
-                    print("Couldn't parse level :s")
-
-        # Find date
-        date = None
-        for previous_line, line in zip(raw_console, raw_console[1:]):
-          if line == "Test finished.":
-              # Get date from previous line and parse it into a timestamp
-              date = previous_line
-              try:
-                date = dateutil.parser.parse(date)
-              except:
-                # Meh
-                date = None
-
-        # Find commit
-        commit = None
-        for line in raw_console:
-            if line.startswith('Checking out Revision '):
-                commit = line.split()[3]
-
-        return {
-            "tests": tests_results,
-            "level": level,
-            "date": date,
-            "commit": commit
-        }
 
 
 class Github():
