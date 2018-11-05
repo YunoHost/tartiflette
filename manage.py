@@ -17,11 +17,14 @@ class Update(Command):
 
     def run(self, args=None):
 
-        valid_what = ["appci", "pr", "appobservatory"]
+        valid_what = ["applists", "appci", "pr", "appobservatory"]
         what = args[0] if args else None
         assert what in valid_what, "Please specify what to update among %s" % ', '.join(valid_what)
 
-        if what == "appci":
+        if what == "applists":
+            from app.models.applists import AppList
+            AppList.update()
+        elif what == "appci":
             from app.models.appci import AppCI
             AppCI.update()
         elif what == "pr":
@@ -42,6 +45,7 @@ class Nuke(Command):
 
     def run(self):
 
+        import app.models.applists
         import app.models.appci
         import app.models.pr
         import app.models.unlistedapps
@@ -67,6 +71,7 @@ class Init(Command):
         for submodule in submodules:
             stuff.extend([submodule.__dict__.get(s) for s in dir(submodule)])
         models = [s for s in stuff if isinstance(s, type(db.Model))]
+        models = set(models)
 
         for model in models:
             objs = model.init()
