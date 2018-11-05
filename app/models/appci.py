@@ -1,3 +1,4 @@
+import re
 import os
 import time
 import json
@@ -19,10 +20,10 @@ class AppList(db.Model):
 
     def init():
         yield AppList(name='official',
-                      url="https://raw.githubusercontent.com/YunoHost/apps/master/official.json",
+                      url="https://app.yunohost.org/official.json",
                       state_for_ci='validated')
         yield AppList(name='community',
-                      url="https://raw.githubusercontent.com/YunoHost/apps/master/community.json",
+                      url="https://app.yunohost.org/community.json",
                       state_for_ci='working')
 
     def update(self):
@@ -30,12 +31,11 @@ class AppList(db.Model):
         g = Github()
 
         raw_apps = json.loads(requests.get(self.url).text).values()
-        apps_for_ci = [ app for app in raw_apps
-                        if app["state"] == self.state_for_ci ]
+        apps = [ app for app in raw_apps ]
 
-        for app in apps_for_ci:
+        for app in apps:
 
-            app['url'] = app["url"].strip('/')
+            app['url'] = app["git"]["url"].strip('/')
             name = os.path.basename(app["url"]).replace("_ynh", "")
 
             # Try to find an app for this name
@@ -47,15 +47,30 @@ class AppList(db.Model):
                 known_app = App(name=name,
                                 repo=app["url"],
                                 list=self,
-                                public_commit=app["revision"])
+                                public_commit=app["git"]["revision"])
                 db.session.add(known_app)
             else:
                 print("Updating already known app {}".format(name))
 
+            maintainers_info = app["manifest"].get("maintainer", app["manifest"].get("developer", None))
+            if maintainers_info is None:
+                known_app.maintainers = [ ]
+            if isinstance(maintainers_info, dict):
+                if maintainers_info["name"] == "-" or maintainers_info["name"] == "":
+                    known_app.maintainers = [ ]
+                else:
+                    known_app.maintainers = re.split(", | et ", maintainers_info["name"])
+            if isinstance(maintainers_info, list):
+                known_app.maintainers = [ maintainer["name"] for maintainer in maintainers_info ]
+
+            known_app.maintained = app.get("maintained", True)
+            known_app.ci_enabled = app["state"] == self.state_for_ci
+            known_app.public_level = app.get("level", None)
+
             if "github" in known_app.repo:
                 issues_and_prs = g.issues(known_app)
 
-                known_app.public_commit = app["revision"]
+                known_app.public_commit = app["git"]["revision"]
                 known_app.master_commit = g.commit(known_app, "master")
                 known_app.testing_diff = g.diff(known_app, "master", "testing")["ahead_by"]
                 known_app.opened_issues = issues_and_prs["nb_issues"]
@@ -83,6 +98,10 @@ class App(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False)
     repo = db.Column(db.String(128), unique=True, nullable=False)
+    maintainers = db.Column(db.PickleType)
+    maintained = db.Column(db.Boolean, nullable=False)
+    ci_enabled = db.Column(db.Boolean, nullable=False)
+    public_level = db.Column(db.Integer, default=-1, nullable=True)
 
     list = db.relationship(AppList, backref='apps', lazy=True, uselist=False)
     list_id = db.Column(db.ForeignKey(AppList.id))
@@ -152,7 +171,7 @@ class AppCIBranch(db.Model):
 
     def most_recent_tests_per_app(self):
 
-        apps = App.query.all()
+        apps = App.query.filter_by(ci_enabled=True).all()
         for app in apps:
             most_recent_test = AppCIResult.query \
                                           .filter_by(branch = self) \
