@@ -70,6 +70,7 @@ class AppList(db.Model):
                 known_app.maintainers = [ maintainer["name"] for maintainer in maintainers_info ]
 
             known_app.maintained = app.get("maintained", True)
+            known_app.state = app["state"]
             known_app.ci_enabled = app["state"] == self.state_for_ci
             known_app.public_level = app.get("level", None)
 
@@ -78,20 +79,18 @@ class AppList(db.Model):
 
                 known_app.public_commit = app["git"]["revision"]
                 known_app.master_commit = g.commit(known_app, "master")
+                known_app.public_commit_date = g.commit_date(known_app, known_app.public_commit)
+                known_app.master_commit_date = g.commit_date(known_app, known_app.master_commit)
                 known_app.testing_diff = g.diff(known_app, "master", "testing")["ahead_by"]
                 known_app.opened_issues = issues_and_prs["nb_issues"]
                 known_app.opened_prs = issues_and_prs["nb_prs"]
 
-                known_app.public_vs_master_time_diff = \
-                   (g.commit_date(known_app, known_app.master_commit) -
-                    g.commit_date(known_app, known_app.public_commit)).days
             else:
                 known_app.public_commit = "???"
                 known_app.master_commit = "???"
                 known_app.testing_diff = -1
                 known_app.opened_issues = 0
                 known_app.opened_prs = 0
-                known_app.public_vs_master_time_diff = 0
 
         try:
            db.session.commit()
@@ -106,6 +105,7 @@ class App(db.Model):
     repo = db.Column(db.String(128), unique=True, nullable=False)
     maintainers = db.Column(db.PickleType)
     maintained = db.Column(db.Boolean, nullable=False)
+    state = db.Column(db.String(64), nullable=False)
     ci_enabled = db.Column(db.Boolean, nullable=False)
     public_level = db.Column(db.Integer, default=-1, nullable=True)
 
@@ -115,10 +115,11 @@ class App(db.Model):
     # 'Status info' stuff
     public_commit = db.Column(db.String(64), nullable=False)
     master_commit = db.Column(db.String(64), nullable=False)
+    public_commit_date = db.Column(db.DateTime, nullable=True)
+    master_commit_date = db.Column(db.DateTime, nullable=True)
     testing_diff = db.Column(db.Integer, default=-1)
     opened_issues = db.Column(db.Integer, default=-1)
     opened_prs = db.Column(db.Integer, default=-1)
-    public_vs_master_time_diff = db.Column(db.Integer, default=9999)
 
     def __repr__(self):
         return '<App %r>' % self.name
@@ -126,9 +127,13 @@ class App(db.Model):
     def init():
         pass
 
+    @property
+    def public_vs_master_time_diff(self):
+        return (self.public_commit_date - self.master_commit_date).days
+
     def most_recent_tests_per_branch(self):
 
-        from appci import AppCIBranch, AppCIResult, AppCI
+        from app.models.appci import AppCIBranch, AppCIResult, AppCI
         branches = AppCIBranch.query.all()
         for branch in branches:
             most_recent_test = AppCIResult.query \

@@ -1,6 +1,7 @@
 from flask import render_template, make_response, Blueprint
 from .models.pr import PullRequest
-from .models.appci import App, AppCI, AppCIBranch
+from .models.applists import App
+from .models.appci import AppCI, AppCIBranch
 from .models.unlistedapps import UnlistedApp
 from .settings import SITE_ROOT
 import json
@@ -118,6 +119,9 @@ def badge(app):
 
     badge = "level%s.svg" % level if not level is None else "unknown.svg"
 
+    if not app.ci_enabled:
+        badge = "unknown.svg"
+
     svg = open("./app/static/badges/%s" % badge).read()
     response = make_response(svg)
     response.content_type = 'image/svg+xml'
@@ -150,4 +154,20 @@ def appsobservatory_unlisted():
     apps = sorted(UnlistedApp.query.all(), key=lambda a: a.updated_days_ago)
 
     return render_template("unlistedapps.html", apps=apps)
+
+@main.route('/app_maintainer_dash')
+def app_maintainer_dash():
+
+    maintainers = set()
+    apps = App.query.all()
+    for app in apps:
+        maintainers.update(app.maintainers)
+        for test in app.most_recent_tests_per_branch():
+            if test.branch.name == "stable":
+                app.ci_level = test.level
+
+    maintainers = sorted(maintainers, key=lambda m: m.lower())
+    apps = sorted(apps, key=lambda app: app.name.lower())
+
+    return render_template("maintainer.html", maintainers=maintainers, apps=apps)
 

@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row">
+<div class="mx-auto">
+<select id="maintainer-select">
+  <option value="all">All</option>
+  <option value="nobody">Nobody / Unmaintained</option>
+  {% for maintainer in maintainers %}
+  <option value="{{ maintainer.lower()|replace(" ", "") }}">{{ maintainer }}</option>
+  {% endfor %}
+</select>
+</div>
+</div>
+
+<div class="row">
+    <div class="mx-auto">
+        <div>
+            <table class="table table-responsive ci-app-table">
+                <thead>
+                    <tr>
+                        <th class="ci-app-row-title">App</th>
+                        <th class="ci-app-test-title"><div>Declared state</div></th>
+                        <th class="ci-app-test-title"><div>Maintained</div></th>
+                        <th class="ci-app-test-title"><div>Public level</div></th>
+                        <th class="ci-app-test-title"><div>CI level</div></th>
+                        <th class="ci-app-test-title"><div># opened issues</div></th>
+                        <th class="ci-app-test-title"><div># opened PR</div></th>
+                        <th class="ci-app-test-title"><div>Last commit</div></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for app in apps %}
+                <tr class="appline" app="{{ app.name }}" maintainers="{% for m in app.maintainers %}{{ m.lower()|replace(" ", "") }}|{% endfor %}" maintained="{{ app.maintained }}">
+
+
+                    <td class="ci-app-row-title">
+                        <a href="{{ url_for('main.appci_app', app=app.name) }}">
+                            <span class="font-weight-bold" title="More tests / info for this app">
+                                {{ app.name }}</span>
+                        </a>
+                    </td>
+
+
+                    <td>
+                        {% if app.list.name == "official" %}
+                            <span class="official-star oi oi-star" title="Official" aria-hidden="true"></span>
+                        {% elif app.state == "working" %}
+                            <span class="text-success oi oi-circle-check" title="Working" aria-hidden="true"></span>
+                        {% elif app.state == "inprogress" %}
+                            <span class="text-warning oi oi-wrench" title="In progress" aria-hidden="true"></span>
+                        {% else %}
+                            <span class="text-danger oi oi-fire" title="Not working" aria-hidden="true"></span>
+                        {% endif %}
+                    </td>
+
+
+                    {% if app.maintained %}
+                    <td class="text-success">
+                        <span class="oi oi-circle-check" aria-hidden="true"></span>
+                    {% else %}
+                    <td class="text-warning">
+                        <span class="oi oi-warning" aria-hidden="true"></span>
+                    {% endif %}
+                    </td>
+
+
+                    {% if app.state == "inprogress" or app.state == "notworking" %}
+                    <td class="ci-app-level"><div title="Public Level"></div></td>
+                    <td class="ci-app-level"><div title="CI Level"></div></td>
+                    {% else %}
+
+
+                    <td class="ci-app-level
+                    {% if app.public_level == None or app.public_level == -1 or app.public_level == "?" %}
+                        table-active
+                    {% elif app.public_level <= 0 %}
+                        table-danger
+                    {% elif app.public_level <= 2 %}
+                        table-warning
+                    {% else %}
+                        table-success
+                    {% endif %}
+                        " value="{{ app.public_level }}">
+                        <div title="Public Level"><strong>{{ app.public_level if app.public_level >= 0 else "?" }}</strong></div>
+                    </td>
+
+
+                    <td class="ci-app-level
+                    {% if app.ci_level == None or app.ci_level == -1 or app.ci_level == "?" %}
+                        table-active
+                    {% elif app.ci_level <= 0 %}
+                        table-danger
+                    {% elif app.ci_level <= 2 %}
+                        table-warning
+                    {% else %}
+                        table-success
+                    {% endif %}
+                        " value="{{ app.ci_level }}">
+                        <div title="CI Level"><strong>{{ app.ci_level if app.ci_level and app.ci_level >= 0 else "?" }}</strong></div>
+                    </td>
+
+                    {% endif %}
+
+
+                    <td class="font-weight-bold
+                    {% if app.opened_issues >= 10 %}
+                        text-danger
+                    {% elif app.opened_issues >= 5 %}
+                        text-warning
+                    {% elif app.opened_issues > 0 %}
+                        text-active
+                    {% else %}
+                        text-success
+                    {% endif %}
+                    ">{{ app.opened_issues }}</a></td>
+
+
+                    <td class="font-weight-bold
+                    {% if app.opened_prs > 0 %}
+                        text-info
+                    {% endif %}
+                    ">{{ app.opened_prs }}</td>
+
+
+                    <td class="ci-app-test-info">
+                    {% if app.public_commit_date %}
+                    <span class="daysAgo" timestamp={{ app.public_commit_date.timestamp() }}></span></td>
+                    {% else %}
+                    <span class="daysAgo">???</span></td>
+                    {% endif %}
+                    </td>
+
+                    <td class="px-0">
+                        <a href="{{ app.repo }}">
+                         <span class="oi oi-external-link text-info"
+                              aria-hidden="true"
+                              title="To the Git repo!"></span>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+window.onload = function () {
+$('#maintainer-select').on('change', function() {
+   var maintainer = this.value;
+   if (maintainer == "all")
+   {
+       $(".appline").show();
+       return;
+   }
+   else if (maintainer == "nobody")
+   {
+      $(".appline").each(function (i) {
+         if ((this.attributes["maintainers"].value == "") || (this.attributes["maintained"].value == "False"))
+         {
+             $(this).show();
+         }
+         else {
+             $(this).hide();
+         }
+      });
+   }
+   else
+   {
+      $(".appline").each(function (i) {
+          var maintainers = this.attributes["maintainers"].value.split("|");
+          if (maintainers.includes(maintainer)) {
+              $(this).show();
+          }
+          else {
+              $(this).hide();
+          }
+      });
+   }
+});
+}
+</script>
+
+{% endblock %}
