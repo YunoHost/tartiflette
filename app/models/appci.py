@@ -52,7 +52,7 @@ class AppCIBranch(db.Model):
                                   branch = self,
                                   level = None,
                                   date = datetime.datetime.fromtimestamp(0),
-                                  results = [ None for t in AppCI.tests ])
+                                  results = { t:None for t in AppCI.tests })
 
 
 class AppCIResult(db.Model):
@@ -80,7 +80,7 @@ class AppCIResult(db.Model):
 
     def score(self):
         s_dict = { True: +1, False: -1, None: 0 }
-        return sum([ s_dict[result] for result in self.results ])
+        return sum([ s_dict[result] for result in self.results.values() ])
 
 
 class AppCI():
@@ -106,9 +106,6 @@ class AppCI():
 
         cibranches = AppCIBranch.query.all()
 
-        def symbol_to_bool(s):
-            return bool(int(s)) if s in [ "1", "0" ] else None
-
         # Scrap jenkins
         for cibranch in cibranches:
             print("> Fetching current CI results for C.I. branch {}".format(cibranch.name))
@@ -121,11 +118,15 @@ class AppCI():
                 if (test_summary["arch"], test_summary["branch"]) != (cibranch.arch, cibranch.branch):
                     continue
 
+                test_results = { }
+                for test, result in zip(AppCI.tests, test_summary["detailled_success"]):
+                    test_results[test] = bool(int(result)) if result in [ "1", "0" ] else None 
+
                 results = AppCIResult(app = App.query.filter_by(name=test_summary["app"]).first(),
                                       branch = cibranch,
                                       level = test_summary["level"],
                                       date = datetime.datetime.fromtimestamp(test_summary["timestamp"]),
-                                      results = [ symbol_to_bool(s) for s in test_summary["detailled_success"] ])
+                                      results = test_results)
                 db.session.add(results)
 
         db.session.commit()

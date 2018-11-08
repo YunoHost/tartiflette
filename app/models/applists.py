@@ -148,7 +148,7 @@ class App(db.Model):
                                   branch = branch,
                                   level = None,
                                   date = datetime.datetime.fromtimestamp(0),
-                                  results = [ None for t in AppCI.tests ])
+                                  results = { t:None for t in AppCI.tests })
 
 class Github():
 
