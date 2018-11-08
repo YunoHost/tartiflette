@@ -166,6 +166,9 @@ def app_maintainer_dash():
             if test.branch.name == "stable":
                 app.ci_level = test.level
 
+        if isinstance(app.public_level, str):
+            app.public_level = -1
+
     maintainers = sorted(maintainers, key=lambda m: m.lower())
     apps = sorted(apps, key=lambda app: app.name.lower())
 

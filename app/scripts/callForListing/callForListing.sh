@@ -15,6 +15,7 @@ function createIssue()
                   --data "$DATA" )
     #echo "$ANSWER" >&2
 
+    echo "$ANSWER"
     echo "$ANSWER" \
     | grep "^  \"html_url\":" \
     | awk '{print $2}' \
@@ -31,6 +32,7 @@ function main()
 
 	while read -r line
 	do
+		echo $line
 		OWNER=$(echo "$line" | tr '/' ' ' | awk '{print $3}')
 		REPO=$(echo "$line" | tr '/' ' ' | awk '{print $4}')
 		createIssue $OWNER $REPO

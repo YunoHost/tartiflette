@@ -124,6 +124,7 @@ def make_rss_feed():
         fe.title('Changes between %s and %s' % (diff["begin"].strftime("%b %d"), diff["end"].strftime("%b %d")))
         fe.link(href='https://github.com/YunoHost/apps/commits/master/community.json')
         fe.content(jinja2.Template(open("rss_template.html").read()).render(data=diff), type="html")
+        fe._FeedEntry__atom_updated = diff["end"]
 
     fg.atom_file('atom.xml')
 
@@ -157,6 +158,6 @@ def make_count_summary():
 
     json.dump(history, open('count_history.json', 'w'))
 
-#get_lists_history()
+get_lists_history()
 make_rss_feed()
-#make_count_summary()
+make_count_summary()

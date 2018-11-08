@@ -83,7 +83,7 @@
                         table-success
                     {% endif %}
                         " value="{{ app.public_level }}">
-                        <div title="Public Level"><strong>{{ app.public_level if app.public_level >= 0 else "?" }}</strong></div>
+                        <div title="Public Level"><strong>{{ app.public_level if app.public_level != None and app.public_level >= 0 else "?" }}</strong></div>
                     </td>
 
 
@@ -98,7 +98,7 @@
                         table-success
                     {% endif %}
                         " value="{{ app.ci_level }}">
-                        <div title="CI Level"><strong>{{ app.ci_level if app.ci_level and app.ci_level >= 0 else "?" }}</strong></div>
+                        <div title="CI Level"><strong>{{ app.ci_level if app.ci_level != None and app.ci_level >= 0 else "?" }}</strong></div>
                     </td>
 
                     {% endif %}
@@ -125,8 +125,8 @@
 
 
                     <td class="ci-app-test-info">
-                    {% if app.public_commit_date %}
-                    <span class="daysAgo" timestamp={{ app.public_commit_date.timestamp() }}></span></td>
+                    {% if app.master_commit_date %}
+                    <span class="daysAgo" timestamp={{ app.master_commit_date.timestamp() }}></span></td>
                     {% else %}
                     <span class="daysAgo">???</span></td>
                     {% endif %}
