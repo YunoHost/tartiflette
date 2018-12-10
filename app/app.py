@@ -156,7 +156,11 @@ def appsobservatory_unlisted():
     return render_template("unlistedapps.html", apps=apps)
 
 @main.route('/app_maintainer_dash')
-def app_maintainer_dash():
+@main.route('/app_maintainer_dash/<maintainer>')
+def app_maintainer_dash(maintainer=None):
+
+    if maintainer:
+        maintainer = maintainer.lower().replace(" ", "")
 
     maintainers = set()
     apps = App.query.all()
@@ -175,5 +179,5 @@ def app_maintainer_dash():
     maintainers = sorted(maintainers, key=lambda m: m.lower())
     apps = sorted(apps, key=lambda app: app.name.lower())
 
-    return render_template("maintainer.html", maintainers=maintainers, apps=apps)
+    return render_template("maintainer.html", maintainers=maintainers, apps=apps, maintainer=maintainer)
 

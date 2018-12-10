@@ -3,6 +3,7 @@
 
 <div class="row">
 <div class="mx-auto">
+Active maintainers :
 <select id="maintainer-select">
   <option value="all">All</option>
   <option value="nobody">Nobody / Unmaintained</option>
@@ -151,6 +152,7 @@
 window.onload = function () {
 $('#maintainer-select').on('change', function() {
    var maintainer = this.value;
+   window.history.pushState("?", "YunoHost dashboard", "{{ url_for('main.app_maintainer_dash') }}/"+maintainer);
    if (maintainer == "all")
    {
        $(".appline").show();
@@ -181,7 +183,11 @@ $('#maintainer-select').on('change', function() {
       });
    }
 });
-}
+{% if maintainer %}
+$('#maintainer-select').val('{{ maintainer }}');
+$('#maintainer-select').change();
+{% endif %}
+};
 </script>
 
 {% endblock %}
