@@ -161,13 +161,16 @@ def app_maintainer_dash():
     maintainers = set()
     apps = App.query.all()
     for app in apps:
-        maintainers.update(app.maintainers)
         for test in app.most_recent_tests_per_branch():
             if test.branch.name == "stable":
                 app.ci_level = test.level
 
         if isinstance(app.public_level, str):
             app.public_level = -1
+
+        if app.maintained and app.state in ["working", "official"]:
+            maintainers.update(app.maintainers)
+
 
     maintainers = sorted(maintainers, key=lambda m: m.lower())
     apps = sorted(apps, key=lambda app: app.name.lower())
