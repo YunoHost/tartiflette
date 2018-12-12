@@ -13,7 +13,7 @@ class AppCIBranch(db.Model):
     branch = db.Column(db.String(64), nullable=False)
     display_name = db.Column(db.String(64), unique=True, nullable=False)
     url = db.Column(db.String(128), nullable=False)
-    console_uri = db.Column(db.String(128), nullable=False)
+    url_per_app = db.Column(db.String(128), nullable=False)
 
     def __repr__(self):
         return '<AppCIBranch %r>' % self.name
@@ -24,17 +24,17 @@ class AppCIBranch(db.Model):
                           branch="stable",
                           display_name='Stable (x86)',
                           url='https://ci-apps.yunohost.org/ci/logs/list_level_stable.json',
-                          console_uri='/job/{} ({})/lastBuild/consoleText')
+                          url_per_app='https://ci-apps.yunohost.org/ci/apps/{}/')
 
         yield AppCIBranch(name='arm',
                           arch="arm",
                           branch="stable",
                           display_name='Stable (ARM)',
                           url='https://ci-apps-arm.yunohost.org/ci/logs/list_level_stable.json',
-                          console_uri='/job/{} ({}) (~ARM~)/lastBuild/consoleText')
+                          url_per_app='https://ci-apps-arm.yunohost.org/ci/apps/{}/')
 
     def last_build_url(self, app):
-        return self.url + self.console_uri.format(app.name, app.list.name.title())
+        return self.url_per_app.format(app.name)
 
     def most_recent_tests_per_app(self):
 
