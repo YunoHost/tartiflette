@@ -36,13 +36,11 @@ class AppList(db.Model):
 
         g = Github()
 
-        raw_apps = json.loads(requests.get(self.url).text).values()
-        apps = [ app for app in raw_apps ]
+        raw_apps = json.loads(requests.get(self.url).text)
 
-        for app in apps:
+        for name, app in raw_apps.items():
 
             app['url'] = app["git"]["url"].strip('/')
-            name = os.path.basename(app["url"]).replace("_ynh", "")
 
             # Try to find an app for this name
             known_app = App.query.filter_by(name=name).first()
