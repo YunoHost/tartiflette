@@ -40,19 +40,11 @@
                         </td>
                     {% endfor %}
                     <td class="ci-app-test-info">
-                        {% if result.url == None %}
-				{% if result.date == None %}
-				    <span class="daysAgo">???</span>
-				{% else %}
-				    <span class="daysAgo" timestamp="{{ result.date.timestamp() }}"></span>
-				{% endif %}
-                        {% else %}
-				{% if result.date == None %}
-				    <span class="daysAgo" href="{{ result.url.replace("consoleText", "consoleFull") }}">???</span>
-				{% else %}
-				    <span class="daysAgo" timestamp="{{ result.date.timestamp() }}" href="{{ result.url.replace("consoleText", "consoleFull") }}"></span>
-				{% endif %}
-                        {% endif %}
+			{% if result.date == None %}
+			    <span class="daysAgo" href="{{ result.branch.last_build_url(app) }}">???</span>
+			{% else %}
+			    <span class="daysAgo" timestamp="{{ result.date.timestamp() }}" href="{{ result.branch.last_build_url(app) }}"></span>
+			{% endif %}
                         {% if result.commit != result.app.master_commit %}
                         <span class="oi oi-clock text-warning"
                               aria-hidden="true"
