@@ -39,14 +39,15 @@ class AppCIBranch(db.Model):
     def most_recent_tests_per_app(self):
 
         apps = App.query.filter_by(ci_enabled=True).all()
+        most_recent_tests = AppCIResult.query \
+                                       .filter_by(branch = self) \
+                                       .order_by('date desc') \
+                                       .all()
+
         for app in apps:
-            most_recent_test = AppCIResult.query \
-                                          .filter_by(branch = self) \
-                                          .filter_by(app = app) \
-                                          .order_by('date desc') \
-                                          .first()
+            most_recent_test = [ t for t in most_recent_tests if t.app == app ]
             if most_recent_test:
-                yield most_recent_test
+                yield most_recent_test[0]
             else:
                 yield AppCIResult(app = app,
                                   branch = self,
@@ -122,11 +123,20 @@ class AppCI():
                 for test, result in zip(AppCI.tests, test_summary["detailled_success"]):
                     test_results[test] = bool(int(result)) if result in [ "1", "0" ] else None 
 
-                results = AppCIResult(app = App.query.filter_by(name=test_summary["app"]).first(),
-                                      branch = cibranch,
-                                      level = test_summary["level"],
-                                      date = datetime.datetime.fromtimestamp(test_summary["timestamp"]),
-                                      results = test_results)
-                db.session.add(results)
+                app = App.query.filter_by(name=test_summary["app"]).first()
+                date = datetime.datetime.fromtimestamp(test_summary["timestamp"])
+
+                existing_test = AppCIResult.query \
+                               .filter_by(branch = cibranch) \
+                               .filter_by(date = date) \
+                               .first()
+
+                if not existing_test:
+                        results = AppCIResult(app = app,
+                                              branch = cibranch,
+                                              level = test_summary["level"],
+                                              date = date,
+                                              results = test_results)
+                        db.session.add(results)
 
         db.session.commit()
