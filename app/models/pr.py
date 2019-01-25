@@ -22,7 +22,8 @@ class Repo(db.Model):
                      "yunohost-admin",
                      "SSOwat",
                      "moulinette",
-                     "Vagrantfile",
+                     "install_script",
+                     "metronome",
                      "ynh-dev"],
 
             "doc": ["doc",
@@ -39,12 +40,12 @@ class Repo(db.Model):
                       "dynette",
                       "YunoPorts",
                       "cd_build",
-                      "install_script",
-                      "trotinette",
-                      "bicyclette",
                       "install-app",
                       "tartiflette",
-                      "vinaigrette"]
+                      "vinaigrette",
+                      "yunorunner",
+                      "arm-images",
+                      "rpi-image"]
         }
 
         for team, repos in d.items():
