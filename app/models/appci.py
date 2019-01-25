@@ -33,6 +33,13 @@ class AppCIBranch(db.Model):
                           url='https://ci-apps-arm.yunohost.org/ci/logs/list_level_stable.json',
                           url_per_app='https://ci-apps-arm.yunohost.org/ci/apps/{}/')
 
+        yield AppCIBranch(name='unstable',
+                          arch="x86",
+                          branch="unstable",
+                          display_name='Unstable (x86)',
+                          url='https://ci-apps-unstable.yunohost.org/ci/logs/list_level_unstable.json',
+                          url_per_app='https://ci-apps-unstable.yunohost.org/ci/apps/{}/')
+
     def last_build_url(self, app):
         return self.url_per_app.format(app.name)
 
