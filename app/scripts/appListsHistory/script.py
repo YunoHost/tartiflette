@@ -5,6 +5,11 @@ from datetime import datetime
 from feedgen.feed import FeedGenerator
 import jinja2
 
+state_to_value = { "working":1,
+                   "inprogress": 0,
+                   "notworking": -1,
+                 }
+
 def _time_points_until_today():
 
     year = 2017
@@ -31,19 +36,19 @@ time_points_until_today = list(_time_points_until_today())
 
 def get_lists_history():
 
-    os.system("rm -rf ./.work")
-    os.system("git clone https://github.com/YunoHost/apps ./.work/apps")
+    #os.system("rm -rf ./.work")
+    #os.system("git clone https://github.com/YunoHost/apps ./.work/apps")
 
     for t in time_points_until_today:
         print(t.strftime("%b %d %Y"))
 
         # Fetch repo at this date
-        cmd = 'cd ./.work/apps; git checkout `git rev-list -1 --before="%s" master`'
+        cmd = 'cd ./apps; git checkout `git rev-list -1 --before="%s" master`'
         os.system(cmd % t.strftime("%b %d %Y"))
 
         # Merge community and official
-        community = json.loads(open(".work/apps/community.json").read())
-        official = json.loads(open(".work/apps/official.json").read())
+        community = json.loads(open("./apps/community.json").read())
+        official = json.loads(open("./apps/official.json").read())
         for key in official:
             official[key]["state"] = "official"
         merged = {}
@@ -51,7 +56,7 @@ def get_lists_history():
         merged.update(official)
 
         # Save it
-        json.dump(merged, open('./.work/merged_lists.json.%s' % t.strftime("%y-%m-%d"), 'w'))
+        json.dump(merged, open('./merged_lists.json.%s' % t.strftime("%y-%m-%d"), 'w'))
 
 def diffs():
 
@@ -62,8 +67,8 @@ def diffs():
         print("Analyzing %s ... %s" % (d1.strftime("%y-%m-%d"), d2.strftime("%y-%m-%d")))
 
         # Load corresponding json
-        f1 = json.loads(open("./.work/merged_lists.json.%s" % d1.strftime("%y-%m-%d")).read())
-        f2 = json.loads(open("./.work/merged_lists.json.%s" % d2.strftime("%y-%m-%d")).read())
+        f1 = json.loads(open("./merged_lists.json.%s" % d1.strftime("%y-%m-%d")).read())
+        f2 = json.loads(open("./merged_lists.json.%s" % d2.strftime("%y-%m-%d")).read())
 
         for key in f1:
             f1[key]["name"] = key
@@ -85,6 +90,8 @@ def diffs():
 
             changes = []
 
+            # FIXME : this mechanism aint relevant anymore since
+            # the norm is to use HEAD now...
             commit1 = f1[key].get("revision", None)
             commit2 = f2[key].get("revision", None)
             if commit1 != commit2:
@@ -100,14 +107,34 @@ def diffs():
             if level1 != level2:
                 changes.append(("level", level1, level2))
 
+            if level1 != level2 or state1 != state2:
+                level1_value = level1 if level1 else 0
+                level2_value = level2 if level2 else 0
+                if level1_value < level2_value:
+                    changes.append("improvement")
+                elif level1_value > level2_value:
+                    changes.append("regression")
+                else:
+                    state1_value = state_to_value.get(state1,-1)
+                    state2_value = state_to_value.get(state2,-1)
+                    if state1_value < state2_value:
+                        changes.append("improvement")
+                    elif state1_value > state2_value:
+                        changes.append("regression")
+                    else:
+                        changes.append("same")
+
             if changes:
                 updates.append((f2[key], changes))
 
         yield { "begin": d1,
                 "end": d2,
                 "new": sorted(added, key=lambda a:a["name"]),
+                "improvements": sorted([a for a in updates if "improvement" in a[1]], key=lambda a:a[0]["name"]),
+                "updates": sorted([a for a in updates if "same" in a[1]], key=lambda a:a[0]["name"]),
+                "regressions": sorted([a for a in updates if "regression" in a[1]], key=lambda a:a[0]["name"]),
                 "removed": sorted(removed, key=lambda a:a["name"]),
-                "updates": sorted(updates, key=lambda a:a[0]["name"]) }
+              }
 
 
 def make_rss_feed():
@@ -126,6 +153,9 @@ def make_rss_feed():
         fe.content(jinja2.Template(open("rss_template.html").read()).render(data=diff), type="html")
         fe._FeedEntry__atom_updated = diff["end"]
 
+    print('Changes between %s and %s' % (diff["begin"].strftime("%b %d"), diff["end"].strftime("%b %d")))
+    open("tmp.html", "w").write(jinja2.Template(open("rss_template.html").read()).render(data=diff))
+
     fg.atom_file('atom.xml')
 
 def make_count_summary():
@@ -141,7 +171,7 @@ def make_count_summary():
         print("Analyzing %s ..." % d.strftime("%y-%m-%d"))
 
         # Load corresponding json
-        j = json.loads(open("./.work/merged_lists.json.%s" % d.strftime("%y-%m-%d")).read())
+        j = json.loads(open("./merged_lists.json.%s" % d.strftime("%y-%m-%d")).read())
         d_label = d.strftime("%b %d %Y")
 
         summary = {}
