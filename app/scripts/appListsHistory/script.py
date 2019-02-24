@@ -36,19 +36,19 @@ time_points_until_today = list(_time_points_until_today())
 
 def get_lists_history():
 
-    #os.system("rm -rf ./.work")
-    #os.system("git clone https://github.com/YunoHost/apps ./.work/apps")
+    os.system("rm -rf ./.work")
+    os.system("git clone https://github.com/YunoHost/apps ./.work/apps")
 
     for t in time_points_until_today:
         print(t.strftime("%b %d %Y"))
 
         # Fetch repo at this date
-        cmd = 'cd ./apps; git checkout `git rev-list -1 --before="%s" master`'
+        cmd = 'cd ./.work/apps; git checkout `git rev-list -1 --before="%s" master`'
         os.system(cmd % t.strftime("%b %d %Y"))
 
         # Merge community and official
-        community = json.loads(open("./apps/community.json").read())
-        official = json.loads(open("./apps/official.json").read())
+        community = json.loads(open("./.work/apps/community.json").read())
+        official = json.loads(open("./.work/apps/official.json").read())
         for key in official:
             official[key]["state"] = "official"
         merged = {}
@@ -56,7 +56,7 @@ def get_lists_history():
         merged.update(official)
 
         # Save it
-        json.dump(merged, open('./merged_lists.json.%s' % t.strftime("%y-%m-%d"), 'w'))
+        json.dump(merged, open('./.work/merged_lists.json.%s' % t.strftime("%y-%m-%d"), 'w'))
 
 def diffs():
 
@@ -67,8 +67,8 @@ def diffs():
         print("Analyzing %s ... %s" % (d1.strftime("%y-%m-%d"), d2.strftime("%y-%m-%d")))
 
         # Load corresponding json
-        f1 = json.loads(open("./merged_lists.json.%s" % d1.strftime("%y-%m-%d")).read())
-        f2 = json.loads(open("./merged_lists.json.%s" % d2.strftime("%y-%m-%d")).read())
+        f1 = json.loads(open("./.work/merged_lists.json.%s" % d1.strftime("%y-%m-%d")).read())
+        f2 = json.loads(open("./.work/merged_lists.json.%s" % d2.strftime("%y-%m-%d")).read())
 
         for key in f1:
             f1[key]["name"] = key
@@ -171,7 +171,7 @@ def make_count_summary():
         print("Analyzing %s ..." % d.strftime("%y-%m-%d"))
 
         # Load corresponding json
-        j = json.loads(open("./merged_lists.json.%s" % d.strftime("%y-%m-%d")).read())
+        j = json.loads(open("./.work/merged_lists.json.%s" % d.strftime("%y-%m-%d")).read())
         d_label = d.strftime("%b %d %Y")
 
         summary = {}
