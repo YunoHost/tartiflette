@@ -96,19 +96,19 @@ class AppCI():
     tests = [ "Package linter",
               "Installation",
               "Deleting",
-              "Upgrade",
-              "Backup",
-              "Restore",
-              "Change URL",
               "Installation in a sub path",
               "Deleting from a sub path",
               "Installation on the root",
               "Deleting from root",
+              "Upgrade",
               "Installation in private mode",
               "Installation in public mode",
               "Multi-instance installations",
               "Malformed path",
-              "Port already used" ]
+              "Port already used",
+              "Backup",
+              "Restore",
+              "Change URL" ]
 
     def update():
 
