@@ -51,13 +51,22 @@ class UnlistedApp(db.Model):
                 if item["name"] in known_apps:
                     continue
 
+                owner = item["owner"]["login"]
+
+                r = requests.head("https://raw.githubusercontent.com/%s/%s/master/manifest.json" % (owner, item["name"]))
+                if r.status_code != 200:
+                    continue
+                r = requests.head("https://raw.githubusercontent.com/%s/%s/master/scripts/install" % (owner, item["name"]))
+                if r.status_code != 200:
+                    continue
+
                 item["name"] = item["name"].replace("_ynh", "")
 
                 app = UnlistedApp(name=item["name"],
                                   url=item["html_url"],
                                   owner=item["owner"]["login"],
                                   description=item["description"],
-                                  updated_days_ago=githubDateToDaysAgo(item["updated_at"])
+                                  updated_days_ago=githubDateToDaysAgo(item["pushed_at"])
                 )
                 db.session.add(app)
 
