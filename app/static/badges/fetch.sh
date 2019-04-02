@@ -1,3 +1,4 @@
+wget -O - https://img.shields.io/badge/Integration-Level_8-blue.svg.       > level8.svg
 wget -O - https://img.shields.io/badge/Integration-Level_7-brightgreen.svg > level7.svg
 wget -O - https://img.shields.io/badge/Integration-Level_6-green.svg       > level6.svg
 wget -O - https://img.shields.io/badge/Integration-Level_5-green.svg       > level5.svg
