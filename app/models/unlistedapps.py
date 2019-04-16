@@ -28,12 +28,12 @@ class UnlistedApp(db.Model):
         community = json.loads(requests.get("https://raw.githubusercontent.com/YunoHost/apps/master/community.json").text)
 
         known_apps = set()
-        known_apps = known_apps.union([os.path.basename(app["url"]) for app in official.values() ])
-        known_apps = known_apps.union([os.path.basename(app["url"]) for app in community.values() ])
+        known_apps = known_apps.union([os.path.basename(app["url"]).lower() for app in official.values() ])
+        known_apps = known_apps.union([os.path.basename(app["url"]).lower() for app in community.values() ])
 
         apps = []
 
-        for i in range(1,7):
+        for i in range(1,8):
 
             print("Page " + str(i) + " ... ")
             r = requests.get("https://api.github.com/search/repositories?q=_ynh&sort=updated&per_page=100&page="+str(i))
@@ -48,7 +48,7 @@ class UnlistedApp(db.Model):
                 if not item["name"].endswith("_ynh"):
                     continue
 
-                if item["name"] in known_apps:
+                if item["name"].lower() in known_apps:
                     continue
 
                 owner = item["owner"]["login"]

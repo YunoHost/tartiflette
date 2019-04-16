@@ -200,6 +200,9 @@ class Github():
     def commit_date(self, app, sha):
 
         repo = app.repo.replace("https://github.com/", "")
-        github_date = self.request('repos/{}/commits/{}'.format(repo, sha))["commit"]["author"]["date"]
+        try:
+           github_date = self.request('repos/{}/commits/{}'.format(repo, sha))["commit"]["author"]["date"]
+        except:
+           import pdb; pdb.set_trace()
         parsed_date = datetime.datetime.strptime(github_date, "%Y-%m-%dT%H:%M:%SZ")
         return parsed_date

@@ -33,6 +33,13 @@ class AppCIBranch(db.Model):
                           url='https://ci-apps-arm.yunohost.org/ci/logs/list_level_stable.json',
                           url_per_app='https://ci-apps-arm.yunohost.org/ci/apps/{}/')
 
+        yield AppCIBranch(name='testing',
+                          arch="x86",
+                          branch="testing",
+                          display_name='Testing (x86)',
+                          url='https://ci-apps-unstable.yunohost.org/ci/logs/list_level_testing.json',
+                          url_per_app='https://ci-apps-unstable.yunohost.org/ci/apps/{}/')
+
         yield AppCIBranch(name='unstable',
                           arch="x86",
                           branch="unstable",
@@ -121,6 +128,7 @@ class AppCI():
             cleaned_json = [ line for line in result_json.split("\n") if "test_name" in line ]
             cleaned_json = [ line.replace('"level": ?,', '"level": null,') for line in cleaned_json ]
             cleaned_json = "[" + ''.join(cleaned_json)[:-1] + "]"
+            cleaned_json = cleaned_json.replace("Binary", '"?"')
             j = json.loads(cleaned_json)
             for test_summary in j:
                 if (test_summary["arch"], test_summary["branch"]) != (cibranch.arch, cibranch.branch):
