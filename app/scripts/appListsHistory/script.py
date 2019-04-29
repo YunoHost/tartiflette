@@ -46,14 +46,17 @@ def get_lists_history():
         cmd = 'cd ./.work/apps; git checkout `git rev-list -1 --before="%s" master`'
         os.system(cmd % t.strftime("%b %d %Y"))
 
-        # Merge community and official
-        community = json.loads(open("./.work/apps/community.json").read())
-        official = json.loads(open("./.work/apps/official.json").read())
-        for key in official:
-            official[key]["state"] = "official"
-        merged = {}
-        merged.update(community)
-        merged.update(official)
+        if t < datetime(2019,4,4):
+            # Merge community and official
+            community = json.loads(open("./.work/apps/community.json").read())
+            official = json.loads(open("./.work/apps/official.json").read())
+            for key in official:
+                official[key]["state"] = "official"
+            merged = {}
+            merged.update(community)
+            merged.update(official)
+        else:
+            merged = json.loads(open("./.work/apps/apps.json").read())
 
         # Save it
         json.dump(merged, open('./.work/merged_lists.json.%s' % t.strftime("%y-%m-%d"), 'w'))
@@ -179,7 +182,7 @@ def make_count_summary():
         for state in states:
             summary[state] = len([ k for k, infos in j.items() if infos["state"] == state ])
 
-        for level in range(0,8):
+        for level in range(0,9):
             summary["level-%s"%level] = len([ k for k, infos in j.items() \
                                               if  infos["state"] in ["working", "official"] \
                                               and infos.get("level", None) == level ])
