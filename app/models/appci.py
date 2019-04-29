@@ -55,7 +55,7 @@ class AppCIBranch(db.Model):
         apps = App.query.filter_by(ci_enabled=True).all()
         most_recent_tests = AppCIResult.query \
                                        .filter_by(branch = self) \
-                                       .order_by('date desc') \
+                                       .order_by(AppCIResult.date.desc()) \
                                        .all()
 
         for app in apps:

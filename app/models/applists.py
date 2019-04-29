@@ -137,7 +137,7 @@ class App(db.Model):
             most_recent_test = AppCIResult.query \
                                           .filter_by(branch = branch) \
                                           .filter_by(app = self) \
-                                          .order_by('date desc') \
+                                          .order_by(AppCIResult.date.desc()) \
                                           .first()
             if most_recent_test:
                 yield most_recent_test
