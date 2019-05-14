@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import render_template, make_response, Blueprint
 from .models.pr import PullRequest
 from .models.applists import App
@@ -181,3 +182,18 @@ def app_maintainer_dash(maintainer=None):
 
     return render_template("maintainer.html", maintainers=maintainers, apps=apps, maintainer=maintainer)
 
+@main.route('/testings')
+def testings():
+
+    apps = App.query.filter(App.testing_pr!=None).all()
+   
+    def daysAgo(date):
+        return (datetime.now() - date).days
+
+    for app in apps:
+        app.testing_pr["created_ago"] = daysAgo(app.testing_pr["created_at"])
+        app.testing_pr["updated_ago"] = daysAgo(app.testing_pr["updated_at"])
+    
+    apps = sorted(apps, key=lambda app: (-app.testing_pr["created_ago"], -app.testing_pr["updated_ago"], app.name.lower()))
+ 
+    return render_template("testings.html", apps=apps)
