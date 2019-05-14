@@ -88,7 +88,7 @@ class AppCIResult(db.Model):
     commit = db.Column(db.String(64), nullable=True)
 
     def __repr__(self):
-        return '<AppTestResults %s>' % self.date
+        return '<AppCIResult %s>' % self.date
 
     def init():
         pass
@@ -131,14 +131,21 @@ class AppCI():
             cleaned_json = cleaned_json.replace("Binary", '"?"')
             j = json.loads(cleaned_json)
             for test_summary in j:
+                if test_summary["app"] is None:
+                     print("No app to parse in test_summary ? : %s" % test_summary)
+                     continue
+
                 if (test_summary["arch"], test_summary["branch"]) != (cibranch.arch, cibranch.branch):
                     continue
 
                 test_results = { }
                 for test, result in zip(AppCI.tests, test_summary["detailled_success"]):
-                    test_results[test] = bool(int(result)) if result in [ "1", "0" ] else None 
+                    test_results[test] = bool(int(result)) if result in [ "1", "0" ] else None
 
                 app = App.query.filter_by(name=test_summary["app"]).first()
+                if app is None:
+                    print("Couldnt found corresponding app object for %s, skipping" % test_summary["app"])
+                    continue
                 date = datetime.datetime.fromtimestamp(test_summary["timestamp"])
 
                 existing_test = AppCIResult.query \
@@ -146,7 +153,13 @@ class AppCI():
                                .filter_by(date = date) \
                                .first()
 
+                if existing_test and existing_test.app is None:
+                    print("Uh erasing old weird buggy record")
+                    db.session.delete(existing_test)
+                    existing_test = None
+
                 if not existing_test:
+                        print("New record for app %s" % str(app))
                         results = AppCIResult(app = app,
                                               branch = cibranch,
                                               level = test_summary["level"],
