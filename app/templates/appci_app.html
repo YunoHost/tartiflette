@@ -85,10 +85,10 @@
                     </p>
                 {% endif %}
 
-                {% if app.testing_diff > 0 %}
+                {% if app.testing_pr %}
                     <p class="card-text text-info">
                     <span class="oi oi-fork" aria-hidden="true"></span>
-                    A testing branch exists for this app with +{{ app.testing_diff }} commits.
+                    A testing PR is open for this app.
                     </p>
                 {% else %}
                     <p class="card-text text-muted">

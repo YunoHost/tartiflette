@@ -100,7 +100,7 @@
                               title="Master commit is not up to date with {{ result.app.list.name }}.json !"></span>
                         -->
                         {% endif %}
-                        {% if result.app.testing_diff > 0 %}
+                        {% if result.app.testing_pr %}
                         <span class="oi oi-fork text-info"
                               aria-hidden="true"
                               title="An active testing branch exists for this app."></span>

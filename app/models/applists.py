@@ -38,7 +38,9 @@ class AppList(db.Model):
 
         raw_apps = json.loads(requests.get(self.url).text)
 
-        for name, app in raw_apps.items():
+        for name in sorted(raw_apps.keys()):
+
+            app = raw_apps[name]
 
             app['url'] = app["git"]["url"].strip('/')
 
@@ -68,6 +70,11 @@ class AppList(db.Model):
                 known_app.maintainers = [ maintainer["name"] for maintainer in maintainers_info ]
 
             known_app.maintained = app.get("maintained", True)
+            # Quick and dirty fix to convert maintained state to boolean
+            if known_app.maintained == "orphaned":
+               known_app.maintained = False
+            elif isinstance(known_app.maintained, str):
+                known_app.maintained = True
             known_app.state = app["state"]
             known_app.ci_enabled = app["state"] == self.state_for_ci
             known_app.public_level = app.get("level", None)
@@ -79,14 +86,14 @@ class AppList(db.Model):
                 known_app.master_commit = g.commit(known_app, "master")
                 known_app.public_commit_date = g.commit_date(known_app, known_app.public_commit)
                 known_app.master_commit_date = g.commit_date(known_app, known_app.master_commit)
-                known_app.testing_diff = g.diff(known_app, "master", "testing")["ahead_by"]
+                known_app.testing_pr = g.testing_pr(known_app)
                 known_app.opened_issues = issues_and_prs["nb_issues"]
                 known_app.opened_prs = issues_and_prs["nb_prs"]
 
             else:
                 known_app.public_commit = "???"
                 known_app.master_commit = "???"
-                known_app.testing_diff = -1
+                known_app.testing_pr = None
                 known_app.opened_issues = 0
                 known_app.opened_prs = 0
 
@@ -115,7 +122,7 @@ class App(db.Model):
     master_commit = db.Column(db.String(64), nullable=False)
     public_commit_date = db.Column(db.DateTime, nullable=True)
     master_commit_date = db.Column(db.DateTime, nullable=True)
-    testing_diff = db.Column(db.Integer, default=-1)
+    testing_pr = db.Column(db.PickleType, default=None)
     opened_issues = db.Column(db.Integer, default=-1)
     opened_prs = db.Column(db.Integer, default=-1)
 
@@ -168,14 +175,6 @@ class Github():
                 return {}
         return r
 
-    def diff(self, app, ref, commit):
-
-        repo = app.repo.replace("https://github.com/", "")
-        j = self.request('repos/{}/compare/{}...{}'.format(repo, ref, commit), autoretry=False)
-
-        return { "ahead_by": j.get("ahead_by", -1),
-                 "behind_by": j.get("behind_by", -1) }
-
     def issues(self, app):
 
         repo = app.repo.replace("https://github.com/", "")
@@ -186,6 +185,23 @@ class Github():
 
         return { "nb_issues": nb_issues,
                  "nb_prs": nb_prs }
+
+    def testing_pr(self, app):
+
+        repo = app.repo.replace("https://github.com/", "")
+        owner = repo.split("/")[0]
+        j = self.request('repos/{}/pulls?head={}:testing&base=master'.format(repo,owner))
+
+        if len(j) == 0:
+            return None
+        else:
+            j = j[0]
+
+        return { "number": j["number"],
+                 "created_at": datetime.datetime.strptime(j["created_at"], "%Y-%m-%dT%H:%M:%SZ"),
+                 "updated_at": datetime.datetime.strptime(j["updated_at"], "%Y-%m-%dT%H:%M:%SZ"),
+               }
+
 
     def commit(self, app, ref):
 
@@ -203,6 +219,7 @@ class Github():
         try:
            github_date = self.request('repos/{}/commits/{}'.format(repo, sha))["commit"]["author"]["date"]
         except:
-           import pdb; pdb.set_trace()
+           print("Error parsing date...")
+           github_date = "1970-01-01T00:00:00Z"
         parsed_date = datetime.datetime.strptime(github_date, "%Y-%m-%dT%H:%M:%SZ")
         return parsed_date
