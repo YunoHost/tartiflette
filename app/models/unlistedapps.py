@@ -24,11 +24,9 @@ class UnlistedApp(db.Model):
 
         UnlistedApp.query.delete()
 
-        official = json.loads(requests.get("https://raw.githubusercontent.com/YunoHost/apps/master/official.json").text)
-        community = json.loads(requests.get("https://raw.githubusercontent.com/YunoHost/apps/master/community.json").text)
+        community = json.loads(requests.get("https://raw.githubusercontent.com/YunoHost/apps/master/apps.json").text)
 
         known_apps = set()
-        known_apps = known_apps.union([os.path.basename(app["url"]).lower() for app in official.values() ])
         known_apps = known_apps.union([os.path.basename(app["url"]).lower() for app in community.values() ])
 
         apps = []
