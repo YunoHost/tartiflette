@@ -173,8 +173,8 @@ def app_maintainer_dash(maintainer=None):
         if isinstance(app.public_level, str):
             app.public_level = -1
 
-        if app.maintained and app.state in ["working", "official"]:
-            maintainers.update(app.maintainers)
+        if app.maintained:
+            maintainers.update(app.maintainers.lower().replace(" ", ""))
 
 
     maintainers = sorted(maintainers, key=lambda m: m.lower())
