@@ -66,7 +66,7 @@ def appci_app(app):
     branch_results = list(app.most_recent_tests_per_branch())
 
     for r in branch_results:
-        r.level = -1 if r.level is None else r.level
+        r.level = -1 if r.level in ["?", None] else int(r.level)
 
     return render_template("appci_app.html", tests=AppCI.tests,
                                              app=app,
