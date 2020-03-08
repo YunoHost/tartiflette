@@ -51,8 +51,8 @@ class AppCIBranch(db.Model):
                           arch="x86",
                           branch="buster",
                           display_name='buster (x86)',
-                          url='https://ci-stretch.nohost.me/ci/logs/list_level_stable.json',
-                          url_per_app='https://ci-stretch.nohost.me/ci/apps/{}/')
+                          url='https://ci-buster.nohost.me/ci/logs/list_level_stable.json',
+                          url_per_app='https://ci-buster.nohost.me/ci/apps/{}/')
 
     def last_build_url(self, app):
         return self.url_per_app.format(app.name)
