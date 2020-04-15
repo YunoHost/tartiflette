@@ -131,7 +131,11 @@ class AppCI():
         # Scrap jenkins
         for cibranch in cibranches:
             print("> Fetching current CI results for C.I. branch {}".format(cibranch.name))
-            result_json = requests.get(cibranch.url).text
+            try:
+                result_json = requests.get(cibranch.url).text
+            except:
+                print("Failed to fetch %s" % cibranch.url)
+                continue
             cleaned_json = [ line for line in result_json.split("\n") if "test_name" in line ]
             cleaned_json = [ line.replace('"level": ?,', '"level": null,') for line in cleaned_json ]
             cleaned_json = "[" + ''.join(cleaned_json)[:-1] + "]"
