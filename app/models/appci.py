@@ -46,13 +46,6 @@ class AppCIBranch(db.Model):
                           display_name='Unstable (x86)',
                           url='https://ci-apps-unstable.yunohost.org/ci/logs/list_level_unstable.json',
                           url_per_app='https://ci-apps-unstable.yunohost.org/ci/apps/{}/')
-        
-        yield AppCIBranch(name='buster',
-                          arch="x86",
-                          branch="buster",
-                          display_name='buster (x86)',
-                          url='https://ci-buster.nohost.me/ci/logs/list_level_stable.json',
-                          url_per_app='https://ci-buster.nohost.me/ci/apps/{}/')
 
     def last_build_url(self, app):
         return self.url_per_app.format(app.name)
@@ -103,6 +96,10 @@ class AppCIResult(db.Model):
     def score(self):
         s_dict = { True: +1, False: -1, None: 0 }
         return sum([ s_dict[result] for result in self.results.values() ])
+
+    @property
+    def outdated(self):
+        return (datetime.datetime.now() - self.date).days > 45 
 
 
 class AppCI():

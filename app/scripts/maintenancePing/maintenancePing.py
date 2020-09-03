@@ -141,12 +141,9 @@ def get_status_and_todo(repo):
 
 def get_apps_to_check():
 
-    #official="https://raw.githubusercontent.com/YunoHost/apps/master/official.json"
-    community="https://raw.githubusercontent.com/YunoHost/apps/master/community.json"
+    community="https://raw.githubusercontent.com/YunoHost/apps/master/apps.json"
 
-    raw_apps = []
-    #raw_apps += json.loads(requests.get(official).text).values()
-    raw_apps += json.loads(requests.get(community).text).values()
+    raw_apps = json.loads(requests.get(community).text).values()
 
     return [ app["url"].replace("https://github.com/","") \
             for app in raw_apps \
@@ -196,7 +193,7 @@ def run_todolist(todolist):
 
 def update_community_list(status, workdir):
 
-    filename = workdir + "/community.json"
+    filename = workdir + "/apps.json"
 
     j = json.loads(open(filename).read())
 
@@ -253,7 +250,7 @@ def create_pull_request(repo, watdo, pr_infos):
     cmds = [
         "cd .work/{reponame} && git add .",
         "cd .work/{reponame} && git commit -a -m '{title}'",
-        "cd .work/{reponame} && git push origin {branch}"
+        "cd .work/{reponame} && git push origin {branch} --force"
     ]
 
     for cmd in cmds:

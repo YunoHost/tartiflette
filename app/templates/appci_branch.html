@@ -43,7 +43,6 @@
     <input type="radio" name="options" level="8" autocomplete="off"> 8
   </label>
 </div>
-<button id="filter_onlyOfficials" type="button" class="btn btn-light btn-sm" href="javascript:void(0)" onclick="toggle(this)" style="margin-left:30px;">Show only officials</button>
 	</div>
         <div>
             <table class="table table-responsive ci-app-table">
@@ -60,11 +59,8 @@
                 </thead>
                 <tbody>
                 {% for result in app_results %}
-                <tr app="{{ result.app.name }}" class="resultline {% if result.app.list.name == "official" %}official{% endif %}" level="{{ result.level if result.level >= 0 else "?" }}">
+                <tr app="{{ result.app.name }}" class="resultline" level="{{ result.level if result.level >= 0 else "?" }}" {% if result.outdated %}style="opacity: 0.5"{% endif %} >
                     <td class="ci-app-row-title">
-                        {% if result.app.list.name == "official" %}
-                            <span class="official-star oi oi-star" title="Official" aria-hidden="true"></span>
-                        {% endif %}
                         <a href="{{ url_for('main.appci_app', app=result.app.name) }}">
                             <span class="font-weight-bold" title="More tests / info for this app">
                                 {{ result.app.name }}</span>
@@ -84,10 +80,10 @@
 			{% else %}
 			    <span class="daysAgo" timestamp="{{ result.date.timestamp() }}" href="{{ branch.last_build_url(result.app) }}"></span>
 			{% endif %}
-                        {% if result.commit != result.app.master_commit %}
+                        {% if result.outdated %}
                         <span class="oi oi-clock text-warning"
                               aria-hidden="true"
-                              title="This test is outdated : a more recent commit exists in master than the one tested."></span>
+                              title="This test is outdated"></span>
                         {% endif %}
                         {% if result.app.public_commit != 'HEAD' and result.app.public_commit != result.app.master_commit %}
                         <!--
@@ -159,10 +155,8 @@ function toggle(e) {
 }
 
 function update_filters() {
-    var onlyOfficials = $("#filter_onlyOfficials").hasClass("btn-primary");
     var levelFilter = $("input[type='radio']:checked").attr("level");
     $(".resultline").show();
-    if (onlyOfficials) { $(".resultline:not(.official)").hide(); }
     if (levelFilter != "all") { $(".resultline[level!='"+levelFilter+"']").hide(); }
 }
 

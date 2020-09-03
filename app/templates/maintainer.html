@@ -45,9 +45,7 @@ Active maintainers :
 
 
                     <td>
-                        {% if app.list.name == "official" %}
-                            <span class="official-star oi oi-star" title="Official" aria-hidden="true"></span>
-                        {% elif app.state == "working" %}
+                        {% if app.state == "working" %}
                             <span class="text-success oi oi-circle-check" title="Working" aria-hidden="true"></span>
                         {% elif app.state == "inprogress" %}
                             <span class="text-warning oi oi-wrench" title="In progress" aria-hidden="true"></span>
@@ -78,7 +76,7 @@ Active maintainers :
                         table-active
                     {% elif app.public_level <= 0 %}
                         table-danger
-                    {% elif app.public_level <= 2 %}
+                    {% elif app.public_level <= 4 %}
                         table-warning
                     {% else %}
                         table-success
@@ -93,7 +91,7 @@ Active maintainers :
                         table-active
                     {% elif app.ci_level <= 0 %}
                         table-danger
-                    {% elif app.ci_level <= 2 %}
+                    {% elif app.ci_level <= 4 %}
                         table-warning
                     {% else %}
                         table-success

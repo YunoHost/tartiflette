@@ -20,9 +20,6 @@
                 <tr class="appline" app="{{ app.name }}">
 
                     <td class="ci-app-row-title">
-                        {% if app.list.name == "official" %}
-                            <span class="official-star oi oi-star" title="Official" aria-hidden="true"></span>
-                        {% endif %}
                         <a href="{{ url_for('main.appci_app', app=app.name) }}">
                             <span class="font-weight-bold" title="More tests / info for this app">
                                 {{ app.name }}</span>
