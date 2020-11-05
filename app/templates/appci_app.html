@@ -126,13 +126,10 @@
 </div>
 
 <div class="row">
-    <div class="mx-auto">
+    <div class="col-sm-6 offset-sm-3 mt-3">
         <div id="levelHistory" style="height: 270px;"></div>
     </div>
 </div>
-
-{% endblock %}
-
 
 <script src="{{ url_for('static', filename='js/canvasjs.min.js') }}"></script>
 <script>
@@ -153,19 +150,18 @@ window.onload = function () {
     var chart = new CanvasJS.Chart("levelHistory", {
         animationEnabled: false,
         title:{
-            text: "App level (in apps.json)"
-        },
-        toolTip: {
-            reversed: true,
-            shared: true
+            text: "App level history (in apps.json)"
         },
         data: [
             {
+            markerType: "circle",
+            markerSize: 10,
             type: "line",
             dataPoints: [
                 {% for d in history %}
                     { label: "{{ d.date }}", y: {{ d["level"] }},
-                            markerColor: colors_per_level[{{ d["level"] }}] },
+                      markerColor: colors_per_level[{{ d["level"] }}]
+                    },
                 {% endfor %}
             ]
             },

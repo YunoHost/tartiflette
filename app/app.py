@@ -77,9 +77,9 @@ def appci_app(app):
     if "Malformed path" in tests:
         tests.remove("Malformed path")
 
-    history_file = "./app/scripts/appListsHistory/per_app/history_%s.json" % app
+    history_file = "./app/scripts/appListsHistory/per_app/history_%s.json" % app.name
     if os.path.exists(history_file):
-        history = json.loads(open("./app/scripts/appListsHistory/count_history.json").read())
+        history = json.loads(open(history_file).read())
     else:
         history = []
 
