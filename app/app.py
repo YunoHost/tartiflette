@@ -6,6 +6,7 @@ from .models.appci import AppCI, AppCIBranch
 from .models.unlistedapps import UnlistedApp
 from .settings import SITE_ROOT
 import json
+import os
 
 main = Blueprint('main', __name__, url_prefix=SITE_ROOT)
 
@@ -55,7 +56,7 @@ def appci_branch(branch):
 
     tests = AppCI.tests.copy()
     if "Malformed path" in tests:
-	    tests.remove("Malformed path")
+        tests.remove("Malformed path")
 
     return render_template("appci_branch.html", tests=tests,
                                                 branch=branch,
@@ -74,10 +75,18 @@ def appci_app(app):
 
     tests = AppCI.tests.copy()
     if "Malformed path" in tests:
-	    tests.remove("Malformed path")
+        tests.remove("Malformed path")
+
+    history_file = "./app/scripts/appListsHistory/per_app/history_%s.json" % app
+    if os.path.exists(history_file):
+        history = json.loads(open("./app/scripts/appListsHistory/count_history.json").read())
+    else:
+        history = []
+
     return render_template("appci_app.html", tests=tests,
                                              app=app,
-                                             branch_results=branch_results)
+                                             branch_results=branch_results,
+                                             history=history)
 
 
 @main.route('/appci/compare/<ref>...<target>')
@@ -193,14 +202,14 @@ def app_maintainer_dash(maintainer=None):
 def testings():
 
     apps = App.query.filter(App.testing_pr!=None).all()
-   
+
     def daysAgo(date):
         return (datetime.now() - date).days
 
     for app in apps:
         app.testing_pr["created_ago"] = daysAgo(app.testing_pr["created_at"])
         app.testing_pr["updated_ago"] = daysAgo(app.testing_pr["updated_at"])
-    
+
     apps = sorted(apps, key=lambda app: (-app.testing_pr["created_ago"], -app.testing_pr["updated_ago"], app.name.lower()))
- 
+
     return render_template("testings.html", apps=apps)

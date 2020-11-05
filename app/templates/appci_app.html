@@ -125,4 +125,56 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="mx-auto">
+        <div id="levelHistory" style="height: 270px;"></div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+<script src="{{ url_for('static', filename='js/canvasjs.min.js') }}"></script>
+<script>
+window.onload = function () {
+   
+    var colors_per_level = [
+        "#d9534f",
+        "#E26D4F",
+        "#E98D4E",
+        "#f0ad4e",
+        "#CBB052",
+        "#A6B255",
+        "#7AB659",
+        "#5cb85c",
+        "#4695d5"
+    ];
+
+    var chart = new CanvasJS.Chart("levelHistory", {
+        animationEnabled: false,
+        title:{
+            text: "App level (in apps.json)"
+        },
+        toolTip: {
+            reversed: true,
+            shared: true
+        },
+        data: [
+            {
+            type: "line",
+            dataPoints: [
+                {% for d in history %}
+                    { label: "{{ d.date }}", y: {{ d["level"] }},
+                            markerColor: colors_per_level[{{ d["level"] }}] },
+                {% endfor %}
+            ]
+            },
+        ]
+    });
+    chart.render();
+
+}
+
+</script>
+
 {% endblock %}
