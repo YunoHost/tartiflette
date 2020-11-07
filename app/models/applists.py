@@ -127,8 +127,8 @@ class App(db.Model):
     opened_issues = db.Column(db.Integer, default=-1)
     opened_prs = db.Column(db.Integer, default=-1)
 
-    long_term_good_quality = db.Column(db.Boolean, nullable=False)
-    long_term_broken = db.Column(db.Boolean, nullable=False)
+    long_term_good_quality = db.Column(db.Boolean)
+    long_term_broken = db.Column(db.Boolean)
 
     def __repr__(self):
         return '<App %r>' % self.name

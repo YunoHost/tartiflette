@@ -9,9 +9,9 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 appdir = os.path.abspath(currentdir + "../../../../")
 sys.path.insert(0, appdir)
 
-from app import db
+from app import db, create_app
 from app.models.applists import App
-
+app_ = create_app()
 
 def _time_points_until_today():
 
@@ -104,13 +104,13 @@ def make_count_summary():
             infos = j.get(app, {})
 
             if not infos or infos.get("state") not in ["working", "official"]:
-                level = 0
+                level = -1
             else:
-                level = infos.get("level", 0)
+                level = infos.get("level", -1)
                 try:
                     level = int(level)
                 except:
-                    level = 0
+                    level = -1
 
             history_per_app[app].append({
                 "date": d_label,
@@ -122,16 +122,24 @@ def make_count_summary():
     os.system("mkdir -p per_app/")
     for app in relevant_apps_to_track:
         json.dump(history_per_app[app], open('per_app/history_%s.json' % app, 'w'))
-        update_catalog_stats(app, history)
 
-    db.session.commit()
+    with app_.app_context():
+        for app in relevant_apps_to_track:
+            update_catalog_stats(app, history_per_app[app])
+
+        db.session.commit()
 
 
 def update_catalog_stats(app, history):
 
-    app_in_db = App.query.filter_by(name=app).first_or_404()
-    app_in_db.long_term_good_quality = len([d for d in history[-50:] if d["level"] > 5]) > 25
-    app_in_db.long_term_broken = len([d for d in history[-50:] if d["level"] <= 0]) > 25
+    print(app)
+    try:
+        app_in_db = App.query.filter_by(name=app).first_or_404()
+    except:
+        return
+
+    app_in_db.long_term_good_quality = len([d for d in history[-24:] if d["level"] > 5]) > 12
+    app_in_db.long_term_broken = history[-1]["level"] == 0 and len([d for d in history[-24:] if d["level"] == 0]) > 12
 
     db.session.add(app_in_db)
 

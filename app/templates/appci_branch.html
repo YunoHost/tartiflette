@@ -61,6 +61,12 @@
                 {% for result in app_results %}
                 <tr app="{{ result.app.name }}" class="resultline" level="{{ result.level if result.level >= 0 else "?" }}" {% if result.outdated %}style="opacity: 0.8; background-color: #ddd;"{% endif %} >
                     <td class="ci-app-row-title">
+                        {% if result.app.long_term_good_quality %}
+                            <span class="oi oi-star" title="Long-term good quality" aria-hidden="true" style="color: goldenrod;"></span>
+                        {% endif %}
+                        {% if result.app.long_term_broken %}
+                            <span class="oi oi-flag" title="Long-term broken" aria-hidden="true" style="color: firebrick;"></span>
+                        {% endif %}
                         <a href="{{ url_for('main.appci_app', app=result.app.name) }}">
                             <span class="font-weight-bold" title="More tests / info for this app">
                                 {{ result.app.name }}</span>
