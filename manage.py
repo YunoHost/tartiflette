@@ -2,9 +2,13 @@
 
 from flask_script import Manager, Shell, Command, Server
 from app import db, create_app
+from flask_migrate import Migrate, MigrateCommand
 
 app = create_app()
 manager = Manager(app)
+migrate = Migrate(app, db)
+manager.add_command("db", MigrateCommand)
+
 def main():
     manager.add_command('shell', Shell(make_context=lambda:{"app":app, "db":db}))
     manager.add_command("runserver", Server())
