@@ -95,17 +95,17 @@ def make_count_summary():
             infos = j.get(app, {})
 
             if not infos or infos.get("state") not in ["working", "official"]:
-                level = -1
+                level = 0
             else:
-                level = infos.get("level", -1)
+                level = infos.get("level", 0)
                 try:
                     level = int(level)
                 except:
-                    level = -1
+                    level = 0
 
             history_per_app[app].append({
                 "date": d_label,
-                "level": infos.get("level", -1)
+                "level": level
             })
 
     json.dump(history, open('count_history.json', 'w'))
