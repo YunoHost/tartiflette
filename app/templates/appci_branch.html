@@ -59,7 +59,7 @@
                 </thead>
                 <tbody>
                 {% for result in app_results %}
-                <tr app="{{ result.app.name }}" class="resultline" level="{{ result.level if result.level >= 0 else "?" }}" {% if result.outdated %}style="opacity: 0.5"{% endif %} >
+                <tr app="{{ result.app.name }}" class="resultline" level="{{ result.level if result.level >= 0 else "?" }}" {% if result.outdated %}style="opacity: 0.8; background-color: #ddd;"{% endif %} >
                     <td class="ci-app-row-title">
                         <a href="{{ url_for('main.appci_app', app=result.app.name) }}">
                             <span class="font-weight-bold" title="More tests / info for this app">
