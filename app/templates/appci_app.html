@@ -159,8 +159,14 @@ window.onload = function () {
             type: "line",
             dataPoints: [
                 {% for d in history %}
-                    { label: "{{ d.date }}", y: {{ d["level"] }},
+                    { label: "{{ d.date }}", 
+                      {% if d["level"] >= 0 %}
+                      y: {{ d["level"] }},
                       markerColor: colors_per_level[{{ d["level"] }}]
+                      {% else %}
+                      y: 0,
+                      markerSize: 1
+                      {% endif %}
                     },
                 {% endfor %}
             ]
