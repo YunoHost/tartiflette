@@ -99,7 +99,7 @@ class AppCIResult(db.Model):
 
     @property
     def outdated(self):
-        return (datetime.datetime.now() - self.date).days > 45 
+        return (datetime.datetime.now() - self.date).days > 30
 
 
 class AppCI():
