@@ -1,7 +1,16 @@
 
 import json
 import os
+import sys
+import inspect
 from datetime import datetime
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+appdir = os.path.abspath(currentdir + "../../../../")
+sys.path.insert(0, appdir)
+
+from app import db
+from app.models.applists import App
 
 
 def _time_points_until_today():
@@ -42,7 +51,7 @@ def get_lists_history():
         cmd = 'cd ./.work/apps; git checkout `git rev-list -1 --before="%s" master`'
         os.system(cmd % t.strftime("%b %d %Y"))
 
-        if t < datetime(2019,4,4):
+        if t < datetime(2019, 4, 4):
             # Merge community and official
             community = json.loads(open("./.work/apps/community.json").read())
             official = json.loads(open("./.work/apps/official.json").read())
@@ -113,6 +122,18 @@ def make_count_summary():
     os.system("mkdir -p per_app/")
     for app in relevant_apps_to_track:
         json.dump(history_per_app[app], open('per_app/history_%s.json' % app, 'w'))
+        update_catalog_stats(app, history)
+
+    db.session.commit()
+
+
+def update_catalog_stats(app, history):
+
+    app_in_db = App.query.filter_by(name=app).first_or_404()
+    app_in_db.long_term_good_quality = len([d for d in history[-50:] if d["level"] > 5]) > 25
+    app_in_db.long_term_broken = len([d for d in history[-50:] if d["level"] <= 0]) > 25
+
+    db.session.add(app_in_db)
 
 
 get_lists_history()
