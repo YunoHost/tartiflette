@@ -10,7 +10,7 @@ appdir = os.path.abspath(currentdir + "../../../../")
 sys.path.insert(0, appdir)
 
 from app import db, create_app
-from app.models.applists import App
+from app.models.appcatalog import App
 app_ = create_app()
 
 def _time_points_until_today():

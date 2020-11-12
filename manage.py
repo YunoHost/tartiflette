@@ -21,13 +21,13 @@ class Update(Command):
 
     def run(self, args=None):
 
-        valid_what = ["applists", "appci", "pr", "appobservatory"]
+        valid_what = ["catalog", "appci", "pr", "appobservatory"]
         what = args[0] if args else None
         assert what in valid_what, "Please specify what to update among %s" % ', '.join(valid_what)
 
-        if what == "applists":
-            from app.models.applists import AppList
-            AppList.update()
+        if what == "catalog":
+            from app.models.appcatalog import AppCatalog
+            AppCatalog.update()
         elif what == "appci":
             from app.models.appci import AppCI
             AppCI.update()
@@ -49,7 +49,7 @@ class Nuke(Command):
 
     def run(self):
 
-        import app.models.applists
+        import app.models.appcatalog
         import app.models.appci
         import app.models.pr
         import app.models.unlistedapps

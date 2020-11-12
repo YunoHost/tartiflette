@@ -3,7 +3,7 @@ import requests
 import datetime
 
 from .. import db
-from app.models.applists import App
+from app.models.appcatalog import App
 
 class AppCIBranch(db.Model):
 
@@ -52,7 +52,7 @@ class AppCIBranch(db.Model):
 
     def most_recent_tests_per_app(self):
 
-        apps = App.query.filter_by(ci_enabled=True).all()
+        apps = App.query.filter_by(state="working").all()
         most_recent_tests = AppCIResult.query \
                                        .filter_by(branch = self) \
                                        .order_by(AppCIResult.date.desc()) \

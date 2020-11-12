@@ -1,5 +1,4 @@
 import re
-import os
 import time
 import json
 import requests
@@ -8,35 +7,13 @@ import datetime
 from .. import db
 
 
-class AppList(db.Model):
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=True, nullable=False)
-    url = db.Column(db.String(128), nullable=False)
-    state_for_ci = db.Column(db.String(32), nullable=False)
-
-    def __repr__(self):
-        return '<AppList %r>' % self.name
-
-    def init():
-        yield AppList(name='official',
-                      url="https://app.yunohost.org/official.json",
-                      state_for_ci='validated')
-        yield AppList(name='community',
-                      url="https://app.yunohost.org/community.json",
-                      state_for_ci='working')
+class AppCatalog(db.Model):
 
     def update():
 
-        applists = AppList.query.all()
-        for applist in applists:
-            applist.update_list()
-
-    def update_list(self):
-
         g = Github()
 
-        raw_apps = json.loads(requests.get(self.url).text)
+        raw_apps = json.loads(requests.get("https://app.yunohost.org/default/v2/apps.json").text)
 
         for name in sorted(raw_apps.keys()):
 
@@ -52,7 +29,6 @@ class AppList(db.Model):
                 print("Adding new app {}".format(name))
                 known_app = App(name=name,
                                 repo=app["url"],
-                                list=self,
                                 public_commit=app["git"]["revision"])
                 db.session.add(known_app)
             else:
@@ -76,7 +52,6 @@ class AppList(db.Model):
             elif isinstance(known_app.maintained, str):
                 known_app.maintained = True
             known_app.state = app["state"]
-            known_app.ci_enabled = app["state"] == self.state_for_ci
             known_app.public_level = app.get("level", None)
 
             if "github" in known_app.repo:
@@ -112,11 +87,7 @@ class App(db.Model):
     maintainers = db.Column(db.PickleType)
     maintained = db.Column(db.Boolean, nullable=False)
     state = db.Column(db.String(64), nullable=False)
-    ci_enabled = db.Column(db.Boolean, nullable=False)
     public_level = db.Column(db.Integer, default=-1, nullable=True)
-
-    list = db.relationship(AppList, backref='apps', lazy=True, uselist=False)
-    list_id = db.Column(db.ForeignKey(AppList.id))
 
     # 'Status info' stuff
     public_commit = db.Column(db.String(64), nullable=False)

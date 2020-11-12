@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import render_template, make_response, Blueprint
 from .models.pr import PullRequest
-from .models.applists import App
+from .models.appcatalog import App
 from .models.appci import AppCI, AppCIBranch
 from .models.unlistedapps import UnlistedApp
 from .settings import SITE_ROOT
@@ -189,9 +189,8 @@ def app_maintainer_dash(maintainer=None):
         if isinstance(app.public_level, str):
             app.public_level = -1
 
-        if app.maintained and app.state in ["working", "official"]:
+        if app.maintained and app.state == "working":
             maintainers.update(app.maintainers)
-
 
     maintainers = sorted(maintainers, key=lambda m: m.lower())
     apps = sorted(apps, key=lambda app: app.name.lower())
