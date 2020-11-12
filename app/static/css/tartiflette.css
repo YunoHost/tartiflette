@@ -36,7 +36,7 @@ th.ci-app-test-title > div > span
     border:none;
 }
 
-td.ci-app-level { width: 48px; }
+td.ci-app-level { width: 54px; }
 td.ci-app-test-result { text-align:center; padding: 14px 8px 8px 8px; }
 td.ci-app-test-result > div { position:relative; background-color: #bdc3c7; border-radius:5px; width: 18px; height: 18px;}
 td.ci-app-test-result > div.success { background-color: rgb(46,204,83); }

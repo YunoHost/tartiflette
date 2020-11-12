@@ -75,10 +75,10 @@
                     <td class="ci-app-level" value="{{ result.level }}">
                     <div title="Level">
                         <strong>{{ result.level if result.level >= 0 else "?" }}</strong>
-                        {% if result.level < result.app.public_level %} 
+                        {% if result.level < result.app.public_level|int %} 
                         <span class="ml-1 oi oi-arrow-thick-bottom" title="Regression" aria-hidden="true" style="color: crimson;"></span>
-                        {% elif result.level > result.app.public_level %}
-                        <span class="ml-1 oi oi-arrow-thick-bottom" title="Improvement" aria-hidden="true" style="color: limegreen;"></span>
+                        {% elif result.level > result.app.public_level|int %}
+                        <span class="ml-1 oi oi-arrow-thick-top" title="Improvement" aria-hidden="true" style="color: limegreen;"></span>
                         {% endif %}
                     </div></td>
                     {% for test in tests %}
@@ -97,17 +97,6 @@
                         <span class="oi oi-clock text-warning"
                               aria-hidden="true"
                               title="This test is outdated"></span>
-                        {% endif %}
-                        {% if result.app.public_commit != 'HEAD' and result.app.public_commit != result.app.master_commit %}
-                        <!--
-                            {% if result.app.public_vs_master_time_diff > 60 %}
-                            <span class="oi oi-warning text-danger"
-                            {% else %}
-                            <span class="oi oi-warning text-warning"
-                            {% endif %}
-                              aria-hidden="true"
-                              title="Master commit is not up to date with {{ result.app.list.name }}.json !"></span>
-                        -->
                         {% endif %}
                         {% if result.app.testing_pr %}
                         <span class="oi oi-fork text-info"

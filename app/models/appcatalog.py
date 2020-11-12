@@ -7,13 +7,14 @@ import datetime
 from .. import db
 
 
-class AppCatalog(db.Model):
+class AppCatalog():
 
     def update():
 
         g = Github()
 
         raw_apps = json.loads(requests.get("https://app.yunohost.org/default/v2/apps.json").text)
+        raw_apps = raw_apps["apps"]
 
         for name in sorted(raw_apps.keys()):
 
