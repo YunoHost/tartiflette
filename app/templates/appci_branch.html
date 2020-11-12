@@ -49,7 +49,7 @@
                 <thead>
                     <tr>
                         <th class="ci-app-row-title"></th>
-                        <th class="ci-app-test-title"><div>Level</div></th>
+                        <th class="ci-app-test-title ci-app-level"><div>Quality level</div></th>
                         {% for test in tests %}
                          <th class="ci-app-test-title"><div><span>{{ test }}</span></div></th>
                         {% endfor %}
@@ -73,7 +73,14 @@
                         </a>
                     </td>
                     <td class="ci-app-level" value="{{ result.level }}">
-                    <div title="Level"><strong>{{ result.level if result.level >= 0 else "?" }}</strong></div></td>
+                    <div title="Level">
+                        <strong>{{ result.level if result.level >= 0 else "?" }}</strong>
+                        {% if result.level < result.app.public_level %} 
+                        <span class="ml-1 oi oi-arrow-thick-bottom" title="Regression" aria-hidden="true" style="color: crimson;"></span>
+                        {% elif result.level > result.app.public_level %}
+                        <span class="ml-1 oi oi-arrow-thick-bottom" title="Improvement" aria-hidden="true" style="color: limegreen;"></span>
+                        {% endif %}
+                    </div></td>
                     {% for test in tests %}
                     {% set r = result.results[test] %}
                         <td class="ci-app-test-result">
