@@ -101,6 +101,10 @@ class AppCIResult(db.Model):
     def outdated(self):
         return (datetime.datetime.now() - self.date).days > 30
 
+    @property
+    def needs_attention(self):
+        return self.outdated or self.level is None or self.app.public_level == "?" or (int(self.app.public_level) > self.level) 
+
 
 class AppCI():
 

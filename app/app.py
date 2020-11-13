@@ -55,7 +55,7 @@ def appci_branch(branch):
     app_results = sort_test_results(branch.most_recent_tests_per_app())
 
     tests = AppCI.tests.copy()
-    if "Malformed path" in tests:
+    if "Malfurmed path" in tests:
         tests.remove("Malformed path")
 
     return render_template("appci_branch.html", tests=tests,

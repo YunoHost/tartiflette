@@ -7,42 +7,7 @@
 <div class="row">
     <div class="mx-auto">
 	<div style="text-align:center;">
-<label for="level-all">Level : </label>
-<div class="btn-group btn-group-toggle" data-toggle="buttons">
-  <label class="btn btn-sm btn-light active">
-    <input type="radio" name="options" level="all" id="filter_level-all" autocomplete="off" checked> All
-  </label>
-  <label class="btn btn-sm btn-light">
-    <input type="radio" name="options" level="?" autocomplete="off"> ?
-  </label>
-  <label class="btn btn-sm btn-light">
-    <input type="radio" name="options" level="0" autocomplete="off"> 0
-  </label>
-  <label class="btn btn-sm btn-light">
-    <input type="radio" name="options" level="1" autocomplete="off"> 1
-  </label>
-  <label class="btn btn-sm btn-light">
-    <input type="radio" name="options" level="2" autocomplete="off"> 2
-  </label>
-  <label class="btn btn-sm btn-light">
-    <input type="radio" name="options" level="3" autocomplete="off"> 3
-  </label>
-  <label class="btn btn-sm btn-light">
-    <input type="radio" name="options" level="4" autocomplete="off"> 4
-  </label>
-  <label class="btn btn-sm btn-light">
-    <input type="radio" name="options" level="5" autocomplete="off"> 5
-  </label>
-  <label class="btn btn-sm btn-light">
-    <input type="radio" name="options" level="6" autocomplete="off"> 6
-  </label>
-  <label class="btn btn-sm btn-light">
-    <input type="radio" name="options" level="7" autocomplete="off"> 7
-  </label>
-  <label class="btn btn-sm btn-light">
-    <input type="radio" name="options" level="8" autocomplete="off"> 8
-  </label>
-</div>
+		<button id="filter_onlyNeedAttention" type="button" class="btn btn-light btn-sm" href="javascript:void(0)" onclick="toggle(this)">Show only app that needs attention</button>
 	</div>
         <div>
             <table class="table table-responsive ci-app-table">
@@ -59,7 +24,7 @@
                 </thead>
                 <tbody>
                 {% for result in app_results %}
-                <tr app="{{ result.app.name }}" class="resultline" level="{{ result.level if result.level >= 0 else "?" }}" {% if result.outdated %}style="opacity: 0.8; background-color: #ddd;"{% endif %} >
+                <tr app="{{ result.app.name }}" class="resultline {% if result.needs_attention %}ci-needs-attention{% endif  %}" {% if result.outdated %}style="opacity: 0.8; background-color: #ddd;"{% endif %} >
                     <td class="ci-app-row-title">
                         {% if result.app.long_term_good_quality %}
                             <span class="oi oi-star" title="Long-term good quality" aria-hidden="true" style="color: goldenrod;"></span>
@@ -157,9 +122,10 @@ function toggle(e) {
 }
 
 function update_filters() {
-    var levelFilter = $("input[type='radio']:checked").attr("level");
-    $(".resultline").show();
-    if (levelFilter != "all") { $(".resultline[level!='"+levelFilter+"']").hide(); }
+    var onlyNeedAttention = $("#filter_onlyNeedAttention").hasClass("btn-primary");
+    $(".resultline").hide();
+    $(".ci-needs-attention").show();
+    if (!onlyNeedAttention) { $(".resultline").show(); }
 }
 
 </script>
