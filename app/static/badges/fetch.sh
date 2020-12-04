@@ -1,11 +1,11 @@
 wget -O - https://img.shields.io/badge/Integration-Level_9-blue.svg        > level9.svg
-wget -O - https://img.shields.io/badge/Integration-Level_8-blue.svg        > level8.svg
-wget -O - https://img.shields.io/badge/Integration-Level_7-brightgreen.svg > level7.svg
-wget -O - https://img.shields.io/badge/Integration-Level_6-green.svg       > level6.svg
-wget -O - https://img.shields.io/badge/Integration-Level_5-green.svg       > level5.svg
-wget -O - https://img.shields.io/badge/Integration-Level_4-yellowgreen.svg > level4.svg
+wget -O - https://img.shields.io/badge/Integration-Level_8-brightgreen.svg > level8.svg
+wget -O - https://img.shields.io/badge/Integration-Level_7-green.svg       > level7.svg
+wget -O - https://img.shields.io/badge/Integration-Level_6-yellowgreen.svg > level6.svg
+wget -O - https://img.shields.io/badge/Integration-Level_5-yellowgreen.svg > level5.svg
+wget -O - https://img.shields.io/badge/Integration-Level_4-yellow.svg      > level4.svg
 wget -O - https://img.shields.io/badge/Integration-Level_3-yellow.svg      > level3.svg
-wget -O - https://img.shields.io/badge/Integration-Level_2-yellow.svg      > level2.svg
+wget -O - https://img.shields.io/badge/Integration-Level_2-orange.svg      > level2.svg
 wget -O - https://img.shields.io/badge/Integration-Level_1-orange.svg      > level1.svg
 wget -O - https://img.shields.io/badge/Integration-Level_0-red.svg         > level0.svg
 wget -O - https://img.shields.io/badge/Integration-Unknown-lightgrey.svg   > unknown.svg
