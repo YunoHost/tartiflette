@@ -92,7 +92,7 @@ def make_count_summary():
         for state in states:
             summary[state] = len([k for k, infos in j.items() if infos["state"] == state])
 
-        for level in range(0, 9):
+        for level in range(0, 10):
             summary["level-%s" % level] = len([k for k, infos in j.items()
                                                if infos["state"] in ["working", "official"]
                                                and infos.get("level", None) == level])
@@ -138,7 +138,7 @@ def update_catalog_stats(app, history):
     except:
         return
 
-    app_in_db.long_term_good_quality = len([d for d in history[-24:] if d["level"] > 5]) > 12
+    app_in_db.long_term_good_quality = len([d for d in history[-24:] if d["level"] > 5]) > 0.90 * 24
     app_in_db.long_term_broken = history[-1]["level"] == 0 and len([d for d in history[-24:] if d["level"] == 0]) > 12
 
     db.session.add(app_in_db)

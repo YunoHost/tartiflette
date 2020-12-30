@@ -17,7 +17,8 @@ window.onload = function () {
         "#A6B255",
         "#7AB659",
         "#5cb85c",
-        "#4695d5"
+        "#4695d5",
+        "#8960b3"
     ];
 
     var colors_per_state = {
@@ -37,7 +38,7 @@ window.onload = function () {
             shared: true
         },
         data: [
-            {% for level in range(8,-1,-1) %}
+            {% for level in range(9,-1,-1) %}
                 {
                 color: colors_per_level[{{ level }}],
                 type: "stackedArea",

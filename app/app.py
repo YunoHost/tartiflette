@@ -136,7 +136,7 @@ def badge(app):
 
     badge = "level%s.svg" % level if not level is None else "unknown.svg"
 
-    if not app.ci_enabled:
+    if app.state != "working":
         badge = "unknown.svg"
 
     svg = open("./app/static/badges/%s" % badge).read()
