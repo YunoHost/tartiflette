@@ -63,16 +63,16 @@ class AppCatalog():
                 known_app.master_commit_date = g.commit_date(known_app, known_app.master_commit)
                 known_app.testing_pr = g.testing_pr(known_app)
 
-                #issues_and_prs = g.issues(known_app)
-                #known_app.opened_issues = issues_and_prs["nb_issues"]
-                #known_app.opened_prs = issues_and_prs["nb_prs"]
+                issues_and_prs = g.issues(known_app)
+                known_app.opened_issues = issues_and_prs["nb_issues"]
+                known_app.opened_prs = issues_and_prs["nb_prs"]
 
             else:
                 known_app.public_commit = "???"
                 known_app.master_commit = "???"
                 known_app.testing_pr = None
-                #known_app.opened_issues = 0
-                #known_app.opened_prs = 0
+                known_app.opened_issues = 0
+                known_app.opened_prs = 0
 
             try:
                 db.session.commit()
@@ -97,8 +97,8 @@ class App(db.Model):
     public_commit_date = db.Column(db.DateTime, nullable=True)
     master_commit_date = db.Column(db.DateTime, nullable=True)
     testing_pr = db.Column(db.PickleType, default=None)
-    #opened_issues = db.Column(db.Integer, default=-1)
-    #opened_prs = db.Column(db.Integer, default=-1)
+    opened_issues = db.Column(db.Integer, default=-1)
+    opened_prs = db.Column(db.Integer, default=-1)
 
     long_term_good_quality = db.Column(db.Boolean)
     long_term_broken = db.Column(db.Boolean)
@@ -115,7 +115,7 @@ class App(db.Model):
 
     def most_recent_tests_per_branch(self):
 
-        from app.models.appci import AppCIBranch, AppCIResult, AppCI
+        from app.models.appci import AppCIBranch, AppCIResult, AppCI, test_categories
         branches = AppCIBranch.query.all()
         for branch in branches:
             most_recent_test = AppCIResult.query \
@@ -126,11 +126,13 @@ class App(db.Model):
             if most_recent_test:
                 yield most_recent_test
             else:
-                yield AppCIResult(app = self,
-                                  branch = branch,
-                                  level = None,
-                                  date = datetime.datetime.fromtimestamp(0),
-                                  results = { t:None for t in AppCI.tests })
+                yield AppCIResult({"app": self.name,
+                                   "architecture": branch.arch,
+                                   "yunohost_branch": branch.branch,
+                                   "commit": "",
+                                   "level": None,
+                                   "timestamp": 0,
+                                   "tests": {}})
 
 class Github():
 

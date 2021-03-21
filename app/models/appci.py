@@ -49,11 +49,13 @@ class AppCIBranch(db.Model):
             if most_recent_test:
                 yield most_recent_test[0]
             else:
-                yield AppCIResult(app = app,
-                                  branch = self,
-                                  level = None,
-                                  date = datetime.datetime.fromtimestamp(0),
-                                  results = { t:None for t in AppCI.tests })
+                yield AppCIResult({"app": app.name,
+                                   "architecture": self.arch,
+                                   "yunohost_branch": self.branch,
+                                   "commit": "",
+                                   "level": None,
+                                   "timestamp": 0,
+                                   "tests": {}})
 
 
 test_categories = []
