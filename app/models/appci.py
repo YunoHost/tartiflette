@@ -26,20 +26,6 @@ class AppCIBranch(db.Model):
                           url='https://ci-apps.yunohost.org/ci/logs/list_level_stable_amd64.json',
                           url_per_app='https://ci-apps.yunohost.org/ci/apps/{}/')
 
-        yield AppCIBranch(name='arm',
-                          arch="arm",
-                          branch="stable",
-                          display_name='Stable (ARM)',
-                          url='https://ci-apps-arm.yunohost.org/ci/logs/list_level_stable_armhf.json',
-                          url_per_app='https://ci-apps-arm.yunohost.org/ci/apps/{}/')
-
-        yield AppCIBranch(name='testing',
-                          arch="x86",
-                          branch="testing",
-                          display_name='Testing (x86)',
-                          url='https://ci-apps-unstable.yunohost.org/ci/logs/list_level_testing_amd64.json',
-                          url_per_app='https://ci-apps-unstable.yunohost.org/ci/apps/{}/')
-
         yield AppCIBranch(name='unstable',
                           arch="x86",
                           branch="unstable",
@@ -103,7 +89,7 @@ class AppCIResult(db.Model):
 
     @property
     def needs_attention(self):
-        return self.outdated or self.level is None or self.app.public_level == "?" or (int(self.app.public_level) > self.level) 
+        return self.outdated or self.level is None or self.app.public_level == "?" or (int(self.app.public_level) > self.level)
 
 
 class AppCI():

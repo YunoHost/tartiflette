@@ -32,14 +32,10 @@
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <span class="dropdown-header">Per branch</span>
                   <a class="dropdown-item" href="{{ url_for('main.appci_branch', branch="stable")}}">Stable</a>
-                  <a class="dropdown-item" href="{{ url_for('main.appci_branch', branch="testing")}}">Testing</a>
                   <a class="dropdown-item" href="{{ url_for('main.appci_branch', branch="unstable")}}">Unstable</a>
-                  <a class="dropdown-item" href="{{ url_for('main.appci_branch', branch="arm")}}">ARM</a>
                   <div class="dropdown-divider"></div>
                   <span class="dropdown-header">Branch comparisons</span>
-                  <a class="dropdown-item" href="{{ url_for('main.appci_compare', ref="stable", target="testing")}}">Stable vs. Testing</a>
                   <a class="dropdown-item" href="{{ url_for('main.appci_compare', ref="stable", target="unstable")}}">Stable vs. Unstable</a>
-                  <a class="dropdown-item" href="{{ url_for('main.appci_compare', ref="stable", target="arm")}}">Stable vs. ARM</a>
               </div>
           </li>
           <li class="nav-item dropdown">
