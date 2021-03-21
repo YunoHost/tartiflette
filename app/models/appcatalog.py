@@ -141,9 +141,6 @@ class Github():
         self.user = GITHUB_USER
         self.token = GITHUB_TOKEN
 
-        print(self.user)
-        print(self.token)
-
     def request(self, uri, autoretry=True):
 
         r = requests.get('https://api.github.com/{}'.format(uri), auth=(self.user, self.token)).json()

@@ -174,7 +174,6 @@ class AppCI():
                 print("Failed to fetch %s" % cibranch.url)
                 continue
 
-            import pdb; pdb.set_trace()
             for app, test_summary in results.items():
 
                 if (test_summary["architecture"], test_summary["yunohost_branch"]) != (cibranch.arch, cibranch.branch):
