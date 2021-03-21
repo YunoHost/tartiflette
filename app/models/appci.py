@@ -20,14 +20,14 @@ class AppCIBranch(db.Model):
 
     def init():
         yield AppCIBranch(name='stable',
-                          arch="x86",
+                          arch="amd64",
                           branch="stable",
                           display_name='Stable (x86)',
                           url='https://ci-apps.yunohost.org/ci/logs/list_level_stable_amd64.json',
                           url_per_app='https://ci-apps.yunohost.org/ci/apps/{}/')
 
         yield AppCIBranch(name='unstable',
-                          arch="x86",
+                          arch="amd64",
                           branch="unstable",
                           display_name='Unstable (x86)',
                           url='https://ci-apps-unstable.yunohost.org/ci/logs/list_level_unstable_amd64.json',
@@ -56,6 +56,13 @@ class AppCIBranch(db.Model):
                                   results = { t:None for t in AppCI.tests })
 
 
+test_categories = []
+def test_category(category_name):
+    def decorator(func):
+        test_categories.append((func.__name__, category_name, func))
+        return func
+    return decorator
+
 class AppCIResult(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
@@ -76,6 +83,66 @@ class AppCIResult(db.Model):
     def __repr__(self):
         return '<AppCIResult %s>' % self.date
 
+    def __init__(self, infos):
+
+        self.app = App.query.filter_by(name=infos["app"]).first()
+        self.branch = AppCIBranch.query.filter_by(arch=infos["architecture"], branch=infos["yunohost_branch"]).first()
+        self.level = infos["level"]
+        self.commit = infos["commit"]
+        self.date = datetime.datetime.fromtimestamp(infos["timestamp"])
+        self.results = { category: result for category, result in list(self.analyze_test_categories(infos["tests"])) }
+
+    def analyze_test_categories(self, raw_results):
+
+        for category_id, category_display, is_in_category in test_categories:
+
+            relevant_tests = [test for test in raw_results if is_in_category(test)]
+
+            if not relevant_tests:
+                yield (category_id, None)
+            else:
+                yield (category_id, all(test["main_result"] == "success" for test in relevant_tests))
+
+    @test_category("Linter")
+    def package_linter(test):
+        return test["test_type"] == "PACKAGE_LINTER"
+
+    @test_category("Install on domain's root")
+    def install_root(test):
+        return test["test_type"] == "TEST_INSTALL" and test["test_arg"] == "root"
+
+    @test_category("Install on domain subpath")
+    def install_subpath(test):
+        return test["test_type"] == "TEST_INSTALL" and test["test_arg"] == "subdir"
+
+    @test_category("Install with no url")
+    def install_nourl(test):
+        return test["test_type"] == "TEST_INSTALL" and test["test_arg"] == "nourl"
+
+    @test_category("Install in private mode")
+    def install_private(test):
+        return test["test_type"] == "TEST_INSTALL" and test["test_arg"] == "private"
+
+    @test_category("Install multi-instance")
+    def install_multi(test):
+        return test["test_type"] == "TEST_INSTALL" and test["test_arg"] == "multi"
+
+    @test_category("Upgrade (same version)")
+    def upgrade_same_version(test):
+        return test["test_type"] == "TEST_UPGRADE" and test["test_arg"] == ""
+
+    @test_category("Upgrade (older versions)")
+    def upgrade_older_versions(test):
+        return test["test_type"] == "TEST_UPGRADE" and test["test_arg"] != ""
+
+    @test_category("Backup / restore")
+    def backup_restore(test):
+        return test["test_type"] == "TEST_BACKUP_RESTORE"
+
+    @test_category("Change url")
+    def change_url(test):
+        return test["test_type"] == "TEST_CHANGE_URL"
+
     def init():
         pass
 
@@ -94,23 +161,6 @@ class AppCIResult(db.Model):
 
 class AppCI():
 
-    tests = [ "Package linter",
-              "Installation",
-              "Deleting",
-              "Installation in a sub path",
-              "Deleting from a sub path",
-              "Installation on the root",
-              "Deleting from root",
-              "Upgrade",
-              "Installation in private mode",
-              "Installation in public mode",
-              "Multi-instance installations",
-              "Malformed path",
-              "Port already used",
-              "Backup",
-              "Restore",
-              "Change URL" ]
-
     def update():
 
         cibranches = AppCIBranch.query.all()
@@ -119,26 +169,16 @@ class AppCI():
         for cibranch in cibranches:
             print("> Fetching current CI results for C.I. branch {}".format(cibranch.name))
             try:
-                result_json = requests.get(cibranch.url).text
+                results = requests.get(cibranch.url).json()
             except:
                 print("Failed to fetch %s" % cibranch.url)
                 continue
-            cleaned_json = [ line for line in result_json.split("\n") if "test_name" in line ]
-            cleaned_json = [ line.replace('"level": ?,', '"level": null,') for line in cleaned_json ]
-            cleaned_json = "[" + ''.join(cleaned_json)[:-1] + "]"
-            cleaned_json = cleaned_json.replace("Binary", '"?"')
-            j = json.loads(cleaned_json)
-            for test_summary in j:
-                if test_summary["app"] is None:
-                     print("No app to parse in test_summary ? : %s" % test_summary)
-                     continue
 
-                if (test_summary["arch"], test_summary["branch"]) != (cibranch.arch, cibranch.branch):
+            import pdb; pdb.set_trace()
+            for app, test_summary in results.items():
+
+                if (test_summary["architecture"], test_summary["yunohost_branch"]) != (cibranch.arch, cibranch.branch):
                     continue
-
-                test_results = { }
-                for test, result in zip(AppCI.tests, test_summary["detailled_success"]):
-                    test_results[test] = bool(int(result)) if result in [ "1", "0" ] else None
 
                 app = App.query.filter_by(name=test_summary["app"]).first()
                 if app is None:
@@ -157,12 +197,8 @@ class AppCI():
                     existing_test = None
 
                 if not existing_test:
-                        print("New record for app %s" % str(app))
-                        results = AppCIResult(app = app,
-                                              branch = cibranch,
-                                              level = test_summary["level"],
-                                              date = date,
-                                              results = test_results)
-                        db.session.add(results)
+                    print("New record for app %s" % str(app))
+                    results = AppCIResult(test_summary)
+                    db.session.add(results)
 
         db.session.commit()

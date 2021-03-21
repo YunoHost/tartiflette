@@ -16,8 +16,8 @@
                     <tr>
                         <th class="ci-app-row-title"></th>
                         <th class="ci-app-test-title"><div>Level</div></th>
-                        {% for test in tests %}
-                         <th class="ci-app-test-title"><div><span>{{ test }}</span></div></th>
+                        {% for test in test_categories %}
+                         <th class="ci-app-test-title"><div><span>{{ test[1] }}</span></div></th>
                         {% endfor %}
                          <th class="ci-app-test-title"></th>
                     </tr>
@@ -33,10 +33,10 @@
                     </td>
                     <td class="ci-app-level" value="{{ result.level }}">
                         <div title="Level"><strong>{{ result.level if result.level >= 0 else "?" }}</strong></div></td>
-                    {% for test in tests %}
-                    {% set r = result.results[test] %}
+                    {% for test in test_categories %}
+                    {% set r = result.results[test[0]] %}
                         <td class="ci-app-test-result">
-                            <div title="{{ test }}" value="{{ r }}"></div>
+                            <div title="{{ test[1] }}" value="{{ r }}"></div>
                         </td>
                     {% endfor %}
                     <td class="ci-app-test-info">

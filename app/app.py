@@ -2,25 +2,13 @@ from datetime import datetime
 from flask import render_template, make_response, Blueprint
 from .models.pr import PullRequest
 from .models.appcatalog import App
-from .models.appci import AppCI, AppCIBranch
+from .models.appci import AppCI, AppCIBranch, test_categories
 from .models.unlistedapps import UnlistedApp
 from .settings import SITE_ROOT
 import json
 import os
 
 main = Blueprint('main', __name__, url_prefix=SITE_ROOT)
-tests = [ "Package linter",
-          "Installation",
-          "Installation in a sub path",
-          "Installation on the root",
-          "Installation in private mode",
-          "Multi-instance installations",
-          "Upgrade",
-          "Backup",
-          "Restore",
-          "Change URL",
-          "Port already used",
-]
 
 def sort_test_results(results):
 
@@ -65,7 +53,7 @@ def appci_branch(branch):
 
     app_results = sort_test_results(branch.most_recent_tests_per_app())
 
-    return render_template("appci_branch.html", tests=tests,
+    return render_template("appci_branch.html", test_categories=test_categories,
                                                 branch=branch,
                                                 app_results=app_results)
 
@@ -86,7 +74,7 @@ def appci_app(app):
     else:
         history = []
 
-    return render_template("appci_app.html", tests=tests,
+    return render_template("appci_app.html", test_categories=test_categories,
                                              app=app,
                                              branch_results=branch_results,
                                              history=history)

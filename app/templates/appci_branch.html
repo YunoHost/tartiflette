@@ -15,8 +15,8 @@
                     <tr>
                         <th class="ci-app-row-title"></th>
                         <th class="ci-app-test-title ci-app-level"><div>Quality level</div></th>
-                        {% for test in tests %}
-                         <th class="ci-app-test-title"><div><span>{{ test }}</span></div></th>
+                        {% for test in test_categories %}
+                         <th class="ci-app-test-title"><div><span>{{ test[1] }}</span></div></th>
                         {% endfor %}
                          <th class="ci-app-test-title"></th>
                          <th></th>
@@ -46,10 +46,10 @@
                         <span class="ml-1 oi oi-arrow-thick-top" title="Improvement" aria-hidden="true" style="color: limegreen;"></span>
                         {% endif %}
                     </div></td>
-                    {% for test in tests %}
-                    {% set r = result.results[test] %}
+                    {% for test in test_categories %}
+                    {% set r = result.results[test[0]] %}
                         <td class="ci-app-test-result">
-                            <div title="{{ test }}" value="{{ r }}"></div>
+                            <div title="{{ test[1] }}" value="{{ r }}"></div>
                         </td>
                     {% endfor %}
                     <td class="ci-app-test-info px-0">
@@ -94,8 +94,8 @@ window.onload = function () {
           startAngle: -90,
           //innerRadius: 60,
           indexLabelFontSize: 17,
-          indexLabel: "{label} - #percent%",
-          toolTipContent: "<b>{label}:</b> {y} (#percent%)",
+          indexLabel: "{label} - {y}%",
+          toolTipContent: "<b>{label}:</b> {y}",
           dataPoints: [
               { y: $(".ci-app-level[value=-1]").length, label: "Unknown", color: "#cccccc" },
               { y: $(".ci-app-level[value=0]").length,  label: "Level 0", color: "#d9534f" },
