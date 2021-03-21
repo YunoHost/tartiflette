@@ -9,7 +9,18 @@ import json
 import os
 
 main = Blueprint('main', __name__, url_prefix=SITE_ROOT)
-
+tests = [ "Package linter",
+          "Installation",
+          "Installation in a sub path",
+          "Installation on the root",
+          "Installation in private mode",
+          "Multi-instance installations",
+          "Upgrade",
+          "Backup",
+          "Restore",
+          "Change URL",
+          "Port already used",
+]
 
 def sort_test_results(results):
 
@@ -54,10 +65,6 @@ def appci_branch(branch):
 
     app_results = sort_test_results(branch.most_recent_tests_per_app())
 
-    tests = AppCI.tests.copy()
-    if "Malfurmed path" in tests:
-        tests.remove("Malformed path")
-
     return render_template("appci_branch.html", tests=tests,
                                                 branch=branch,
                                                 app_results=app_results)
@@ -72,10 +79,6 @@ def appci_app(app):
 
     for r in branch_results:
         r.level = -1 if r.level in ["?", None] else int(r.level)
-
-    tests = AppCI.tests.copy()
-    if "Malformed path" in tests:
-        tests.remove("Malformed path")
 
     history_file = "./app/scripts/appListsHistory/per_app/history_%s.json" % app.name
     if os.path.exists(history_file):
