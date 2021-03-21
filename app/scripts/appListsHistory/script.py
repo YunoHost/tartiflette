@@ -139,7 +139,7 @@ def update_catalog_stats(app, history):
         return
 
     app_in_db.long_term_good_quality = len([d for d in history[-24:] if d["level"] > 5]) > 0.90 * 24
-    app_in_db.long_term_broken = history[-1]["level"] == 0 and len([d for d in history[-24:] if d["level"] == 0]) > 12
+    app_in_db.long_term_broken = history[-1]["level"] == 0 and len([d for d in history[-24:] if d["level"] >= 0 and d["level"] <= 2]) > 12
 
     db.session.add(app_in_db)
 
