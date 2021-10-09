@@ -13,6 +13,7 @@ from app import db, create_app
 from app.models.appcatalog import App
 app_ = create_app()
 
+
 def _time_points_until_today():
 
     year = 2017
@@ -129,6 +130,49 @@ def make_count_summary():
 
         db.session.commit()
 
+def make_news():
+
+    news_per_date = {d.strftime("%b %d %Y"): {"broke": [], "repaired": [], "removed": [], "added": []} for d in time_points_until_today}
+    previous_j = {}
+
+    def level(infos):
+        lev = infos.get("level")
+        if lev is None or (isinstance(lev, str) and not lev.isdigit()):
+            return -1
+        else:
+            return int(lev)
+
+
+    for d in time_points_until_today:
+        d_label = d.strftime("%b %d %Y")
+
+        print("Analyzing %s ..." % d.strftime("%y-%m-%d"))
+
+        # Load corresponding json
+        j = json.loads(open("./.work/merged_lists.json.%s" % d.strftime("%y-%m-%d")).read())
+
+        apps_current = set(k for k, infos in j.items() if infos["state"] in ["working", "official"] and level(infos) != -1)
+        apps_current_good = set(k for k, infos in j.items() if k in apps_current and level(infos) > 4)
+        apps_current_broken = set(k for k, infos in j.items() if k in apps_current and level(infos) <= 4)
+
+        apps_previous = set(k for k, infos in previous_j.items() if infos["state"] in ["working", "official"] and level(infos) != -1)
+        apps_previous_good = set(k for k, infos in previous_j.items() if k in apps_previous and level(infos) > 4)
+        apps_previous_broken = set(k for k, infos in previous_j.items() if k in apps_previous and level(infos) <= 4)
+
+        news = news_per_date[d_label]
+        for app in set(apps_previous_good & apps_current_broken):
+            news["broke"].append((app, j[app]["url"]))
+        for app in set(apps_previous_broken & apps_current_good):
+            news["repaired"].append((app, j[app]["url"]))
+        for app in set(apps_current - apps_previous):
+            news["added"].append((app, j[app]["url"]))
+        for app in set(apps_previous - apps_current):
+            news["removed"].append((app, previous_j[app]["url"]))
+
+        previous_j = j
+
+    json.dump(news_per_date, open('news.json', 'w'))
+
 
 def update_catalog_stats(app, history):
 
@@ -146,3 +190,4 @@ def update_catalog_stats(app, history):
 
 get_lists_history()
 make_count_summary()
+make_news()

@@ -149,12 +149,11 @@ def appsobservatory_history():
     return render_template('applist_history.html', data=data)
 
 
-@main.route('/appsobservatory/rss')
-def appsobservatory_rss():
-    file_ = open("./app/scripts/appListsHistory/atom.xml").read()
-    response = make_response(file_)
-    response.headers['Content-Type'] = 'application/rss+xml'
-    return response
+@main.route('/appsobservatory/news')
+def appsobservatory_news():
+    news_per_date = json.loads(open("./app/scripts/appListsHistory/news.json").read())
+    return render_template('applist_news.html', news_per_date=reversed(news_per_date.items()))
+
 
 @main.route('/appsobservatory/unlisted')
 def appsobservatory_unlisted():
