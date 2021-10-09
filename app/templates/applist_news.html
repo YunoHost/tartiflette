@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row">
+    <div class="col-10 offset-1">
+                        
+        {% for date, news in news_per_date %}
+
+            <h2>{{ date }}</h2>
+
+            <ul>
+            {% for app, url in news["added"] %}
+                <li>
+                    <span class="badge bg-primary" style="color: white;"><i class="oi oi-plus pr-1" aria-hidden="true"></i>Added</span>
+                    <a href="{{url}}">{{app}}</a>
+                </li>
+            {% endfor %}
+            {% for app, url in news["repaired"] %}
+                <li>
+                    <span class="badge bg-success" style="color: white;"><i class="oi oi-circle-check pr-1" aria-hidden="true"></i>Repaired</span>
+                    <a href="{{url}}">{{app}}</a>
+                </li>
+            {% endfor %}
+            {% for app, url in news["broke"] %}
+                <li>
+                    <span class="badge bg-warning" style="color: white;"><i class="oi oi-warning pr-1" aria-hidden="true"></i>Broke</span>
+                    <a href="{{url}}">{{app}}</a>
+                </li>
+            {% endfor %}
+            {% for app, url in news["removed"] %}
+                <li>
+                    <span class="badge bg-danger" style="color: white;"><i class="oi oi-circle-x pr-1" aria-hidden="true"></i>Removed</span>
+                    <a href="{{url}}">{{app}}</a>
+                </li>
+            {% endfor %}
+            </ul>
+            
+        {% endfor %}
+
+    </div>
+</div>
+ 
+{% endblock %}

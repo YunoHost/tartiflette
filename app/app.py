@@ -152,7 +152,7 @@ def appsobservatory_history():
 @main.route('/appsobservatory/news')
 def appsobservatory_news():
     news_per_date = json.loads(open("./app/scripts/appListsHistory/news.json").read())
-    return render_template('applist_news.html', news_per_date=reversed(news_per_date.items()))
+    return render_template('applist_news.html', news_per_date=list(reversed(list(news_per_date.items()))))
 
 
 @main.route('/appsobservatory/unlisted')
