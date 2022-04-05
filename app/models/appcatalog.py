@@ -33,6 +33,7 @@ class AppCatalog():
                                 public_commit=app["git"]["revision"])
                 db.session.add(known_app)
             else:
+                known_app.repo = app["url"]
                 print("Updating already known app {}".format(name))
 
             maintainers_info = app["manifest"].get("maintainer", app["manifest"].get("developer", None))
