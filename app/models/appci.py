@@ -24,14 +24,14 @@ class AppCIBranch(db.Model):
                           branch="stable",
                           display_name='Stable (x86)',
                           url='https://ci-apps.yunohost.org/ci/logs/list_level_stable_amd64.json',
-                          url_per_app='https://ci-apps.yunohost.org/ci/apps/{}/')
+                          url_per_app='https://ci-apps.yunohost.org/ci/apps/{}/latestjob')
 
         yield AppCIBranch(name='unstable',
                           arch="amd64",
                           branch="unstable",
                           display_name='Unstable (x86)',
                           url='https://ci-apps-unstable.yunohost.org/ci/logs/list_level_unstable_amd64.json',
-                          url_per_app='https://ci-apps-unstable.yunohost.org/ci/apps/{}/')
+                          url_per_app='https://ci-apps-unstable.yunohost.org/ci/apps/{}/latestjob')
 
     def last_build_url(self, app):
         return self.url_per_app.format(app.name)
