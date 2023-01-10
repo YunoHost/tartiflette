@@ -62,7 +62,10 @@ def get_lists_history():
             merged.update(community)
             merged.update(official)
         else:
-            merged = json.loads(open("./.work/apps/apps.json").read())
+            try:
+                merged = json.loads(open("./.work/apps/apps.json").read())
+            except:
+                pass
 
         # Save it
         json.dump(merged, open('./.work/merged_lists.json.%s' % t.strftime("%y-%m-%d"), 'w'))
@@ -91,11 +94,11 @@ def make_count_summary():
         summary = {}
         summary["date"] = d_label
         for state in states:
-            summary[state] = len([k for k, infos in j.items() if infos["state"] == state])
+            summary[state] = len([k for k, infos in j.items() if infos.get("state") == state])
 
         for level in range(0, 10):
             summary["level-%s" % level] = len([k for k, infos in j.items()
-                                               if infos["state"] in ["working", "official"]
+                                               if infos.get("state") in ["working", "official"]
                                                and infos.get("level", None) == level])
 
         history.append(summary)
@@ -151,11 +154,11 @@ def make_news():
         # Load corresponding json
         j = json.loads(open("./.work/merged_lists.json.%s" % d.strftime("%y-%m-%d")).read())
 
-        apps_current = set(k for k, infos in j.items() if infos["state"] in ["working", "official"] and level(infos) != -1)
+        apps_current = set(k for k, infos in j.items() if infos.get("state") in ["working", "official"] and level(infos) != -1)
         apps_current_good = set(k for k, infos in j.items() if k in apps_current and level(infos) > 4)
         apps_current_broken = set(k for k, infos in j.items() if k in apps_current and level(infos) <= 4)
 
-        apps_previous = set(k for k, infos in previous_j.items() if infos["state"] in ["working", "official"] and level(infos) != -1)
+        apps_previous = set(k for k, infos in previous_j.items() if infos.get("state") in ["working", "official"] and level(infos) != -1)
         apps_previous_good = set(k for k, infos in previous_j.items() if k in apps_previous and level(infos) > 4)
         apps_previous_broken = set(k for k, infos in previous_j.items() if k in apps_previous and level(infos) <= 4)
 
