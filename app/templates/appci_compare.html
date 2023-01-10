@@ -7,7 +7,7 @@
 <div class="row">
     <div class="mx-auto">
 	<div style="text-align:center;">
-<button id="filter_onlyDiffs" type="button" class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="toggle(this)">Show only diffs</button>
+<button id="filter_onlyMajorRegressions" type="button" class="btn btn-primary btn-sm" href="javascript:void(0)" onclick="toggle(this)">Show only major regressions</button>
 	</div>
         <div>
             <table class="table table-responsive ci-app-table">
@@ -21,7 +21,7 @@
                 </thead>
                 <tbody>
                 {% for result in results %}
-                <tr class="ci-branch-comparison" value="{{ result.compare }}" app="{{ result.app.name }}">
+		<tr class="ci-branch-comparison" majorRegression="{{ result.level and result.level > 4 and (not result.level_compare or result.level_compare < 4) }}" value="{{ result.compare }}" app="{{ result.app.name }}">
                     <td class="ci-app-row-title">
                         <a href="{{ url_for('main.appci_app', app=result.app.name) }}">
                             <span title="App">
@@ -84,9 +84,9 @@ function toggle(e) {
     update_filters();
 }
 function update_filters() {
-    var onlyDiffs = $("#filter_onlyDiffs").hasClass("btn-primary");
+    var onlyMajorRegressions = $("#filter_onlyMajorRegressions").hasClass("btn-primary");
     $(".ci-branch-comparison").show();
-    if (onlyDiffs) { $(".ci-branch-comparison[value='same']").hide(); }
+    if (onlyMajorRegressions) { $(".ci-branch-comparison[majorRegression!='True']").hide(); }
 }
 
 </script>
@@ -94,3 +94,4 @@ function update_filters() {
 
 
 {% endblock %}
+
