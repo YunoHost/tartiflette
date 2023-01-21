@@ -47,12 +47,7 @@ class AppCatalog():
             if isinstance(maintainers_info, list):
                 known_app.maintainers = [ maintainer["name"] for maintainer in maintainers_info ]
 
-            known_app.maintained = app.get("maintained", True)
-            # Quick and dirty fix to convert maintained state to boolean
-            if known_app.maintained == "orphaned":
-               known_app.maintained = False
-            elif isinstance(known_app.maintained, str):
-                known_app.maintained = True
+            known_app.maintained = 'package-not-maintained' not in app.get('antifeatures', []),
             known_app.state = app["state"]
             known_app.public_level = app.get("level", None)
 

@@ -115,22 +115,48 @@ def appci_compare(ref, target):
 
 @main.route('/integration/<app>')
 @main.route('/integration/<app>.svg')
-def badge(app):
+@main.route('/badge/<type>/<app>')
+@main.route('/badge/<type>/<app>.svg')
+def badge(app, type="integration"):
 
-    app = App.query.filter_by(name=app).first_or_404()
-    branch_results = list(app.most_recent_tests_per_branch())
+    apps = App.query.filter_by(name=app).all()
+    app = apps[0] if len(apps) == 1 else None
     level = None
-    for r in branch_results:
-        if r.branch.name == "stable":
-            level = r.level
-            break
 
-    badge = "level%s.svg" % level if not level is None else "unknown.svg"
+    if app:
+        branch_results = list(app.most_recent_tests_per_branch())
+        for r in branch_results:
+            if r.branch.name == "stable":
+                level = r.level
+                break
 
-    if app.state != "working":
-        badge = "unknown.svg"
+    if type == "integration":
+        if app and app.state == "working" and level:
+            badge = f"level{level}"
+        else:
+            badge = "unknown"
+    elif type == "state":
 
-    svg = open("./app/static/badges/%s" % badge).read()
+        if not app:
+            badge = "state-unknown"
+        elif app.state == "working":
+            if app.public_level is None or app.public_level == "?":
+                badge = "state-just-got-added-to-catalog"
+            elif app.public_level in [0, -1]:
+                badge = "state-broken"
+            else:
+                badge = "state-working"
+        else:
+            badge = f"state-{app.state}"
+    elif type == "maintained":
+        if app and not app.maintained:
+            badge = "unmaintained"
+        else:
+            badge = "empty"
+    else:
+            badge = "empty"
+
+    svg = open(f"./app/static/badges/{badge}.svg").read()
     response = make_response(svg)
     response.content_type = 'image/svg+xml'
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
