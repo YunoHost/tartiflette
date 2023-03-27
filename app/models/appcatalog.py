@@ -13,7 +13,7 @@ class AppCatalog():
 
         g = Github()
 
-        raw_apps = json.loads(requests.get("https://app.yunohost.org/default/v2/apps.json").text)
+        raw_apps = json.loads(requests.get("https://app.yunohost.org/default/v3/apps.json").text)
         raw_apps = raw_apps["apps"]
 
         for name in sorted(raw_apps.keys()):
