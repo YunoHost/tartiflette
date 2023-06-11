@@ -2,7 +2,8 @@
 {% block content %}
 
 <h2 class="text-center my-3">{{ branch.display_name }}</h2>
-<div id="levelSummary" style="height: 270px;" class="col-sm-6 offset-sm-3 my-3"></div>
+<div id="levelSummary" class="col-md-3 col-offset-md-3 col-sm-6 offset-sm-3 my-3" style="height: 270px; display: inline-block;"></div>
+<div id="packagingSummary" class="col-md-3 col-sm-6 my-3" style="height: 270px; display: inline-block;"></div>
 
 <div class="row">
     <div class="mx-auto">
@@ -24,13 +25,16 @@
                 </thead>
                 <tbody>
                 {% for result in app_results %}
-                <tr app="{{ result.app.name }}" class="resultline {% if result.needs_attention %}ci-needs-attention{% endif  %}" {% if result.outdated %}style="opacity: 0.8; background-color: #e9e9e9;"{% endif %} >
+                <tr app="{{ result.app.name }}" class="resultline {% if result.needs_attention %}ci-needs-attention{% endif  %}" {% if result.outdated %}style="opacity: 0.8; background-color: #e9e9e9;"{% endif %} data-packaging="{{ result.app.packaging_format }}" >
                     <td class="ci-app-row-title">
                         {% if result.app.long_term_good_quality %}
                             <span class="oi oi-star" title="Long-term good quality" aria-hidden="true" style="color: goldenrod;"></span>
                         {% endif %}
                         {% if result.app.long_term_broken %}
                             <span class="oi oi-flag" title="Long-term broken" aria-hidden="true" style="color: firebrick;"></span>
+                        {% endif %}
+                        {% if result.app.packaging_format and result.app.packaging_format >= 2 %}
+                            <span class="oi oi-box" title="Uses packaging v2!" aria-hidden="true" style="color: blueviolet; font-size: 0.8em;"></span>
                         {% endif %}
                         <a href="{{ url_for('main.appci_app', app=result.app.name) }}">
                             <span class="font-weight-bold" title="More tests / info for this app">
@@ -112,6 +116,23 @@ window.onload = function () {
       }]
   });
   chart.render();
+  var chart2 = new CanvasJS.Chart("packagingSummary", {
+      animationEnabled: false,
+      data: [{
+          type: "doughnut",
+          startAngle: -90,
+          //innerRadius: 60,
+          indexLabelFontSize: 17,
+          indexLabel: "{label} - {y}",
+          toolTipContent: "<b>{label}:</b> {y}",
+          dataPoints: [
+              { y: $(".resultline[data-packaging=2]").length,  label: "Packaging v2", color: "#8829df" },
+              { y: $(".resultline[data-packaging=1]").length,  label: "Packaging v1", color: "#f0f0f0" },
+          ]
+      }]
+  });
+  chart2.render();
+
   $("input[type='radio']").change(function() { update_filters(); });
   update_filters();
 }

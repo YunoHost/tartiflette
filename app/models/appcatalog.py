@@ -41,6 +41,7 @@ class AppCatalog():
             known_app.maintained = 'package-not-maintained' not in app.get('antifeatures', [])
             known_app.state = app["state"]
             known_app.public_level = app.get("level", None)
+            known_app.packaging_format = app["manifest"].get("packaging_format", 0)
 
             if "github" in known_app.repo:
 
@@ -86,6 +87,7 @@ class App(db.Model):
     testing_pr = db.Column(db.PickleType, default=None)
     opened_issues = db.Column(db.Integer, default=-1)
     opened_prs = db.Column(db.Integer, default=-1)
+    packaging_format = db.Column(db.Integer, default=-1)
 
     long_term_good_quality = db.Column(db.Boolean)
     long_term_broken = db.Column(db.Boolean)
