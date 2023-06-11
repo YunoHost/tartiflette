@@ -2,6 +2,7 @@ import requests
 import json
 import datetime
 import os
+import toml
 
 from .. import db
 
@@ -24,7 +25,7 @@ class UnlistedApp(db.Model):
 
         UnlistedApp.query.delete()
 
-        community = json.loads(requests.get("https://raw.githubusercontent.com/YunoHost/apps/master/apps.json").text)
+        community = toml.loads(requests.get("https://raw.githubusercontent.com/YunoHost/apps/master/apps.toml").text)
 
         known_apps = set()
         known_apps = known_apps.union([os.path.basename(app["url"]).lower() for app in community.values() ])

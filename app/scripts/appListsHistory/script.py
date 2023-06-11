@@ -1,4 +1,4 @@
-
+import toml
 import json
 import os
 import sys
@@ -63,9 +63,12 @@ def get_lists_history():
             merged.update(official)
         else:
             try:
-                merged = json.loads(open("./.work/apps/apps.json").read())
+                merged = toml.loads(open("./.work/apps/apps.toml").read())
             except:
-                pass
+                try:
+                    merged = json.loads(open("./.work/apps/apps.json").read())
+                except:
+                    pass
 
         # Save it
         json.dump(merged, open('./.work/merged_lists.json.%s' % t.strftime("%y-%m-%d"), 'w'))

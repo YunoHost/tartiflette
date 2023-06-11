@@ -23,7 +23,7 @@ class AppCIBranch(db.Model):
                           arch="amd64",
                           branch="stable",
                           display_name='Stable (x86)',
-                          url='https://ci-apps.yunohost.org/ci/logs/list_level_stable_amd64.json',
+                          url='https://ci-apps.yunohost.org/ci/api/results',
                           url_per_app='https://ci-apps.yunohost.org/ci/apps/{}/latestjob')
 
         yield AppCIBranch(name='unstable',

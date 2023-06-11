@@ -47,7 +47,7 @@ class AppCatalog():
             if isinstance(maintainers_info, list):
                 known_app.maintainers = [ maintainer["name"] for maintainer in maintainers_info ]
 
-            known_app.maintained = 'package-not-maintained' not in app.get('antifeatures', []),
+            known_app.maintained = 'package-not-maintained' not in app.get('antifeatures', [])
             known_app.state = app["state"]
             known_app.public_level = app.get("level", None)
 
