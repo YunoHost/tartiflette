@@ -174,13 +174,26 @@ def appsobservatory_history():
     data = json.loads(open("./app/scripts/appListsHistory/count_history.json").read())
     return render_template('applist_history.html', data=data)
 
-
 @main.route('/appsobservatory/news')
 def appsobservatory_news():
     news_per_date = json.loads(open("./app/scripts/appListsHistory/news.json").read())
     return render_template('applist_news.html', news_per_date=list(reversed(list(news_per_date.items()))))
 
+@main.route('/appsobservatory/news/rss')
+def appsobservatory_news_rss():
+    rss_news_per_date = json.loads(open("./app/scripts/appListsHistory/news_rss.json").read())
+    rss_xml = render_template('applist_news_rss.xml', rss_news_per_date=list(reversed(list(rss_news_per_date.items()))))
+    response = make_response(rss_xml)
+    response.headers['Content-Type'] = 'application/rss+xml'
+    response.headers['Content-Disposition'] = "inline; filename=YNH_catalog_news.xml"
+    return response
 
+@main.app_template_filter()
+def format_datetime(value, format="%d %b %Y %I:%M %p"):
+    if value is None:
+        return ""
+    return datetime.strptime(value, "%b %d %Y").strftime(format)
+    
 @main.route('/appsobservatory/unlisted')
 def appsobservatory_unlisted():
 

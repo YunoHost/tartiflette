@@ -66,3 +66,6 @@ td.ci-app-test-result > div.danger  { background-color: rgb(225,80,62); }
   text-overflow: ellipsis;
   max-width:400px;
 }
+
+.btn-rss { background-color: #ee802f; border-color: #ee802f; }
+.btn-rss:hover, .btn-rss:not(:disabled):not(.disabled):active { background-color: #ca630c; border-color: #c15b00; }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+>
+	<channel>
+		<title>YNH Catalog News</title>
+		<link>{{ url_for('main.appsobservatory_news')}}</link>
+		<atom:link href="{{ url_for('main.appsobservatory_news_rss')}}" rel="self" type="application/rss+xml" />
+		<description>YunoHost apps catalog's news</description>
+		{%- for date, status_list in rss_news_per_date %}
+			{%- for status in ("added", "repaired", "broke", "removed") %}
+				{%- for app in status_list[status] %}
+				{#- MEMO: app list's indexes correspond to [0] - app name, [1] - app url, [2] - app Github branch name, [3] - app description (keywords), [4] - app readme in HTML #}
+			<item>
+				<title>[{{ status|upper }}] {{ app[0]|capitalize }}</title>
+				<link>{{ app[1] }}</link>
+				<guid>{{ app[1] }}#{{ date|format_datetime("%Y%m%d") }}</guid>
+				<pubDate>{{ date|format_datetime("%a, %d %b %Y %H:%M:%S +0000") }}</pubDate>
+				<description>{{ app[3]|capitalize }}</description>
+				<content:encoded><![CDATA[{{ app[4] }}]]></content:encoded>
+			</item>
+				{% endfor -%}
+			{% endfor -%}
+		{% endfor %}
+	</channel>
+</rss>
