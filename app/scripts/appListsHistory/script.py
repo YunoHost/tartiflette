@@ -1,8 +1,10 @@
 import toml
 import json
+import markdown
 import os
 import sys
 import inspect
+import requests
 from datetime import datetime
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -148,7 +150,6 @@ def make_news():
         else:
             return int(lev)
 
-
     for d in time_points_until_today:
         d_label = d.strftime("%b %d %Y")
 
@@ -167,19 +168,45 @@ def make_news():
 
         news = news_per_date[d_label]
         for app in set(apps_previous_good & apps_current_broken):
-            news["broke"].append((app, j[app]["url"]))
+            news["broke"].append([app, j[app]["url"], j[app].get("branch", "master"), j[app].get("category", ""), j[app].get("subtags", "")])
         for app in set(apps_previous_broken & apps_current_good):
-            news["repaired"].append((app, j[app]["url"]))
+            news["repaired"].append([app, j[app]["url"], j[app].get("branch", "master"), j[app].get("category", ""), j[app].get("subtags", "")])
         for app in set(apps_current - apps_previous):
-            news["added"].append((app, j[app]["url"]))
+            news["added"].append([app, j[app]["url"], j[app].get("branch", "master"), j[app].get("category", ""), j[app].get("subtags", "")])
         for app in set(apps_previous - apps_current):
-            news["removed"].append((app, previous_j[app]["url"]))
+            news["removed"].append([app, previous_j[app]["url"], previous_j[app].get("branch", "master"), previous_j[app].get("category", ""), previous_j[app].get("subtags", "")])
 
         previous_j = j
 
     json.dump(news_per_date, open('news.json', 'w'))
+    
+    # Generate json for RSS feed
+    rss_number_of_times_points_to_include = 2
+    rss_d_label = list(news_per_date)[-rss_number_of_times_points_to_include:]
+    rss_feed = {k:news_per_date.get(k) for k in rss_d_label}
+    
+    for d, status_list in rss_feed.items():		
+        print("Pushing all entries from " + d + " to RSS feed...")
 
+        for status, apps_list in status_list.items():
+           for app in apps_list:
+                # Memo: at this point, 'app' list's indexes correspond to [0] - app name, [1] - app url, [2] - app branch name, [3] - app category, [4] - app subtags  
+                
+                # Merge list of category and subtags into a unique string and store it in [3]
+                if app[3] and app[4]:
+                    app[3] = app[3] + ", " + ", ".join(app[4])
 
+                # Retrieve app README and store it in [4]
+                print("Retrieve Github README for app " + app[0])
+                readme_url = "https://raw.githubusercontent.com/YunoHost-Apps/" + app[0] + "_ynh/" + app[2] + "/README.md"
+                r = requests.get(readme_url)
+                readme_md = r.text
+                readme_md = readme_md.replace("./doc/screenshots/", "https://raw.githubusercontent.com/YunoHost-Apps/" + app[0] + "_ynh/" + app[2] + "/doc/screenshots/")
+                readme_html = markdown.markdown(readme_md)
+                app[4] = readme_html
+
+    json.dump(rss_feed, open('news_rss.json', 'w'))
+    
 def update_catalog_stats(app, history):
 
     print(app)
